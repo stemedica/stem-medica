@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Research, positioning, palette, typography, logo studies and mobile-first layout system for the STEM MEDICA website.">
+<style>
+  :root{color-scheme:light dark}
+  html,body{margin:0}
+  img{max-width:100%}
+  [hidden]{display:none!important}
+</style>
+<title>STEM MEDICA Brand Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Ethiopic:wght@400;600&family=Noto+Serif+Ethiopic:wght@600&display=swap">
+
+<style>
+:root{
+  /* --- ground + ink --- */
+  --paper:      #EFF1F4;   /* cool paper, biased toward the logo blue */
+  --paper-2:    #E1E5EC;
+  --ink:        #111A2E;   /* near-black, blue bias */
+  --ink-soft:   #3C4761;
+  --grey:       #6B7385;   /* blue-biased mid grey */
+  --hair:       #C7CDD8;
+
+  /* --- brand: sampled from the existing logo --- */
+  --navy:        #1A3E8F;  /* the STEM blue */
+  --navy-2:      #2E5BB8;  /* the lighter figures in the emblem */
+  --navy-deep:   #0F2555;  /* hero, footer, dark grounds */
+  --scarlet:     #E12A22;  /* the MEDICA red — the signal */
+  --scarlet-lift:#F2564C;
+  --vital:       #B31E18;  /* same red, darkened for text on light */
+
+  --on-navy:     #E9EDF6;
+
+  --rule: 1px solid var(--hair);
+  --pad: 20px;
+  --maxw: 1120px;
+
+  --f-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body:    "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-mono:    "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-amh:     "Noto Sans Ethiopic", "Nyala", serif;
+  --f-amh-d:   "Noto Serif Ethiopic", "Nyala", serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:      #0B1220;
+    --paper-2:    #131C2F;
+    --ink:        #E6EAF2;
+    --ink-soft:   #AFB8CA;
+    --grey:       #828CA3;
+    --hair:       #263149;
+    --navy:       #3B6BD4;
+    --navy-2:     #5C89E6;
+    --navy-deep:  #14254A;
+    --scarlet:    #F2564C;
+    --scarlet-lift:#FF7A70;
+    --vital:      #F2564C;
+    --on-navy:    #E9EDF6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:      #0B1220;
+  --paper-2:    #131C2F;
+  --ink:        #E6EAF2;
+  --ink-soft:   #AFB8CA;
+  --grey:       #828CA3;
+  --hair:       #263149;
+  --navy:       #3B6BD4;
+  --navy-2:     #5C89E6;
+  --navy-deep:  #14254A;
+  --scarlet:    #F2564C;
+  --scarlet-lift:#FF7A70;
+  --vital:      #F2564C;
+  --on-navy:    #E9EDF6;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--f-body); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 var(--pad)}
+
+/* ---------- module header: the instrument-readout rule ---------- */
+.mod{border-top:2px solid var(--ink); padding-top:10px; margin-top:56px}
+.mod-bar{
+  display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--grey);
+}
+.mod-bar b{color:var(--ink); font-weight:500}
+.mod h2{
+  font-family:var(--f-display); font-variation-settings:"wdth" 118;
+  font-weight:700; font-size:clamp(26px,7vw,40px); line-height:1.02;
+  letter-spacing:-.015em; margin:14px 0 0; text-wrap:balance;
+}
+.mod .lede{max-width:62ch; color:var(--ink-soft); margin:12px 0 0; font-size:17px}
+
+/* ---------- masthead ---------- */
+header.top{background:var(--navy-deep); color:var(--on-navy); padding:26px 0 30px}
+.brandline{display:flex; align-items:center; gap:12px}
+.brandline svg{flex:none}
+.wordmark{
+  font-family:var(--f-display); font-variation-settings:"wdth" 125;
+  font-weight:700; text-transform:uppercase; letter-spacing:.02em;
+  font-size:clamp(19px,5.4vw,26px); line-height:1;
+}
+.wordmark span{font-weight:400; opacity:.72}
+.top h1{
+  font-family:var(--f-display); font-variation-settings:"wdth" 115;
+  font-weight:700; font-size:clamp(32px,9.5vw,62px); line-height:.98;
+  letter-spacing:-.025em; margin:28px 0 0; text-wrap:balance;
+}
+.top h1 em{font-style:normal; color:var(--scarlet-lift)}
+.top p{max-width:58ch; color:#B9C6E0; margin:16px 0 0; font-size:17px}
+.meta{
+  margin-top:24px; display:grid; gap:2px 24px; grid-template-columns:1fr;
+  font-family:var(--f-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:#8FA0C4;
+}
+.meta div span{color:var(--on-navy)}
+@media(min-width:640px){.meta{grid-template-columns:repeat(3,auto); justify-content:start}}
+
+/* ---------- ecg divider ---------- */
+.ecg{display:block; width:100%; height:34px; color:var(--scarlet); opacity:.9}
+.ecg path{fill:none; stroke:currentColor; stroke-width:1.6; vector-effect:non-scaling-stroke;
+  stroke-linecap:round; stroke-linejoin:round}
+@media(prefers-reduced-motion:no-preference){
+  .ecg path{stroke-dasharray:1400; stroke-dashoffset:1400; animation:trace 4.5s cubic-bezier(.4,0,.2,1) .3s forwards}
+}
+@keyframes trace{to{stroke-dashoffset:0}}
+
+/* ---------- swatches ---------- */
+.swatches{display:grid; gap:1px; background:var(--hair); border:var(--rule); margin-top:26px}
+@media(min-width:560px){.swatches{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.swatches{grid-template-columns:repeat(3,1fr)}}
+.sw{background:var(--paper); padding:0}
+.sw .chip{height:78px; display:flex; align-items:flex-end; padding:8px 10px}
+.sw .chip code{font-family:var(--f-mono); font-size:11px; letter-spacing:.06em}
+.sw .body{padding:12px 14px 16px}
+.sw .role{font-family:var(--f-display); font-variation-settings:"wdth" 110; font-weight:600; font-size:15px}
+.sw .use{color:var(--ink-soft); font-size:13.5px; margin-top:3px; line-height:1.45}
+
+/* ---------- type specimen ---------- */
+.spec{border:var(--rule); padding:18px 16px; margin-top:18px; background:var(--paper)}
+.spec .tag{
+  font-family:var(--f-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--grey); display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+}
+.spec .demo{margin-top:12px}
+.d-xl{font-family:var(--f-display); font-variation-settings:"wdth" 120; font-weight:700;
+  font-size:clamp(30px,10vw,58px); line-height:.95; letter-spacing:-.03em; text-transform:uppercase}
+.d-body{font-family:var(--f-body); font-size:17px; line-height:1.6; max-width:60ch; color:var(--ink-soft)}
+.d-mono{font-family:var(--f-mono); font-size:14px; line-height:1.8}
+.d-amh{font-family:var(--f-amh-d); font-size:clamp(22px,6.5vw,34px); line-height:1.35}
+.d-amh-b{font-family:var(--f-amh); font-size:16px; line-height:1.85; color:var(--ink-soft); max-width:52ch}
+
+.scale{margin-top:18px; border:var(--rule); border-bottom:0}
+.scale .row{display:flex; align-items:baseline; gap:14px; padding:9px 14px; border-bottom:var(--rule)}
+.scale .row .n{font-family:var(--f-mono); font-size:11px; color:var(--grey); width:96px; flex:none; letter-spacing:.06em}
+.scale .row .s{font-family:var(--f-display); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
+/* ---------- marks ---------- */
+.marks{display:grid; gap:1px; background:var(--hair); border:var(--rule); margin-top:24px}
+@media(min-width:640px){.marks{grid-template-columns:repeat(3,1fr)}}
+.mark{background:var(--paper); padding:22px 16px; text-align:center}
+.mark .art{height:104px; display:grid; place-items:center; color:var(--navy)}
+.mark h3{font-family:var(--f-display); font-variation-settings:"wdth" 110; font-size:14px; font-weight:600;
+  margin:14px 0 4px; text-transform:uppercase; letter-spacing:.06em}
+.mark p{font-size:13.5px; color:var(--ink-soft); margin:0; line-height:1.5}
+
+/* ---------- ledger rows (product pattern) ---------- */
+.ledger{border-top:var(--rule); margin-top:22px}
+.lrow{display:grid; grid-template-columns:1fr auto; gap:4px 16px; padding:14px 0; border-bottom:var(--rule);
+  align-items:baseline}
+.lrow .t{font-family:var(--f-display); font-variation-settings:"wdth" 108; font-weight:600; font-size:17px}
+.lrow .k{font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey);
+  grid-column:1/-1; order:-1}
+.lrow .m{font-family:var(--f-mono); font-size:12px; color:var(--ink-soft); text-align:right; white-space:nowrap}
+.lrow .d{grid-column:1/-1; font-size:14px; color:var(--ink-soft); line-height:1.5}
+
+/* ---------- phone mock ---------- */
+.mockrow{display:grid; gap:24px; margin-top:26px}
+@media(min-width:820px){.mockrow{grid-template-columns:300px 1fr; align-items:start}}
+.phone{
+  width:100%; max-width:300px; margin:0 auto; border:10px solid var(--ink); border-radius:26px;
+  overflow:hidden; background:var(--paper); box-shadow:0 18px 40px -24px rgba(14,26,25,.6);
+}
+.p-nav{display:flex; justify-content:space-between; align-items:center; background:var(--navy-deep); color:var(--on-navy);
+  padding:10px 12px; font-family:var(--f-display); font-variation-settings:"wdth" 125; font-weight:700;
+  text-transform:uppercase; font-size:12px; letter-spacing:.04em}
+.p-nav .bars{font-family:var(--f-mono); font-weight:400; font-size:14px; opacity:.8}
+.p-hero{background:var(--navy-deep); color:var(--on-navy); padding:4px 12px 18px}
+.p-hero .eyebrow{font-family:var(--f-mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--scarlet-lift)}
+.p-hero h4{font-family:var(--f-display); font-variation-settings:"wdth" 112; font-weight:700; font-size:23px;
+  line-height:1; letter-spacing:-.02em; margin:8px 0 0; text-transform:uppercase}
+.p-hero p{font-size:11.5px; color:#B2C1DC; margin:8px 0 0; line-height:1.45}
+.p-sec{padding:12px; border-bottom:var(--rule)}
+.p-lab{font-family:var(--f-mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--grey);
+  display:flex; justify-content:space-between; border-top:2px solid var(--ink); padding-top:6px; margin-bottom:8px}
+.p-item{display:flex; justify-content:space-between; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px solid var(--hair)}
+.p-item:last-child{border-bottom:0}
+.p-item .a{font-family:var(--f-display); font-weight:600; font-size:13px}
+.p-item .b{font-family:var(--f-mono); font-size:9.5px; color:var(--grey); white-space:nowrap}
+.p-bar{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--ink)}
+.p-bar a{padding:12px 6px; text-align:center; font-family:var(--f-display); font-weight:700; font-size:12px;
+  text-transform:uppercase; letter-spacing:.04em; text-decoration:none}
+.p-call{background:var(--scarlet); color:#FFF}
+.p-wa{background:var(--ink); color:var(--paper)}
+
+.notes{display:grid; gap:14px; margin:0; padding:0; list-style:none}
+.notes li{border-left:2px solid var(--scarlet); padding:2px 0 2px 14px}
+.notes b{font-family:var(--f-display); font-variation-settings:"wdth" 110; font-weight:600; display:block; font-size:15px}
+.notes span{color:var(--ink-soft); font-size:14.5px; line-height:1.55; display:block; margin-top:2px}
+
+.arch{margin-top:22px; border-top:var(--rule)}
+.arow{display:grid; grid-template-columns:34px 1fr; gap:14px; padding:14px 0; border-bottom:var(--rule)}
+.arow .num{font-family:var(--f-mono); font-size:11px; color:var(--scarlet); letter-spacing:.06em; padding-top:4px}
+.arow h3{font-family:var(--f-display); font-variation-settings:"wdth" 108; font-weight:600; font-size:16.5px; margin:0}
+.arow p{margin:4px 0 0; font-size:14.5px; color:var(--ink-soft); line-height:1.5}
+.arow .who{font-family:var(--f-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey); margin-top:6px}
+
+.callout{background:var(--paper-2); border-left:3px solid var(--vital); padding:16px 18px; margin-top:24px}
+.callout h3{font-family:var(--f-display); font-variation-settings:"wdth" 110; font-weight:600; font-size:16px; margin:0 0 6px}
+.callout p{margin:0 0 8px; font-size:15px; color:var(--ink-soft); line-height:1.55}
+.callout ul{margin:0; padding-left:18px; font-size:14.5px; color:var(--ink-soft); line-height:1.6}
+
+.voice{display:grid; gap:1px; background:var(--hair); border:var(--rule); margin-top:22px}
+@media(min-width:700px){.voice{grid-template-columns:1fr 1fr}}
+.vcell{background:var(--paper); padding:16px}
+.vcell .h{font-family:var(--f-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:8px}
+.no .h{color:var(--vital)} .yes .h{color:var(--navy-2)}
+.vcell p{margin:0 0 8px; font-size:15px; line-height:1.5}
+.no p{color:var(--grey); text-decoration:line-through; text-decoration-thickness:1px}
+.yes p{color:var(--ink)}
+
+footer{margin-top:64px; border-top:2px solid var(--ink); padding:18px 0 48px;
+  font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--grey);
+  display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap}
+a{color:inherit}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brandline">
+      <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="#5C89E6" stroke-width="4.5"
+                stroke-dasharray="34 13" transform="rotate(-58 20 20)"/>
+        <circle cx="20" cy="20" r="6.5" fill="#E12A22"/>
+      </svg>
+      <div class="wordmark">Stem Medica <span>/ Brand Direction</span></div>
+    </div>
+
+    <h1>Putting quality in the <em>front line</em>.</h1>
+    <p>An identity and website direction built from what STEM MEDICA actually does: bringing certified
+      diagnostic, cardiac and critical-care equipment into Ethiopian hospitals — and staying for the
+      installation, the training and the service call.</p>
+
+    <div class="meta">
+      <div>Client / <span>STEM MEDICA, Addis Ababa</span></div>
+      <div>Build / <span>Mobile-first website</span></div>
+      <div>Status / <span>Direction v1</span></div>
+    </div>
+  </div>
+</header>
+
+<svg class="ecg" viewBox="0 0 1200 34" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 22 H150 l10 0 6 -14 7 24 6 -20 7 10 H420 l10 0 6 -14 7 24 6 -20 7 10 H690 l10 0 6 -14 7 24 6 -20 7 10 H960 l10 0 6 -14 7 24 6 -20 7 10 H1200"/>
+</svg>
+
+<main class="wrap">
+
+  <!-- ============ 1 RESEARCH ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>01 / What they are</b><span>Research</span></div>
+    <h2>A distributor whose real product is competence</h2>
+    <p class="lede">Their LinkedIn reads like a service log, not a catalogue: an S5 bypass machine landed
+      for private cardiac hospitals, two neonatal CPAP units installed <em>and</em> user-trained, a blood gas
+      analyser commissioned and running in a hospital lab, ICU beds delivered to a leading ICU centre.
+      That's the story the site has to tell.</p>
+
+    <div class="ledger">
+      <div class="lrow"><span class="k">Founded by</span><span class="t">Geremew Zewdie — biomedical engineer, CEO</span><span class="m">Sales · procurement · tenders</span>
+        <span class="d">A technical founder, not a trader. The name itself comes from stem-cell generation — growth, healing, regeneration. That root is the whole identity.</span></div>
+      <div class="lrow"><span class="k">Category</span><span class="t">Medical &amp; diagnostic equipment import and distribution</span><span class="m">11–50 staff · Addis Ababa</span>
+        <span class="d">Registered importer supplying supplies, devices and capital equipment nationwide.</span></div>
+      <div class="lrow"><span class="k">Proven portfolio</span><span class="t">Cardiac · Imaging · Neonatal · Lab · Ward</span><span class="m">From their own posts</span>
+        <span class="d">S5 / heart-lung bypass, SCHILLER Holter BP (ABPM), BPL RAD 5.0 mobile digital X-ray, portable X-ray, AMBULANC neonatal CPAP, iCheck-200 blood gas analyser, ICU beds.</span></div>
+      <div class="lrow"><span class="k">The differentiator</span><span class="t">Installation, commissioning, user training, support</span><span class="m">Repeated in every post</span>
+        <span class="d">Ethiopian hospitals don't lack suppliers — they lack suppliers who come back. This is the thing competitors' websites never prove.</span></div>
+      <div class="lrow"><span class="k">Two audiences</span><span class="t">Hospital procurement &amp; global manufacturers</span><span class="m">Both already in the feed</span>
+        <span class="d">They post to buy (sourcing bypass machines from LivaNova, Getinge, Terumo, Medtronic) as often as to sell. The site needs a front door for each.</span></div>
+      <div class="lrow"><span class="k">Conversion</span><span class="t">One phone number</span><span class="m">0921 136 180 · info@stemedicaet.com</span>
+        <span class="d">Every single post ends in that number. The website should too — permanently, on the thumb.</span></div>
+    </div>
+
+    <div class="callout">
+      <h3>Still open — and I won't invent it</h3>
+      <p>LinkedIn's images are login-gated and <code>stemedicaet.com</code> did not resolve from here, so
+        I have not seen the live site. The logo you sent is now the basis of the palette in section 03.</p>
+      <ul>
+        <li>Send the <b>vector logo</b> (SVG or AI). The hexes below are eyedropped from a small raster and should be replaced with the source values before anything is printed.</li>
+        <li>Confirm whether <b>stemedicaet.com is down or expired</b> — it's the domain printed on their own posts, so this matters more than the design.</li>
+        <li>Confirm the <b>Amharic requirement</b>: bilingual site, or English with Amharic product sheets?</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 2 POSITION ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>02 / The idea</b><span>Positioning</span></div>
+    <h2>Front Line</h2>
+    <p class="lede">Their own sentence — <em>"Putting Quality in FRONT LINE"</em> — is better than anything
+      a studio would write for them. The front line is the theatre, the ICU, the NICU, the lab bench at 3am.
+      STEM MEDICA equips it and then stands on it. Everything below is derived from that one phrase plus the
+      stem-cell root in the name: <b>precision instruments, and things that grow back.</b></p>
+
+    <ul class="notes" style="margin-top:24px">
+      <li><b>The visual world is the device, not the doctor</b><span>No stock photography of smiling clinicians — every competitor in Addis has that, and it reads as a template. The material is device fascia: calibration ticks, serial plates, ECG baselines, CE and ISO marks, spec tables in monospace. Photography is their own installation shots, shot straight, captioned like a service record.</span></li>
+      <li><b>Swiss precision is earned, not borrowed</b><span>They distribute SCHILLER — actual Swiss-engineered instruments. A strict International-Typographic grid is a legitimate reference here, not a mood board pull.</span></li>
+      <li><b>The logo sets the palette, not a mood board</b><span>Blue and red are already theirs and already on every quotation and business card. The job isn't to invent a colour story — it's to give those two colours strict roles and hold the line on them.</span></li>
+      <li><b>Proof over adjectives</b><span>"Advanced", "innovative", "world-class" are free — anyone can type them. Serial numbers, install dates, hospital departments, training-day counts and brand certificates are not.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 3 COLOR ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>03 / Palette</b><span>Sampled from the logo</span></div>
+    <h2>Their blue, their red, and nothing else that shouts</h2>
+    <p class="lede">The logo already fixes this: a saturated royal blue for STEM, a scarlet for MEDICA.
+      Blue-and-red is the most conventional pairing in medicine, so the differentiation can't come from
+      the hues — it comes from <b>discipline</b>. Blue carries the structure. Red does exactly one job:
+      attention. It is the call button, the active state, the ECG trace, the urgent tender — and nothing
+      else on the page is allowed to be loud enough to compete with it.</p>
+
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#1A3E8F"><code style="color:#E9EDF6">#1A3E8F</code></div>
+        <div class="body"><div class="role">Navy — primary</div><div class="use">Sampled from the STEM wordmark. Links, active nav, headings on paper, chart series. The structural colour.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#0F2555"><code style="color:#E9EDF6">#0F2555</code></div>
+        <div class="body"><div class="role">Navy Deep — grounds</div><div class="use">Masthead, hero, footer. A darkened extension of the logo blue so dark sections stay in the family instead of going generic black.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#E12A22"><code style="color:#FFF">#E12A22</code></div>
+        <div class="body"><div class="role">Scarlet — the signal</div><div class="use">The MEDICA red. Call button, ECG trace, alerts, one key figure. Never a section fill, never a decorative bar.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#111A2E"><code style="color:#EFF1F4">#111A2E</code></div>
+        <div class="body"><div class="role">Ink — type &amp; rules</div><div class="use">Body copy and the 2px module rules. Near-black pulled toward the logo blue, so it reads as part of the palette rather than sitting on top of it.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EFF1F4"><code style="color:#111A2E">#EFF1F4</code></div>
+        <div class="body"><div class="role">Paper — ground</div><div class="use">Default page. Cool rather than cream, tinted a few degrees toward the blue. Pure #FFF is reserved for panels that need to lift off it.</div></div></div>
+      <div class="sw"><div class="chip" style="background:#6B7385"><code style="color:#FFF">#6B7385</code></div>
+        <div class="body"><div class="role">Steel — neutral</div><div class="use">Labels, captions, disabled states, table rules. Blue-biased grey — a neutral that was chosen, not inherited.</div></div></div>
+    </div>
+
+    <ul class="notes" style="margin-top:24px">
+      <li><b>Ratio, roughly 70 / 25 / 5</b><span>Paper and ink do most of the work, navy carries structure and dark sections, red gets about five percent of any given screen. The moment red goes above that it stops meaning anything.</span></li>
+      <li><b>Contrast is checked, not assumed</b><span>Navy #1A3E8F on paper clears AA comfortably. Scarlet #E12A22 does <em>not</em> pass for small body text on light — so red text uses the darkened #B31E18, and the bright scarlet is kept for fills, strokes and large type.</span></li>
+      <li><b>Dark theme lifts the blue, not the red</b><span>On the dark ground the navy brightens to #3B6BD4 to stay legible; the red moves only slightly to #F2564C. The relationship between them stays the same in both themes.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 4 TYPE ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>04 / Typography</b><span>Archivo · IBM Plex Mono · Noto Ethiopic</span></div>
+    <h2>One grotesque, stretched and squeezed on purpose</h2>
+    <p class="lede">Archivo is a variable family with a real width axis, so the whole site runs on one typeface
+      that behaves like three: expanded and uppercase for display, normal for text, condensed for dense
+      navigation. That's a single font file doing the work of a pairing — fast on Ethiopian mobile data, and it
+      is not Inter or Space Grotesk. IBM Plex Mono handles every number, model code and label, which is what
+      instrument panels actually look like.</p>
+
+    <div class="spec">
+      <div class="tag"><span>Display — Archivo, wdth 120, 700, uppercase</span><span>Headlines · hero · section titles</span></div>
+      <div class="demo d-xl">Heart-lung<br>bypass, installed</div>
+    </div>
+
+    <div class="spec">
+      <div class="tag"><span>Text — Archivo, wdth 100, 400/500</span><span>Body · descriptions · 65ch measure</span></div>
+      <div class="demo d-body">The SCHILLER ABPM is a Swiss-engineered ambulatory monitor for 24-hour blood
+        pressure diagnosis. STEM MEDICA supplies, installs and trains your team on it, and holds spares in
+        Addis Ababa. Delivery to regional hospitals is arranged on request.</div>
+    </div>
+
+    <div class="spec">
+      <div class="tag"><span>Data — IBM Plex Mono, 400/500</span><span>Specs · model codes · labels · phone</span></div>
+      <div class="demo d-mono">
+        MODEL &nbsp;&nbsp;&nbsp;BPL RAD 5.0<br>
+        CATEGORY &nbsp;Mobile digital radiography<br>
+        ORIGIN &nbsp;&nbsp;&nbsp;India · CE marked<br>
+        SUPPORT &nbsp;&nbsp;Install + user training + spares<br>
+        ENQUIRY &nbsp;&nbsp;+251 921 136 180
+      </div>
+    </div>
+
+    <div class="spec">
+      <div class="tag"><span>Amharic — Noto Serif / Sans Ethiopic</span><span>Bilingual headings &amp; body</span></div>
+      <div class="demo">
+        <div class="d-amh">ጥራትን ከፊት ረድፍ</div>
+        <div class="d-amh-b" style="margin-top:10px">ስቴም ሜዲካ በኢትዮጵያ ውስጥ ለሆስፒታሎችና ለላቦራቶሪዎች የሕክምና
+          መሣሪያዎችን ያቀርባል፤ ተከላ፣ ስልጠናና ቴክኒካዊ ድጋፍ ጭምር።</div>
+      </div>
+    </div>
+
+    <div class="scale">
+      <div class="row"><span class="n">H1 / 56–62</span><span class="s" style="font-size:34px; font-variation-settings:'wdth' 118; letter-spacing:-.03em; text-transform:uppercase">Front line equipment</span></div>
+      <div class="row"><span class="n">H2 / 34–40</span><span class="s" style="font-size:26px; font-variation-settings:'wdth' 115; letter-spacing:-.02em">Cardiac &amp; perfusion</span></div>
+      <div class="row"><span class="n">H3 / 20</span><span class="s" style="font-size:19px; font-variation-settings:'wdth' 108">Neonatal CPAP system</span></div>
+      <div class="row"><span class="n">Body / 17</span><span class="s" style="font-size:17px; font-weight:400; font-variation-settings:'wdth' 100">Supplied, installed and supported nationwide.</span></div>
+      <div class="row"><span class="n">Label / 11 mono</span><span class="s" style="font-family:var(--f-mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:500">Department · ICU &amp; critical care</span></div>
+    </div>
+  </section>
+
+  <!-- ============ 5 MARK ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>05 / The mark</b><span>Working with what exists</span></div>
+    <h2>Keep the equity, fix the small sizes</h2>
+    <p class="lede">The existing logo is a two-part lockup: an oblique bold <b>STEM</b> in blue with
+      <b>MEDICA</b> set smaller in red beneath it, plus a circular emblem of red discs and blue figures
+      orbiting a centre — people around a cell, which is exactly right for a name taken from stem-cell
+      generation. The idea is sound. The problem is purely mechanical: <b>that emblem has four or five
+      distinct shapes in it, and below about 40px they merge into a blob.</b> A favicon, a WhatsApp avatar
+      and an app icon are all smaller than that.</p>
+
+    <div class="marks">
+      <div class="mark">
+        <div class="art">
+          <svg width="84" height="84" viewBox="0 0 40 40" aria-label="Current emblem, approximate">
+            <circle cx="12" cy="10" r="4.5" fill="#E12A22"/>
+            <circle cx="11" cy="27" r="8" fill="#E12A22"/>
+            <path d="M27 8 c7 5 7 19 0 24 c-4 -6 -4 -18 0 -24 z" fill="#1A3E8F"/>
+            <path d="M21 13 c6 -3 11 -1 13 3 c-6 2 -11 1 -13 -3 z" fill="#2E5BB8"/>
+            <path d="M21 28 c6 3 11 1 13 -3 c-6 -2 -11 -1 -13 3 z" fill="#2E5BB8"/>
+          </svg>
+        </div>
+        <h3>Now — approximate</h3>
+        <p>Five shapes, two reds at different scales, thin negative space between the blue forms. Detail-rich at print size, mush at 32px.</p>
+      </div>
+      <div class="mark">
+        <div class="art">
+          <svg width="84" height="84" viewBox="0 0 40 40" aria-label="Reduced mark">
+            <circle cx="20" cy="20" r="17" fill="none" stroke="#1A3E8F" stroke-width="4.5"
+                    stroke-dasharray="34 13" stroke-linecap="butt" transform="rotate(-58 20 20)"/>
+            <circle cx="20" cy="20" r="6.5" fill="#E12A22"/>
+          </svg>
+        </div>
+        <h3>Reduction — recommended</h3>
+        <p>The same gesture in two shapes: a broken blue orbit around a solid red centre. Survives 16px, one-colour print, embroidery and a laser-etched asset tag.</p>
+      </div>
+      <div class="mark">
+        <div class="art">
+          <svg width="84" height="84" viewBox="0 0 40 40" aria-label="Divider device">
+            <path d="M2 26 h8 l4 -12 4.5 20 4 -16 3.5 8 H38" fill="none" stroke="#E12A22"
+                  stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Secondary device</h3>
+        <p>A single ECG complex in scarlet. Not a logo — a system element for dividers, loading states and section rules. Already used across this page.</p>
+      </div>
+    </div>
+
+    <ul class="notes" style="margin-top:22px">
+      <li><b>Two lockups, not one</b><span>Horizontal (emblem left, STEM MEDICA stacked right) for the site header and letterhead; the emblem alone for favicon, WhatsApp Business, social avatars and equipment asset tags. Define the clear space as the radius of the red centre on all four sides.</span></li>
+      <li><b>Leave the oblique alone — and don't echo it</b><span>The slant in STEM is the logo's own signature. The page around it should stay upright; if the headlines lean too, the whole thing reads as a 1990s sports brand. One italic on the page, and the logo owns it.</span></li>
+      <li><b>Make the red hierarchy deliberate</b><span>Right now MEDICA is red and smaller, which reads as the subordinate half. That's fine — but it means red is already doing "accent" in the logo, which is exactly the role it plays on the site. Consistent, and free.</span></li>
+      <li><b>What I'd want before touching the artwork</b><span>The vector original. Everything above is drawn from a small raster, so the curves are approximations, and the exact brand hexes should be pulled from the source file rather than eyedropped from a JPEG.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 6 MOBILE ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>06 / Mobile first</b><span>Layout system</span></div>
+    <h2>An instrument readout, one column deep</h2>
+    <p class="lede">Every section is a module with a 2px rule across the top carrying a monospace label on the
+      left and a count or status on the right — the way a device reports itself. On a phone the modules stack;
+      on desktop the same rules become a 12-column grid with a persistent contact rail. Nothing is a rounded
+      card: border, fill and shadow get spent only where something genuinely needs lifting.</p>
+
+    <div class="mockrow">
+      <div class="phone">
+        <div class="p-nav"><span>Stem Medica</span><span class="bars">≡</span></div>
+        <div class="p-hero">
+          <div class="eyebrow">Addis Ababa · Nationwide delivery</div>
+          <h4>Equipment for the front line</h4>
+          <p>Cardiac, imaging, critical care and laboratory systems — supplied, installed and supported by biomedical engineers.</p>
+        </div>
+        <div class="p-sec">
+          <div class="p-lab"><span>Departments</span><span>06</span></div>
+          <div class="p-item"><span class="a">Cardiac &amp; Perfusion</span><span class="b">12 systems</span></div>
+          <div class="p-item"><span class="a">Imaging &amp; Radiography</span><span class="b">9 systems</span></div>
+          <div class="p-item"><span class="a">ICU &amp; Neonatal</span><span class="b">14 systems</span></div>
+          <div class="p-item"><span class="a">Laboratory &amp; Diagnostics</span><span class="b">21 systems</span></div>
+        </div>
+        <div class="p-sec">
+          <div class="p-lab"><span>Recent installations</span><span>2026</span></div>
+          <div class="p-item"><span class="a">Neonatal CPAP ×2</span><span class="b">Installed + trained</span></div>
+          <div class="p-item"><span class="a">iCheck-200 blood gas</span><span class="b">Commissioned</span></div>
+        </div>
+        <div class="p-bar">
+          <a class="p-call" href="#0">Call 0921 136 180</a>
+          <a class="p-wa" href="#0">WhatsApp</a>
+        </div>
+      </div>
+
+      <ul class="notes">
+        <li><b>The phone number is the whole funnel</b><span>A fixed two-button bar sits on the thumb from the first scroll: tel: on the left in scarlet, WhatsApp on the right in ink. Procurement staff in Addis call — they don't fill in contact forms.</span></li>
+        <li><b>Browse by department, not by brand</b><span>A hospital buyer thinks "we need something for the NICU", not "we need AMBULANC". Brands live on a page of their own, as credentials.</span></li>
+        <li><b>Installation log as a live section</b><span>The recent-installations feed is the proof engine, and it's already being written — every LinkedIn post is one entry. Date, device, department, whether training was delivered.</span></li>
+        <li><b>Spec tables scroll, they never squeeze</b><span>Monospace spec blocks get their own horizontal scroll container so an 8-column table never shoves the page sideways on a 360px screen.</span></li>
+        <li><b>Built for a slow connection</b><span>One variable font file, SVG marks, no icon library, no carousel, images lazily loaded and served as WebP. Target under 150KB before photography — that is a design decision on Ethiopian mobile, not a technical footnote.</span></li>
+        <li><b>48px targets, visible focus rings</b><span>A scarlet focus outline on light and on the navy ground — never the browser default stripped without a replacement.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ 7 ARCHITECTURE ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>07 / Site map</b><span>Eight routes</span></div>
+    <h2>Two front doors, because there are two customers</h2>
+    <p class="lede">Numbered here because it is a sequence — this is the order the pages should be built and
+      the order a first-time visitor moves through them.</p>
+
+    <div class="arch">
+      <div class="arow"><span class="num">01</span><div><h3>Home</h3><p>Hero, six departments, recent installations, brands strip, service promise, contact.</p><div class="who">Everyone</div></div></div>
+      <div class="arow"><span class="num">02</span><div><h3>Departments</h3><p>Cardiac &amp; Perfusion · Imaging &amp; Radiography · ICU &amp; Critical Care · Neonatal · Laboratory &amp; Diagnostics · Ward, Theatre &amp; Furniture. Each with product rows and a spec sheet download.</p><div class="who">Hospital buyers</div></div></div>
+      <div class="arow"><span class="num">03</span><div><h3>Service &amp; Support</h3><p>Installation, commissioning, user training, calibration, spares, warranty terms, response times. The page that wins the tender.</p><div class="who">Biomedical departments</div></div></div>
+      <div class="arow"><span class="num">04</span><div><h3>Installations</h3><p>The dated log. Every entry: facility type, device, department, training delivered. Feeds the homepage.</p><div class="who">Proof for both</div></div></div>
+      <div class="arow"><span class="num">05</span><div><h3>Brands</h3><p>SCHILLER, BPL, AMBULANC, B&amp;E and the rest — with origin and certification, not just logos in a grid.</p><div class="who">Credibility</div></div></div>
+      <div class="arow"><span class="num">06</span><div><h3>Tenders &amp; Procurement</h3><p>Public tenders they're bidding, and how to invite them to bid. Document requests handled here.</p><div class="who">Public hospitals</div></div></div>
+      <div class="arow"><span class="num">07</span><div><h3>Become a Supplier</h3><p>The second front door — manufacturers looking for Ethiopian distribution. Registration status, market reach, what they need from you.</p><div class="who">Global manufacturers</div></div></div>
+      <div class="arow"><span class="num">08</span><div><h3>About &amp; Careers</h3><p>Geremew's founding story and the stem-cell origin of the name; the biomedical engineering team; open roles.</p><div class="who">Trust &amp; hiring</div></div></div>
+    </div>
+  </section>
+
+  <!-- ============ 8 VOICE ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>08 / Voice</b><span>Copy rules</span></div>
+    <h2>Say the model number</h2>
+    <div class="voice">
+      <div class="vcell no"><div class="h">Not this</div>
+        <p>Your trusted partner in innovative healthcare solutions.</p>
+        <p>We provide world-class, cutting-edge medical technology.</p>
+        <p>Committed to excellence in everything we do.</p>
+        <p>Get in touch to learn more about our offerings.</p></div>
+      <div class="vcell yes"><div class="h">This</div>
+        <p>Medical equipment for Ethiopian hospitals — supplied, installed, supported.</p>
+        <p>SCHILLER ABPM. Swiss-built. 24-hour ambulatory blood pressure. In stock in Addis.</p>
+        <p>Two neonatal CPAP units installed. Both teams trained on site.</p>
+        <p>Call 0921 136 180. Someone answers.</p></div>
+    </div>
+    <ul class="notes" style="margin-top:22px">
+      <li><b>Lead with the device, follow with the benefit</b><span>The buyer is technical. Name it, then say what it changes.</span></li>
+      <li><b>No emoji, no all-caps urgency</b><span>The LinkedIn voice uses 🚨 and "URGENT" — that works in a feed, not on a site a ministry procurement officer is assessing.</span></li>
+      <li><b>Amharic that was written, not translated</b><span>If the site goes bilingual, have the Amharic written by someone on the team. Machine-translated Amharic is instantly obvious to the audience that matters most.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ 9 NEXT ============ -->
+  <section class="mod">
+    <div class="mod-bar"><b>09 / Next</b><span>To start building</span></div>
+    <h2>What I need from you</h2>
+    <ul class="notes" style="margin-top:22px">
+      <li><b>The vector logo, plus any existing brand rules</b><span>SVG or AI. I've built on the mark you sent, but the exact hexes and curves need to come from the source file.</span></li>
+      <li><b>Domain status for stemedicaet.com</b><span>It doesn't resolve. Expired, parked, or blocked from my side — needs checking before anything ships.</span></li>
+      <li><b>The product list</b><span>Even a spreadsheet of device names, brands and departments. It sets the data model for the whole catalogue.</span></li>
+      <li><b>Installation photography</b><span>The shots already on LinkedIn, at original resolution. These are the images — no stock.</span></li>
+      <li><b>Stack preference</b><span>My default for this: Astro with content collections for products and installations, Tailwind on these tokens, deployed static. Fast on mobile, and the team can add an installation entry with a markdown file. Say if you'd rather have a CMS behind it.</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <span>STEM MEDICA · Brand direction v1</span>
+  <span>Front line</span>
+</footer>
+</body>
+</html>
