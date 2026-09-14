@@ -22,7 +22,7 @@ export default function ContactPage() {
       index="01"
       label="Contact"
       meta={site.city}
-      title="Call us — it's faster than a form"
+      title="Call us, it's faster than a form"
       lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     >
       <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">

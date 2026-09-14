@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { WaveField } from "./WaveField";
 
 /**
- * Asset tag — the way a real device is labelled on its nameplate.
+ * Asset tag: the way a real device is labelled on its nameplate.
  * Deliberately squared, two-cell, and never a pill with a dot in it.
  */
 export function Tag({

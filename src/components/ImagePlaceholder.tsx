@@ -1,7 +1,7 @@
 import { ImageIcon } from "lucide-react";
 
 /**
- * Conventional image placeholder — deliberately plain grey with a diagonal
+ * Conventional image placeholder: deliberately plain grey with a diagonal
  * cross, so an empty photo slot is never mistaken for finished artwork.
  *
  * Each instance names the photograph that belongs there, which doubles as the

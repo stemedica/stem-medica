@@ -53,7 +53,7 @@ export default async function ProductPage({
               {product.summary}
             </p>
 
-            {/* Nameplate data row — brand, origin, availability, lead time. */}
+            {/* Nameplate data row: brand, origin, availability, lead time. */}
             <dl className="mt-9 grid grid-cols-2 border border-white/20 font-mono text-[11px] sm:grid-cols-4">
               {[
                 ["Brand", product.brand],
@@ -76,7 +76,7 @@ export default async function ProductPage({
 
           <div className="ticks relative border border-white/20 bg-navy-deep/60 p-1.5 shadow-deep">
             <ImagePlaceholder
-              label={`${product.name} — product photo`}
+              label={`${product.name}: product photo`}
               ratio="4/3"
               tone="dark"
               className="border-0"

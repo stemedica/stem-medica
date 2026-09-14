@@ -77,7 +77,7 @@ export default async function PostPage({
 
         {more.length > 0 ? (
           <div className="mt-16">
-            <SectionHead index="—" label="Keep reading" meta={`${more.length} more`} />
+            <SectionHead index="//" label="Keep reading" meta={`${more.length} more`} />
             <div className="mt-5 border-t border-hair">
               {more.map((p) => (
                 <Link

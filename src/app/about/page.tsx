@@ -64,7 +64,7 @@ export default function AboutPage() {
         index="02"
         label="Amharic"
         title="Bilingual, when the copy is ready"
-        lede="Amharic here is a placeholder proving the typeface and layout. It should be written by someone on the team — machine-translated Amharic is obvious to the audience that matters most."
+        lede="Amharic here is a placeholder proving the typeface and layout. It should be written by someone on the team, because machine-translated Amharic is obvious to the audience that matters most."
       >
         <p className="font-ethiopic mt-8 max-w-[46ch] text-lg leading-loose text-on-navy/85">
           ሎረም ኢፕሱም ዶሎር ሲት አሜት፣ ኮንሰክቴቱር አዲፒሲንግ ኤሊት፣ ሴድ ዶ ኢዩስሞድ ቴምፖር

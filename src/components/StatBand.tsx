@@ -1,4 +1,4 @@
-/** Figures are LOREM placeholder — STEM MEDICA has not supplied real ones. */
+/** Figures are LOREM placeholder. STEM MEDICA has not supplied real ones. */
 const stats = [
   { k: "Lorem ipsum", v: "00", n: "Dolor sit amet" },
   { k: "Consectetur", v: "00", n: "Adipiscing elit" },

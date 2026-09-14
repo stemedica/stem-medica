@@ -14,7 +14,7 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
       className="plate plate-hover lift group flex flex-col overflow-hidden"
     >
       <div className="relative border-b border-hair">
-        <ImagePlaceholder label={`${product.name} — product photo`} ratio="16/10" className="border-0" />
+        <ImagePlaceholder label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
         <span className="stamp absolute bottom-2 right-3 text-3xl text-navy/10">
           {String(index + 1).padStart(2, "0")}
         </span>

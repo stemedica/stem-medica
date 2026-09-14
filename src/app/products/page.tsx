@@ -6,7 +6,7 @@ import { products } from "@/content/products";
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "Medical equipment catalogue — systems supplied, installed and supported across Ethiopia.",
+    "Medical equipment catalogue. Systems supplied, installed and supported across Ethiopia.",
 };
 
 export default function ProductsPage() {

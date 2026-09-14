@@ -7,7 +7,7 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Service & Support",
   description:
-    "Site survey, installation, commissioning, user training, spares and warranty — how STEM MEDICA supports equipment after delivery.",
+    "How STEM MEDICA supports equipment after delivery: site survey, installation, commissioning, user training, spares and warranty.",
 };
 
 /** Stage names are structural; the descriptions are LOREM placeholder. */

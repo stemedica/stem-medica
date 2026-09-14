@@ -1,4 +1,4 @@
-# STEM MEDICA — website (MVP demo)
+# STEM MEDICA, website (MVP demo)
 
 **Live:** https://stem-medica.vercel.app · **Repo:** private, `natinael96/stem-medica`
 
@@ -6,7 +6,7 @@ Pushes to `main` deploy to production automatically via the Vercel Git integrati
 
 Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
 
-Brand direction and rationale: **[docs/brand-direction.html](docs/brand-direction.html)** — open it in a browser.
+Brand direction and rationale: **[docs/brand-direction.html](docs/brand-direction.html)**, open it in a browser.
 
 ```bash
 npm run dev     # http://localhost:3000
@@ -26,13 +26,13 @@ npm run build   # production build
 
 ## Content
 
-No CMS yet — content is files, which is deliberate for an MVP.
+No CMS yet, content is files, which is deliberate for an MVP.
 
-- **Products** — `src/content/products.ts`. Typed array; `Product` is the data model.
-- **Departments** — `src/content/departments.ts`.
-- **Blog** — `src/content/posts/*.md` with YAML frontmatter. Drop in a new `.md`
+- **Products**, `src/content/products.ts`. Typed array; `Product` is the data model.
+- **Departments**, `src/content/departments.ts`.
+- **Blog**, `src/content/posts/*.md` with YAML frontmatter. Drop in a new `.md`
   file and it appears; no registration step.
-- **Site config** — `src/lib/site.ts` (phone, email, WhatsApp, nav).
+- **Site config**, `src/lib/site.ts` (phone, email, WhatsApp, nav).
 
 > Product specs, availability and lead times are **placeholders**. Device names and
 > departments are drawn from STEM MEDICA's public posts; everything else needs the
@@ -42,7 +42,7 @@ No CMS yet — content is files, which is deliberate for an MVP.
 
 Tokens live in `src/app/globals.css` under `@theme`, so Tailwind utilities
 (`bg-navy-deep`, `text-scarlet`, `border-hair`) come straight from the brand doc.
-Colours are eyedropped from a raster logo — replace them from the vector source.
+Colours are eyedropped from a raster logo, replace them from the vector source.
 
 Typography is one variable family (Archivo) used across its width axis:
 `.wdth-xw` / `.wdth-w` / `.wdth-n`. IBM Plex Mono carries every number, model code

@@ -8,7 +8,7 @@ import Image from "next/image";
  *
  * The supplied file is a 200×200 JPEG on a white ground, so on the navy header
  * and footer it is mounted in a white plate rather than composited directly.
- * A transparent SVG or PNG would remove the need for that plate — see
+ * A transparent SVG or PNG would remove the need for that plate. See
  * docs/brand-direction.html §05.
  */
 const CANDIDATES = [
@@ -31,7 +31,7 @@ function findLogo(): { src: string; vector: boolean; opaque: boolean } | null {
   return null;
 }
 
-/** Reduced mark — a broken blue orbit around a solid red centre. */
+/** Reduced mark: a broken blue orbit around a solid red centre. */
 export function Mark({ size = 32 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 40 40" aria-hidden="true" className="shrink-0">

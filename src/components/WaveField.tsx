@@ -2,7 +2,7 @@
  * Ambient background for dark sections.
  *
  * A drifting field of ECG baselines rather than a grid, an orb or a gradient
- * wash — the subject's own material, kept at low contrast so it never competes
+ * wash. It uses the subject's own material, kept at low contrast so it never competes
  * with type. Purely decorative: pointer-events off, aria-hidden, and it holds
  * still under prefers-reduced-motion.
  */

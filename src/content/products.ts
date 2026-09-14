@@ -2,8 +2,8 @@
  * DEMO CATALOGUE.
  *
  * Device names, brands and origins are drawn from STEM MEDICA's own
- * public posts and are real. Everything else — summaries, specification values,
- * included services, availability and lead times — is LOREM IPSUM placeholder, so
+ * public posts and are real. Everything else (summaries, specification values,
+ * included services, availability and lead times) is LOREM IPSUM placeholder, so
  * nothing invented can be mistaken for a real specification or commitment.
  *
  * This shape is the data model: swap the array for a CMS or database read

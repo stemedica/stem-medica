@@ -1,6 +1,6 @@
 import { site } from "@/lib/site";
 
-/** Fixed on the thumb from the first scroll — the phone number is the funnel. */
+/** Fixed on the thumb from the first scroll: the phone number is the funnel. */
 export function ContactBar() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-2 gap-px bg-ink md:hidden">

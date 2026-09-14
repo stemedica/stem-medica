@@ -3,7 +3,7 @@ export const site = {
   legalName: "Stem Medica Import & Distribution",
   tagline: "Putting quality in the front line",
   description:
-    "Medical equipment for Ethiopian hospitals — supplied, installed and supported by biomedical engineers. Cardiac, imaging, critical care, neonatal and laboratory systems.",
+    "Medical equipment for Ethiopian hospitals: supplied, installed and supported by biomedical engineers. Cardiac, imaging, critical care, neonatal and laboratory systems.",
   city: "Addis Ababa, Ethiopia",
   phone: "0921 136 180",
   phoneIntl: "+251921136180",

@@ -64,7 +64,7 @@ export default function Home() {
           <div className="rise relative [animation-delay:120ms]">
             <div className="ticks relative border border-white/20 bg-navy-deep/60 p-1.5 shadow-deep backdrop-blur-sm">
               <ImagePlaceholder
-                label="Hero — installation or device photo"
+                label="Hero: installation or device photo"
                 ratio="4/3"
                 tone="dark"
                 className="border-0"

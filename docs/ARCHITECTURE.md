@@ -5,7 +5,7 @@ adding it later is additive rather than a rewrite.
 
 ---
 
-## 1. Telegram — enquiry routing
+## 1. Telegram, enquiry routing
 
 **The case for it:** the sales team already lives on Telegram, and the site's
 conversion today is a `tel:` link. A web form that emails `info@` will be checked
@@ -21,7 +21,7 @@ src/components/EnquiryForm.tsx       → product-scoped form, posts to the route
 
 A Server Action or route handler does one `fetch` to
 `https://api.telegram.org/bot<TOKEN>/sendMessage` with the enquiry formatted as a
-message into a group the sales team is in. That is the whole integration — no
+message into a group the sales team is in. That is the whole integration, no
 library, no webhook, no persistent connection, and it works on any host.
 
 ```
@@ -34,7 +34,7 @@ Notes:
   record. If the API call fails the lead must not vanish.
 - Rate-limit the route and add a honeypot field. A public endpoint that forwards
   to a staff chat is a spam target.
-- Use `parse_mode: "HTML"` and escape user input — a device name with `<` in it
+- Use `parse_mode: "HTML"` and escape user input, a device name with `<` in it
   will otherwise silently drop the message.
 
 **Deliberately not recommended for v1:** an inbound bot (customers chatting with a
@@ -51,24 +51,24 @@ Word.
 
 Three options, cheapest first:
 
-### Option A — HTML proforma + browser print *(recommended for v1)*
+### Option A, HTML proforma + browser print *(recommended for v1)*
 A `/proforma/[id]` route with a print stylesheet, opened and saved as PDF by the
 person issuing it. No dependency, no serverless binary, fully styled from the same
 tokens, and trivially editable. Covers the real need at close to zero cost.
 
-### Option B — `@react-pdf/renderer`
+### Option B, `@react-pdf/renderer`
 Server-side, real PDF bytes, ~1MB dependency. Worth it when proformas need to be
 emailed automatically or attached to a Telegram message without a human in the
-loop. Layout is a React-like DSL, not HTML/CSS — budget a day for the template.
+loop. Layout is a React-like DSL, not HTML/CSS, budget a day for the template.
 
-### Option C — headless Chromium (Puppeteer / Playwright)
+### Option C, headless Chromium (Puppeteer / Playwright)
 Pixel-identical to the HTML version. Heavy: needs a runtime that allows a Chromium
 binary, which rules out most edge deploys and inflates cold starts. Only if A and
 B both fail you.
 
 Whichever you pick, the parts that matter are not the renderer:
 
-- **Sequential proforma numbers** that survive a redeploy — a database counter, not
+- **Sequential proforma numbers** that survive a redeploy, a database counter, not
   a timestamp or a random ID. Finance will reconcile against these.
 - **TIN, VAT treatment and validity period** on the document. Get these from
   Geremew before designing the template; they're a legal requirement, not styling.
@@ -81,7 +81,7 @@ Whichever you pick, the parts that matter are not the renderer:
 
 ## 3. What this implies for storage
 
-Both features want a small database — enquiries, and the proforma counter plus
+Both features want a small database, enquiries, and the proforma counter plus
 issued documents. The MVP has none on purpose.
 
 When you need one, **Postgres** (Neon or Supabase) with Drizzle is the least
@@ -97,8 +97,8 @@ no component changes.
 1. **Real product list** into `products.ts`. Everything else is theatre until the
    catalogue is true.
 2. **Real installation photography** replacing the empty image slots.
-3. **Telegram enquiry route** — smallest piece with the largest commercial effect.
-4. **Amharic**, written by the team, via `next-intl` — the fonts and layout are
+3. **Telegram enquiry route**, smallest piece with the largest commercial effect.
+4. **Amharic**, written by the team, via `next-intl`, the fonts and layout are
    already wired.
 5. **Proforma, Option A.**
 6. Database, when 3 and 5 have proven they're used.

@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /* ------------------------------------------------------------------
-   STEM MEDICA design tokens — see docs/brand-direction.html
+   STEM MEDICA design tokens. See docs/brand-direction.html
    Colours are sampled from the logo. Replace with the values from the
    vector source when it arrives.
 ------------------------------------------------------------------ */
@@ -22,12 +22,12 @@
   --color-on-navy:  #E9EDF6;
 
 
-  /* tints — icon badges, panel grounds */
+  /* tints: icon badges, panel grounds */
   --color-navy-tint:    #E7EDF9;
   --color-navy-tint-2:  #D6E0F4;
   --color-scarlet-tint: #FDEBEA;
 
-  /* radius scale — spent by role, not stamped on everything */
+  /* radius scale: spent by role, not stamped on everything */
   --radius-xs: 6px;
   --radius-sm: 10px;
   --radius-md: 16px;
@@ -66,7 +66,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Archivo is variable on the width axis — this is the display voice. */
+/* Archivo is variable on the width axis: this is the display voice. */
 .wdth-xw { font-variation-settings: "wdth" 122; }
 .wdth-w  { font-variation-settings: "wdth" 112; }
 .wdth-n  { font-variation-settings: "wdth" 100; }
@@ -102,7 +102,7 @@ body {
 .prose-sm-ink :where(a) { color: var(--color-navy); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ------------------------------------------------------------------
-   Surfaces — industrial, not SaaS.
+   Surfaces: industrial, not SaaS.
    Geometry is near-square: the only curve on the page is the device art.
    Structure comes from rules and corner ticks, not shadow on everything.
 ------------------------------------------------------------------ */
@@ -131,7 +131,7 @@ body {
 }
 .plate-hover:hover { border-color: var(--color-navy); }
 
-/* Corner ticks — drafting marks, drawn only on two corners so it reads as a
+/* Corner ticks: drafting marks, drawn only on two corners so it reads as a
    registration mark rather than a decorative frame. */
 .ticks::before,
 .ticks::after {
@@ -154,13 +154,13 @@ body {
   line-height: 1;
 }
 
-/* Hairline rule carrying a mono label — the section header device. */
+/* Hairline rule carrying a mono label: the section header device. */
 .rule-head { border-top: 2px solid currentColor; }
 
 .lift { transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out); }
 .lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
 
-/* Ambient wave field drift — see WaveField.tsx. Holds still if reduced motion. */
+/* Ambient wave field drift. See WaveField.tsx. Holds still if reduced motion. */
 .wave-drift { transform: translateX(0); }
 @media (prefers-reduced-motion: no-preference) {
   .wave-drift { animation-name: wave-drift; animation-timing-function: linear; animation-iteration-count: infinite; }
