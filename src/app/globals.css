@@ -171,17 +171,4 @@ body {
 @media (prefers-reduced-motion: no-preference) {
   .rise { animation: rise .7s var(--ease-out) both; }
   @keyframes rise { from { opacity: .001; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-  .pulse-dot { animation: pulse-dot 2.4s ease-in-out infinite; }
-  @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
-  .sweep { animation: sweep 3.6s linear infinite; }
-  @keyframes sweep { from { stroke-dashoffset: 620; } to { stroke-dashoffset: 0; } }
-  /* A bright segment travelling along a path. pathLength="1" normalises the
-     dash maths so it works whatever the path's real length is. */
-  .trace-head {
-    stroke-dasharray: 0.12 0.88;
-    animation-name: trace-head;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-  }
-  @keyframes trace-head { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 }

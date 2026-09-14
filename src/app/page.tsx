@@ -3,9 +3,8 @@ import { ArrowRight, Phone } from "lucide-react";
 import { Section, SectionHead, Tag } from "@/components/Section";
 import { WaveField } from "@/components/WaveField";
 import { Button } from "@/components/Button";
-import { StatBand } from "@/components/StatBand";
 import { ProductCard } from "@/components/ProductCard";
-import { VitalsPanel } from "@/components/VitalsPanel";
+import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { products } from "@/content/products";
 import { getAllPosts, formatDate } from "@/lib/posts";
 import { site } from "@/lib/site";
@@ -62,13 +61,16 @@ export default function Home() {
             </div>
 
             <div className="rise [animation-delay:140ms]">
-              <VitalsPanel />
+              <div className="ticks relative border border-white/20 p-1.5">
+                <ImagePlaceholder
+                  label="Hero: installation or device photo"
+                  ratio="4/3"
+                  tone="dark"
+                  className="border-0"
+                />
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="relative mx-auto w-full max-w-6xl px-5 pb-10">
-          <StatBand />
         </div>
       </section>
 
