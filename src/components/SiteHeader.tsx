@@ -11,7 +11,7 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-navy-deep/95 text-on-navy backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-hair bg-white/95 text-ink backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
         <Link href="/" className="flex items-center" onClick={() => setOpen(false)}>
           {logo}
@@ -23,8 +23,8 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`label transition-colors hover:text-white ${
-                pathname.startsWith(item.href) ? "text-scarlet-lift" : "text-on-navy/70"
+              className={`label transition-colors hover:text-navy ${
+                pathname.startsWith(item.href) ? "text-scarlet" : "text-ink-soft"
               }`}
             >
               {item.label}
@@ -54,16 +54,16 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
       </div>
 
       {open ? (
-        <nav className="border-t border-on-navy/15 md:hidden">
+        <nav className="border-t border-hair md:hidden">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setOpen(false)}
-              className="label flex items-center justify-between border-b border-on-navy/10 px-5 py-4 text-on-navy/80"
+              className="label flex items-center justify-between border-b border-hair px-5 py-4 text-ink-soft"
             >
               {item.label}
-              <span aria-hidden="true" className="text-scarlet-lift">→</span>
+              <span aria-hidden="true" className="text-scarlet">→</span>
             </Link>
           ))}
         </nav>

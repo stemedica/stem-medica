@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable} ${ethiopic.variable}`}>
       <body className="antialiased">
-        <SiteHeader logo={<Logo height={34} onDark />} />
+        <SiteHeader logo={<Logo height={38} />} />
         <main>{children}</main>
         <SiteFooter />
         <ContactBar />
