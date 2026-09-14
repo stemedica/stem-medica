@@ -1,5 +1,9 @@
 # STEM MEDICA — website (MVP demo)
 
+**Live:** https://stem-medica.vercel.app · **Repo:** private, `natinael96/stem-medica`
+
+Pushes to `main` deploy to production automatically via the Vercel Git integration.
+
 Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
 
 Brand direction and rationale: **[docs/brand-direction.html](docs/brand-direction.html)** — open it in a browser.
