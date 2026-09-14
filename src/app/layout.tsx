@@ -1,10 +1,6 @@
 import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono, Noto_Sans_Ethiopic } from "next/font/google";
 import "./globals.css";
-import { SiteHeader } from "@/components/SiteHeader";
-import { Logo } from "@/components/Logo";
-import { SiteFooter } from "@/components/SiteFooter";
-import { ContactBar } from "@/components/ContactBar";
 import { site } from "@/lib/site";
 
 /* One variable family across the width axis does the work of a pairing. */
@@ -41,10 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable} ${ethiopic.variable}`}>
       <body className="antialiased">
-        <SiteHeader logo={<Logo height={38} />} />
-        <main>{children}</main>
-        <SiteFooter />
-        <ContactBar />
+        {children}
       </body>
     </html>
   );
