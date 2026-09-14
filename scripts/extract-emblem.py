@@ -1,6 +1,10 @@
 """
-Extract the circular emblem from public/stem-medica.jpg as a transparent,
-square PNG for use as the favicon.
+Derive clean PNG assets from the supplied logo, public/stem-medica.jpg.
+
+Outputs:
+  src/app/icon.png    emblem only, square, WHITE ground   (favicon)
+  public/emblem.png   emblem only, square, transparent    (spare)
+  public/logo.png     full lockup, tight crop, transparent (header/footer)
 
 The supplied logo is a tight lockup: the "M" of STEM overlaps the emblem's
 bounding box, so a rectangular crop cannot separate them. This labels connected
@@ -12,7 +16,9 @@ from collections import deque
 from PIL import Image
 
 SRC = "public/stem-medica.jpg"
-OUTS = [("src/app/icon.png", 180), ("public/emblem.png", 512)]
+EMBLEM_OUTS = [("src/app/icon.png", 180, "white"),
+               ("public/emblem.png", 512, None)]
+LOCKUP_OUT = ("public/logo.png", 3)   # 3x the source crop
 WHITE = 232          # background threshold
 MIN_AREA = 40        # ignore JPEG speckle
 PAD_RATIO = 0.08     # breathing room inside the square
@@ -54,29 +60,55 @@ def is_emblem(pts):
     cy = sum(p[1] for p in pts) / len(pts)
     return (cx / W) + (cy / H) > 1.02
 
-emblem = [p for c in comps if is_emblem(c) for p in c]
+def square_png(pts, size, ground):
+    """Mask `pts` onto a padded transparent (or white) square."""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    side = max(x1 - x0 + 1, y1 - y0 + 1)
+    pad = int(side * PAD_RATIO)
+    side += pad * 2
+    fill = (255, 255, 255, 255) if ground == "white" else (0, 0, 0, 0)
+    canvas = Image.new("RGBA", (side, side), fill)
+    cpx = canvas.load()
+    ox = (side - (x1 - x0 + 1)) // 2 - x0
+    oy = (side - (y1 - y0 + 1)) // 2 - y0
+    for x, y in pts:
+        r, g, b = px[x, y]
+        cpx[x + ox, y + oy] = (r, g, b, 255)
+    out = canvas.resize((size, size), Image.LANCZOS)
+    return out.convert("RGB") if ground == "white" else out
+
+
+def tight_png(pts, scale):
+    """Mask `pts` onto a transparent canvas cropped tight to the ink."""
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    pad = 2
+    w, h = x1 - x0 + 1 + pad * 2, y1 - y0 + 1 + pad * 2
+    canvas = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    cpx = canvas.load()
+    for x, y in pts:
+        r, g, b = px[x, y]
+        cpx[x - x0 + pad, y - y0 + pad] = (r, g, b, 255)
+    return canvas.resize((w * scale, h * scale), Image.LANCZOS)
+
+
+emblem_comps = [c for c in comps if is_emblem(c)]
+emblem = [p for c in emblem_comps for p in c]
 if not emblem:
     raise SystemExit("no emblem shapes found - check WHITE threshold")
+print(f"emblem shapes: {len(emblem_comps)} of {len(comps)}")
 
-xs = [p[0] for p in emblem]
-ys = [p[1] for p in emblem]
-x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
-print(f"emblem shapes: {sum(1 for c in comps if is_emblem(c))}  "
-      f"bbox x {x0}..{x1} y {y0}..{y1}")
+for out, size, ground in EMBLEM_OUTS:
+    square_png(emblem, size, ground).save(out)
+    print(f"wrote {out} ({size}x{size}, {ground or 'transparent'})")
 
-# --- build a transparent square --------------------------------------------
-mask = set(emblem)
-side = max(x1 - x0 + 1, y1 - y0 + 1)
-pad = int(side * PAD_RATIO)
-side += pad * 2
-canvas = Image.new("RGBA", (side, side), (0, 0, 0, 0))
-cpx = canvas.load()
-ox = (side - (x1 - x0 + 1)) // 2 - x0
-oy = (side - (y1 - y0 + 1)) // 2 - y0
-for x, y in mask:
-    r, g, b = px[x, y]
-    cpx[x + ox, y + oy] = (r, g, b, 255)
-
-for out, size in OUTS:
-    canvas.resize((size, size), Image.LANCZOS).save(out)
-    print(f"wrote {out} ({size}x{size})")
+# Full lockup: every component, so the wordmark comes along, tight-cropped and
+# transparent so it can sit on any light ground without a mounting plate.
+lockup = [p for c in comps for p in c]
+out, scale = LOCKUP_OUT
+img = tight_png(lockup, scale)
+img.save(out)
+print(f"wrote {out} ({img.width}x{img.height}, transparent)")

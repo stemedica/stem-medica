@@ -3,13 +3,12 @@ import path from "node:path";
 import Image from "next/image";
 
 /**
- * Uses the real logo from /public when present, and falls back to the drawn mark
- * otherwise so the header never renders a broken image.
+ * Renders the real logo from /public, falling back to the drawn mark if no
+ * artwork is present so the header never shows a broken image.
  *
- * The supplied file is a 200×200 JPEG on a white ground, so on the navy header
- * and footer it is mounted in a white plate rather than composited directly.
- * A transparent SVG or PNG would remove the need for that plate. See
- * docs/brand-direction.html §05.
+ * public/logo.png is a transparent, tight-cropped lockup generated from the
+ * supplied JPEG by scripts/extract-emblem.py, so it needs no mounting plate and
+ * sits on any light ground. The JPEG stays as the source for that script.
  */
 const CANDIDATES = [
   "logo.svg", "stem-medica.svg",
@@ -17,16 +16,29 @@ const CANDIDATES = [
   "logo.jpg", "stem-medica.jpg", "stem-medica.jpeg",
 ] as const;
 
-function findLogo(): { src: string; vector: boolean; opaque: boolean } | null {
+type Found = { src: string; w: number; h: number; vector: boolean };
+
+/** PNG intrinsic size lives in the IHDR chunk: width/height at bytes 16..24. */
+function pngSize(buf: Buffer): { w: number; h: number } | null {
+  if (buf.length < 24 || buf.toString("ascii", 12, 16) !== "IHDR") return null;
+  return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+}
+
+function findLogo(): Found | null {
   const dir = path.join(process.cwd(), "public");
   for (const file of CANDIDATES) {
-    if (fs.existsSync(path.join(dir, file))) {
-      return {
-        src: `/${file}`,
-        vector: file.endsWith(".svg"),
-        opaque: file.endsWith(".jpg") || file.endsWith(".jpeg"),
-      };
-    }
+    const full = path.join(dir, file);
+    if (!fs.existsSync(full)) continue;
+
+    const vector = file.endsWith(".svg");
+    const size = file.endsWith(".png") ? pngSize(fs.readFileSync(full)) : null;
+
+    return {
+      src: `/${file}`,
+      w: size?.w ?? 200,
+      h: size?.h ?? 200,
+      vector,
+    };
   }
   return null;
 }
@@ -53,7 +65,7 @@ export function Wordmark({ className = "" }: { className?: string }) {
 }
 
 export function Logo({
-  height = 40,
+  height = 38,
   onDark = false,
   className = "",
 }: {
@@ -76,20 +88,24 @@ export function Logo({
     <Image
       src={logo.src}
       alt="STEM MEDICA"
-      width={height * 2}
-      height={height * 2}
+      width={logo.w}
+      height={logo.h}
       priority
       unoptimized={logo.vector}
-      className="w-auto object-contain"
+      className="w-auto"
       style={{ height }}
     />
   );
 
-  // An opaque file on a dark ground gets a white plate so the JPEG's own
-  // background reads as a deliberate badge rather than a rectangle artefact.
-  if (onDark && logo.opaque) {
+  // The artwork's own "STEM" is navy ink, so on a dark ground it needs a light
+  // plate whether or not the file has an alpha channel. Transparency still helps:
+  // the plate now hugs the ink instead of framing a JPEG rectangle.
+  if (onDark) {
     return (
-      <span className={`inline-flex items-center bg-white px-2 py-1.5 ${className}`} style={{ borderRadius: 2 }}>
+      <span
+        className={`inline-flex items-center bg-white px-2 py-1.5 ${className}`}
+        style={{ borderRadius: 2 }}
+      >
         {img}
       </span>
     );
