@@ -1,0 +1,48 @@
+import Link from "next/link";
+import { Logo } from "./Logo";
+import { nav, site } from "@/lib/site";
+
+export function SiteFooter() {
+  return (
+    <footer className="bg-navy-deep pb-24 text-on-navy md:pb-0">
+      <div className="mx-auto max-w-6xl px-5 py-12">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <Logo height={44} onDark />
+            <p className="mt-4 max-w-[34ch] text-sm leading-relaxed text-on-navy/70">
+              {site.description}
+            </p>
+          </div>
+
+          <div>
+            <div className="label text-on-navy/50">Company</div>
+            <ul className="mt-3 space-y-2">
+              {nav.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="text-sm text-on-navy/80 hover:text-white">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <div className="label text-on-navy/50">Contact</div>
+            <ul className="mt-3 space-y-2 font-mono text-sm text-on-navy/80">
+              <li><a href={`tel:${site.phoneIntl}`} className="hover:text-white">{site.phone}</a></li>
+              <li><a href={`mailto:${site.email}`} className="hover:text-white">{site.email}</a></li>
+              <li><a href={site.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>
+              <li className="text-on-navy/60">{site.city}</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="label mt-12 flex flex-wrap justify-between gap-3 border-t border-on-navy/20 pt-5 text-on-navy/45">
+          <span>© {new Date().getFullYear()} {site.legalName}</span>
+          <span>Demo build · MVP</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
