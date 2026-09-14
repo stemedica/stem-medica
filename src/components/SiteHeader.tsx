@@ -19,7 +19,7 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
         </Link>
 
         <nav className="hidden items-center gap-7 md:flex">
-          {nav.map((item) => (
+          {nav.filter((i) => !("cta" in i)).map((item) => (
             <Link
               key={item.href}
               href={item.href}
@@ -32,10 +32,16 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
           ))}
           <a
             href={`tel:${site.phoneIntl}`}
-            className="label rounded-[2px] bg-scarlet px-4 py-2.5 font-semibold text-white transition-colors hover:bg-vital"
+            className="label font-semibold text-ink transition-colors hover:text-navy"
           >
             {site.phone}
           </a>
+          <Link
+            href="/quote"
+            className="label rounded-[2px] bg-scarlet px-4 py-2.5 font-semibold text-white transition-colors hover:bg-vital"
+          >
+            Request a quote
+          </Link>
         </nav>
 
         <button

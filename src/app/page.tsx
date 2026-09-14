@@ -5,7 +5,7 @@ import { WaveField } from "@/components/WaveField";
 import { Button } from "@/components/Button";
 import { StatBand } from "@/components/StatBand";
 import { ProductCard } from "@/components/ProductCard";
-import { ImagePlaceholder } from "@/components/ImagePlaceholder";
+import { VitalsPanel } from "@/components/VitalsPanel";
 import { products } from "@/content/products";
 import { getAllPosts, formatDate } from "@/lib/posts";
 import { site } from "@/lib/site";
@@ -24,69 +24,50 @@ export default function Home() {
 
   return (
     <>
-      {/* ---------------- Hero ---------------- */}
-      <section className="relative overflow-hidden bg-navy-deep text-on-navy">
+      {/* ---------------- Hero ----------------
+          Height is min-height with a cap, never 100vh: a hard viewport height
+          strands the fold on short laptop screens and hides the scroll cue.
+          88svh leaves a sliver of the next section showing. */}
+      <section className="relative flex min-h-[min(88svh,780px)] flex-col overflow-hidden bg-navy-deep text-on-navy">
         <WaveField />
         <div
           className="pointer-events-none absolute inset-0"
-          style={{ background: "linear-gradient(168deg, rgba(46,91,184,.28) 0%, transparent 48%, rgba(11,20,42,.6) 100%)" }}
+          style={{ background: "linear-gradient(168deg, rgba(46,91,184,.3) 0%, transparent 46%, rgba(11,20,42,.66) 100%)" }}
         />
 
-        <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-16 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:pb-20 lg:pt-16">
-          <div className="rise">
-            <Tag index="ET" tone="dark">Addis Ababa · Nationwide</Tag>
+        <div className="relative mx-auto flex w-full max-w-6xl flex-1 items-center px-5 py-14 lg:py-16">
+          <div className="grid w-full items-center gap-12 lg:grid-cols-[1fr_1fr] lg:gap-16">
+            <div className="rise">
+              <Tag index="ET" tone="dark">Addis Ababa</Tag>
 
-            <h1 className="font-display wdth-w mt-7 text-[2.75rem] font-bold uppercase leading-[0.92] tracking-[-0.04em] text-balance sm:text-6xl lg:text-[4.5rem]">
-              Equipment for the<br />
-              <span className="text-scarlet-lift">front line</span>
-            </h1>
+              <h1 className="font-display wdth-w mt-8 text-[3rem] font-bold uppercase leading-[0.9] tracking-[-0.04em] text-balance sm:text-[4.25rem] lg:text-[5rem]">
+                Equipment<br />for the<br />
+                <span className="text-scarlet-lift">front line</span>
+              </h1>
 
-            {/* Scarlet rule instead of a gradient flourish. */}
-            <div className="mt-7 h-0.5 w-20 bg-scarlet" />
+              <div className="mt-8 h-0.5 w-20 bg-scarlet" />
 
-            <p className="mt-7 max-w-[50ch] text-lg leading-relaxed text-on-navy/70">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad
-              minim veniam.
-            </p>
+              <p className="mt-8 max-w-[34ch] text-lg leading-relaxed text-on-navy/70">
+                Supplied, installed and supported across Ethiopia.
+              </p>
 
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Button href="/products">
-                Browse equipment <ArrowRight size={15} aria-hidden="true" />
-              </Button>
-              <Button href={`tel:${site.phoneIntl}`} variant="onDark">
-                <Phone size={14} aria-hidden="true" /> {site.phone}
-              </Button>
-            </div>
-          </div>
-
-          {/* Hero panel: the device itself, framed like a rack-mounted unit. */}
-          <div className="rise relative [animation-delay:120ms]">
-            <div className="ticks relative border border-white/20 bg-navy-deep/60 p-1.5 shadow-deep backdrop-blur-sm">
-              <ImagePlaceholder
-                label="Hero: installation or device photo"
-                ratio="4/3"
-                tone="dark"
-                className="border-0"
-              />
+              <div className="mt-9 flex flex-wrap gap-3">
+                <Button href="/quote">
+                  Request a quote <ArrowRight size={15} aria-hidden="true" />
+                </Button>
+                <Button href="/products" variant="onDark">
+                  Browse equipment
+                </Button>
+              </div>
             </div>
 
-            <div className="mt-px grid grid-cols-3 border border-t-0 border-white/20 font-mono text-[10.5px] uppercase tracking-[.16em]">
-              {[
-                ["Unit", "Lorem"],
-                ["Dept", "ICU"],
-                ["Status", "Lorem"],
-              ].map(([k, v], i) => (
-                <div key={k} className={`px-3 py-2.5 ${i > 0 ? "border-l border-white/20" : ""}`}>
-                  <div className="text-on-navy/40">{k}</div>
-                  <div className="mt-1 text-on-navy/90">{v}</div>
-                </div>
-              ))}
+            <div className="rise [animation-delay:140ms]">
+              <VitalsPanel />
             </div>
           </div>
         </div>
 
-        <div className="relative mx-auto max-w-6xl px-5 pb-16">
+        <div className="relative mx-auto w-full max-w-6xl px-5 pb-10">
           <StatBand />
         </div>
       </section>

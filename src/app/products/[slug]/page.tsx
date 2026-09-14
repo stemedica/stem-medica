@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ArrowLeft, Phone, Mail } from "lucide-react";
+import { ArrowLeft, Phone } from "lucide-react";
 import { EcgRule, SectionHead } from "@/components/Section";
 import { WaveField } from "@/components/WaveField";
 import { Button } from "@/components/Button";
@@ -127,15 +127,11 @@ export default async function ProductPage({
                 eiusmod tempor incididunt ut labore.
               </p>
               <div className="mt-6 flex flex-col gap-2.5">
-                <Button href={`tel:${site.phoneIntl}`} className="w-full">
-                  <Phone size={14} aria-hidden="true" /> Call {site.phone}
+                <Button href={`/quote?item=${encodeURIComponent(product.name)}`} className="w-full">
+                  Request a quote
                 </Button>
-                <Button
-                  href={`mailto:${site.email}?subject=${encodeURIComponent(`Enquiry: ${product.name}`)}`}
-                  variant="outline"
-                  className="w-full"
-                >
-                  <Mail size={14} aria-hidden="true" /> Email enquiry
+                <Button href={`tel:${site.phoneIntl}`} variant="outline" className="w-full">
+                  <Phone size={14} aria-hidden="true" /> Call {site.phone}
                 </Button>
               </div>
             </div>

@@ -19,4 +19,5 @@ export const nav = [
   { href: "/blog", label: "Insights" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
+  { href: "/quote", label: "Request a quote", cta: true },
 ] as const;
