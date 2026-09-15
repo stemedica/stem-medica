@@ -160,6 +160,51 @@ body {
 .lift { transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out); }
 .lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
 
+/* ------------------------------------------------------------------
+   v2 surfaces (Micro Space reference)
+   Soft and photo-led. Kept alongside the v1 industrial vocabulary above so
+   both homepage variants can be compared without one restyling the other.
+------------------------------------------------------------------ */
+.v2-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: 999px; padding: 9px 17px;
+  font-size: 13px; line-height: 1; backdrop-filter: blur(10px);
+}
+.v2-pill-glass { background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.3); }
+.v2-pill-tint  { background: var(--color-navy-tint); color: var(--color-navy); }
+
+.v2-frame { position: relative; overflow: hidden; border-radius: 36px; background: var(--color-paper-2); }
+
+/* Legibility scrim for type set over a photograph. */
+.v2-scrim::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to top,
+    rgba(8,16,32,.9) 0%, rgba(8,16,32,.5) 36%, rgba(8,16,32,.1) 68%, transparent 100%);
+}
+
+.v2-card {
+  background: #fff; border-radius: 22px; border: 1px solid var(--color-hair);
+  transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out);
+}
+.v2-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+.v2-btn {
+  display: inline-flex; align-items: center; gap: 12px; border-radius: 999px;
+  font-size: 15px; font-weight: 500; line-height: 1;
+  transition: background-color .3s var(--ease-out), border-color .3s var(--ease-out), color .3s var(--ease-out);
+}
+.v2-btn-badge { padding: 8px 8px 8px 24px; }
+.v2-btn-plain { padding: 15px 26px; }
+.v2-btn-solid { background: var(--color-scarlet); color: #fff; }
+.v2-btn-solid:hover { background: var(--color-vital); }
+.v2-btn-glass { border: 1px solid rgba(255,255,255,.32); background: rgba(255,255,255,.1); color: #fff; backdrop-filter: blur(10px); }
+.v2-btn-glass:hover { background: rgba(255,255,255,.2); }
+.v2-btn-outline { border: 1px solid var(--color-hair); background: #fff; color: var(--color-ink); }
+.v2-btn-outline:hover { border-color: var(--color-navy); color: var(--color-navy); }
+
+/* Inert: these variants are for comparison, so nothing navigates. */
+.demo-inert { cursor: default; }
+
 /* Ambient wave field drift. See WaveField.tsx. Holds still if reduced motion. */
 .wave-drift { transform: translateX(0); }
 @media (prefers-reduced-motion: no-preference) {

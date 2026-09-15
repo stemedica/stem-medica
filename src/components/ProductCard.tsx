@@ -7,12 +7,20 @@ import { ImagePlaceholder } from "./ImagePlaceholder";
  * Catalogue entry styled as an equipment nameplate: squared, hairline-bordered,
  * with the index stamped in the corner and the data row set in mono.
  */
-export function ProductCard({ product, index }: { product: Product; index: number }) {
-  return (
-    <Link
-      href={`/products/${product.slug}`}
-      className="plate plate-hover lift group flex flex-col overflow-hidden"
-    >
+export function ProductCard({
+  product,
+  index,
+  demo = false,
+}: {
+  product: Product;
+  index: number;
+  /** Render inert for the /v1 and /v2 design comparisons. */
+  demo?: boolean;
+}) {
+  const cls = "plate plate-hover lift group flex flex-col overflow-hidden";
+
+  const body = (
+    <>
       <div className="relative border-b border-hair">
         <ImagePlaceholder label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
         <span className="stamp absolute bottom-2 right-3 text-3xl text-navy/10">
@@ -48,6 +56,14 @@ export function ProductCard({ product, index }: { product: Product; index: numbe
           />
         </span>
       </div>
+    </>
+  );
+
+  return demo ? (
+    <div className={`${cls} demo-inert`}>{body}</div>
+  ) : (
+    <Link href={`/products/${product.slug}`} className={cls}>
+      {body}
     </Link>
   );
 }
