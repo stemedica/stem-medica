@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { V2Button, V2Pill, V2Photo, V2Head } from "./_components/V2";
 import { products } from "@/content/products";
+import { categories, categoryOf } from "@/content/categories";
+import { updates, statusTone } from "@/content/updates";
 import { getAllPosts, formatDate } from "@/lib/posts";
 import { site } from "@/lib/site";
 
@@ -71,6 +73,36 @@ export default function V2() {
         </div>
       </section>
 
+
+      {/* Categories: "Product list down with category" */}
+      <section className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
+        <V2Head
+          eyebrow="Browse by category"
+          title="Six areas we equip"
+          lede="Buyers have a gap in a department, not a brand in mind."
+        />
+        <div className="mt-9 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.map((c) => {
+            const n = products.filter((p) => categoryOf[p.slug] === c.slug).length;
+            return (
+              <article key={c.slug} className="v2-card demo-inert overflow-hidden">
+                <V2Photo label={`${c.short}: category image`} rounded={false}
+                         className="aspect-[16/9] w-full border-0" />
+                <div className="p-5">
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-display wdth-n text-[16.5px] font-semibold">{c.name}</h3>
+                    <span className="label shrink-0 text-steel tabular-nums">
+                      {String(n).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink-soft">{c.blurb}</p>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
       {/* Catalogue: image-led cards */}
       <section className="bg-navy-tint/35">
         <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
@@ -100,6 +132,38 @@ export default function V2() {
           </div>
           <div className="mt-8">
             <V2Button variant="outline">All {products.length} systems</V2Button>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Arrivals and incoming: "Update on what's to come, new order" */}
+      <section className="bg-navy-deep">
+        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
+          <V2Head
+            tone="dark"
+            eyebrow="What's coming"
+            title="New arrivals and incoming orders"
+            lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
+          />
+          <ul className="mt-9 divide-y divide-white/10 border-y border-white/10">
+            {updates.map((u) => (
+              <li key={u.id} className="flex flex-wrap items-center gap-x-5 gap-y-2 py-4">
+                <span className={`v2-pill shrink-0 text-[11px] ${statusTone[u.status]}`}>
+                  {u.status}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display wdth-n text-[16px] font-semibold text-white">
+                    {u.title}
+                  </h3>
+                  <p className="mt-1 text-[14px] leading-relaxed text-white/55">{u.note}</p>
+                </div>
+                <span className="label shrink-0 text-white/40 tabular-nums">{u.eta}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-8">
+            <V2Button variant="glass">See all updates</V2Button>
           </div>
         </div>
       </section>
