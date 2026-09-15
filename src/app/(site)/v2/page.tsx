@@ -27,9 +27,11 @@ export default function V2() {
       <section className="px-3 pt-3 sm:px-5 sm:pt-5">
         <div className="v2-frame v2-scrim relative isolate">
           <V2Photo
-            label="Hero: installation photograph, full bleed"
+            kind="video"
+            label="Hero: background video, full bleed"
             rounded={false}
-            className="absolute inset-0 h-full w-full border-0"
+            fill
+            className="border-0"
           />
 
           <div className="absolute left-5 top-5 z-10 sm:left-8 sm:top-8">
@@ -52,18 +54,18 @@ export default function V2() {
       </section>
 
       {/* Why */}
-      <section className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
+      <section className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
         <V2Head
           eyebrow="Why hospitals stay with us"
           title="The equipment is the easy part"
           lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         />
-        <div className="mt-14 grid gap-5 sm:grid-cols-2">
+        <div className="mt-9 grid gap-3.5 sm:grid-cols-2">
           {promises.map((p, i) => (
-            <div key={p.title} className="v2-card p-7 sm:p-8">
+            <div key={p.title} className="v2-card p-5 sm:p-6">
               <span className="label font-medium text-scarlet">{String(i + 1).padStart(2, "0")}</span>
-              <h3 className="font-display wdth-n mt-5 text-xl font-semibold leading-snug">{p.title}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{p.body}</p>
+              <h3 className="font-display wdth-n mt-3 text-[17px] font-semibold leading-snug">{p.title}</h3>
+              <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">{p.body}</p>
             </div>
           ))}
         </div>
@@ -71,24 +73,24 @@ export default function V2() {
 
       {/* Catalogue: image-led cards */}
       <section className="bg-navy-tint/35">
-        <div className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
+        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
           <V2Head
             eyebrow="Catalogue"
             title="In stock and on order"
             lede="Device names and brands are real. Specifications and lead times are placeholder until the product list arrives."
           />
-          <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-9 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
             {featured.map((p) => (
               <article key={p.slug} className="v2-card demo-inert overflow-hidden">
-                <V2Photo label={`${p.name}: product photo`} rounded={false} className="aspect-[4/3] w-full border-0" />
-                <div className="p-6">
-                  <h3 className="font-display wdth-n text-lg font-semibold leading-snug text-balance">
+                <V2Photo label={`${p.name}: product photo`} rounded={false} className="aspect-[16/10] w-full border-0" />
+                <div className="p-5">
+                  <h3 className="font-display wdth-n text-[16.5px] font-semibold leading-snug text-balance">
                     {p.name}
                   </h3>
-                  <p className="mt-2.5 line-clamp-2 text-sm leading-relaxed text-ink-soft">{p.summary}</p>
-                  <div className="mt-5 flex items-center justify-between">
+                  <p className="mt-2 line-clamp-2 text-[14px] leading-relaxed text-ink-soft">{p.summary}</p>
+                  <div className="mt-4 flex items-center justify-between">
                     <span className="font-mono text-[11px] text-steel">{p.brand}</span>
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-navy-tint text-navy">
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy-tint text-navy">
                       <ArrowRight size={15} aria-hidden="true" />
                     </span>
                   </div>
@@ -96,23 +98,23 @@ export default function V2() {
               </article>
             ))}
           </div>
-          <div className="mt-12">
+          <div className="mt-8">
             <V2Button variant="outline">All {products.length} systems</V2Button>
           </div>
         </div>
       </section>
 
       {/* Split: photo beside copy */}
-      <section className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <V2Photo label="Team or installation photograph" className="aspect-[4/5] w-full" />
+      <section className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
+        <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
+          <V2Photo label="Team or installation photograph" className="aspect-[3/2] w-full" />
           <div>
             <V2Head
               eyebrow="About"
               title="Founded by an engineer, not a trader"
               lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation."
             />
-            <div className="mt-9">
+            <div className="mt-7">
               <V2Button badge>Read our story</V2Button>
             </div>
           </div>
@@ -120,24 +122,24 @@ export default function V2() {
       </section>
 
       {/* Insights */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 lg:pb-28">
+      <section className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
         <V2Head
           eyebrow="Insights"
           title="Notes from the field"
           lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
         />
-        <div className="mt-14 grid gap-5 lg:grid-cols-3">
+        <div className="mt-9 grid gap-3.5 lg:grid-cols-3">
           {posts.map((post) => (
-            <article key={post.slug} className="v2-card demo-inert flex flex-col p-7">
+            <article key={post.slug} className="v2-card demo-inert flex flex-col p-5">
               <div className="flex items-center justify-between gap-3">
                 <V2Pill tone="tint">{post.kind}</V2Pill>
                 <span className="label text-steel tabular-nums">{formatDate(post.date)}</span>
               </div>
-              <h3 className="font-display wdth-n mt-6 text-xl font-semibold leading-snug text-balance">
+              <h3 className="font-display wdth-n mt-4 text-[17px] font-semibold leading-snug text-balance">
                 {post.title}
               </h3>
-              <p className="mt-3 flex-1 text-[15px] leading-relaxed text-ink-soft">{post.excerpt}</p>
-              <span className="mt-7 inline-flex items-center gap-2 text-[15px] font-medium text-navy">
+              <p className="mt-2 flex-1 text-[14.5px] leading-relaxed text-ink-soft">{post.excerpt}</p>
+              <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-medium text-navy">
                 Read <ArrowRight size={15} aria-hidden="true" />
               </span>
             </article>
@@ -147,7 +149,7 @@ export default function V2() {
 
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">
-        <div className="v2-frame relative isolate bg-navy-deep px-6 py-24 text-center sm:px-10 sm:py-28">
+        <div className="v2-frame relative isolate bg-navy-deep px-6 py-16 text-center sm:px-10 sm:py-20">
           <V2Head
             align="center"
             tone="dark"
@@ -155,7 +157,7 @@ export default function V2() {
             title="Tell us what your facility needs"
             lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore."
           />
-          <div className="mt-11 flex flex-wrap justify-center gap-3">
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
             <V2Button badge>Request a quote</V2Button>
             <V2Button variant="glass">{site.phone}</V2Button>
           </div>

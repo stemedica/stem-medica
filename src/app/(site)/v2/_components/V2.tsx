@@ -1,4 +1,4 @@
-import { ArrowUpRight, ImageIcon } from "lucide-react";
+import { ArrowUpRight, ImageIcon, Play } from "lucide-react";
 import type { ReactNode } from "react";
 
 /* Components scoped to the v2 comparison so restyling here cannot affect v1. */
@@ -43,21 +43,33 @@ export function V2Pill({
   return <span className={`v2-pill v2-pill-${tone}`}>{children}</span>;
 }
 
-/** Photo slot. The whole layout hangs off imagery, so this is deliberately plain. */
+/**
+ * Media slot. The whole layout hangs off imagery, so this is deliberately plain.
+ * `kind="video"` marks the slots that will carry footage rather than a still.
+ */
 export function V2Photo({
   label,
   className = "",
   rounded = true,
+  kind = "photo",
+  fill = false,
 }: {
   label: string;
   className?: string;
   rounded?: boolean;
+  kind?: "photo" | "video";
+  /** Stretch to the positioned parent instead of sitting in flow.
+   *  An explicit prop because passing "absolute" via className loses to the
+   *  base "relative": Tailwind emits .relative after .absolute, so class order
+   *  in the attribute does not decide the winner. */
+  fill?: boolean;
 }) {
+  const isVideo = kind === "video";
   return (
     <div
       role="img"
       aria-label={`Placeholder: ${label}`}
-      className={`relative flex items-center justify-center overflow-hidden border border-dashed border-white/25 bg-navy-deep ${
+      className={`${fill ? "absolute inset-0 items-start pt-[26%]" : "relative items-center"} flex justify-center overflow-hidden border border-dashed border-white/25 bg-navy-deep ${
         rounded ? "rounded-[36px]" : ""
       } ${className}`}
     >
@@ -66,11 +78,22 @@ export function V2Photo({
         <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
         <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
       </svg>
-      <div className="relative flex flex-col items-center gap-2.5 px-6 text-center">
-        <ImageIcon size={24} className="text-white/35" aria-hidden="true" />
+      <div className="relative flex flex-col items-center gap-3 px-6 text-center">
+        {isVideo ? (
+          <span className="flex h-16 w-16 items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm">
+            <Play size={22} className="ml-0.5 fill-white/70 text-white/70" aria-hidden="true" />
+          </span>
+        ) : (
+          <ImageIcon size={24} className="text-white/35" aria-hidden="true" />
+        )}
         <span className="font-mono text-[10px] uppercase leading-relaxed tracking-[.16em] text-white/45">
           {label}
         </span>
+        {isVideo ? (
+          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-white/30">
+            Video · autoplay, muted, looping
+          </span>
+        ) : null}
       </div>
     </div>
   );
@@ -96,7 +119,7 @@ export function V2Head({
         <span className={`label font-medium ${dark ? "text-white/55" : "text-steel"}`}>{eyebrow}</span>
       ) : null}
       <h2
-        className={`font-display wdth-n mt-4 text-[2.1rem] font-semibold leading-[1.06] tracking-[-0.025em] text-balance sm:text-[2.9rem] ${
+        className={`font-display wdth-n mt-3 text-[1.8rem] font-semibold leading-[1.1] tracking-[-0.022em] text-balance sm:text-[2.3rem] ${
           dark ? "text-white" : "text-ink"
         }`}
       >
@@ -104,7 +127,7 @@ export function V2Head({
       </h2>
       {lede ? (
         <p
-          className={`mt-5 text-[17px] leading-relaxed ${align === "center" ? "" : "max-w-[56ch]"} ${
+          className={`mt-3.5 text-[16px] leading-relaxed ${align === "center" ? "" : "max-w-[56ch]"} ${
             dark ? "text-white/65" : "text-ink-soft"
           }`}
         >
