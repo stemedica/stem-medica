@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 import { V2Button, V2Pill, V2Photo, V2Head } from "./_components/V2";
 import { products } from "@/content/products";
 import { categories, categoryOf } from "@/content/categories";
-import { updates, statusTone } from "@/content/updates";
 import { getAllPosts, formatDate } from "@/lib/posts";
 import { site } from "@/lib/site";
 
@@ -136,37 +135,6 @@ export default function V2() {
         </div>
       </section>
 
-
-      {/* Arrivals and incoming: "Update on what's to come, new order" */}
-      <section className="bg-navy-deep">
-        <div className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
-          <V2Head
-            tone="dark"
-            eyebrow="What's coming"
-            title="New arrivals and incoming orders"
-            lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt."
-          />
-          <ul className="mt-9 divide-y divide-white/10 border-y border-white/10">
-            {updates.map((u) => (
-              <li key={u.id} className="flex flex-wrap items-center gap-x-5 gap-y-2 py-4">
-                <span className={`v2-pill shrink-0 text-[11px] ${statusTone[u.status]}`}>
-                  {u.status}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-display wdth-n text-[16px] font-semibold text-white">
-                    {u.title}
-                  </h3>
-                  <p className="mt-1 text-[14px] leading-relaxed text-white/55">{u.note}</p>
-                </div>
-                <span className="label shrink-0 text-white/40 tabular-nums">{u.eta}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-8">
-            <V2Button variant="glass">See all updates</V2Button>
-          </div>
-        </div>
-      </section>
 
       {/* Split: photo beside copy */}
       <section className="mx-auto max-w-6xl px-5 py-14 lg:py-20">
