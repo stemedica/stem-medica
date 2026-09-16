@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Archivo, IBM_Plex_Mono, Noto_Sans_Ethiopic } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
+import { HistoryNavigationGuard } from "@/components/HistoryNavigationGuard";
 
 /* One variable family across the width axis does the work of a pairing. */
 const archivo = Archivo({
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${archivo.variable} ${plexMono.variable} ${ethiopic.variable}`}>
       <body className="antialiased">
+        <HistoryNavigationGuard />
         {children}
       </body>
     </html>

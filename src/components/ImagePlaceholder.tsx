@@ -8,16 +8,22 @@ import { ImageIcon } from "lucide-react";
  * shot list for STEM MEDICA. Replace with <Image> as the real photography lands.
  */
 export function ImagePlaceholder({
+  src,
   label,
   ratio = "16/10",
   tone = "light",
   className = "",
 }: {
+  src?: string;
   label: string;
   ratio?: string;
   tone?: "light" | "dark";
   className?: string;
 }) {
+  if (src) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={src} alt={label} loading="lazy" className={`w-full object-contain ${className}`} style={{ aspectRatio: ratio }} />;
+  }
   const dark = tone === "dark";
   const c = dark
     ? { edge: "border-white/25", fill: "bg-white/[.04]", cross: "text-white/12", icon: "text-white/40", text: "text-white/55", sub: "text-white/30" }

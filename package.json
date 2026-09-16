@@ -3,28 +3,54 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "tsx scripts/dev-neon.ts",
+    "dev:local": "next dev --hostname 127.0.0.1",
+    "local:setup": "tsx scripts/local-setup.ts",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:e2e:local": "tsx scripts/test-e2e-local.ts",
+    "auth:generate": "drizzle-kit generate",
+    "auth:migrate": "tsx scripts/auth-migrate.ts",
+    "content:migrate": "tsx scripts/content-migrate.ts",
+    "content:import-test": "tsx scripts/import-test-content.ts",
+    "auth:create-admin": "tsx scripts/auth-create-admin.ts"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.7.5",
+    "@vercel/blob": "^2.8.0",
+    "@vercel/functions": "^3.9.8",
+    "better-auth": "^1.7.5",
+    "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.46.0",
     "marked": "^18.0.13",
     "next": "16.3.5",
+    "pg": "^8.23.0",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-qr-code": "^2.2.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "tailwindcss": "^4",
+    "tsx": "^4.23.13",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": { "esbuild": "^0.25.0" }
   },
   "description": "STEM MEDICA — medical equipment distribution, Ethiopia. MVP demo."
 }

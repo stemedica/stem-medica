@@ -4,7 +4,7 @@ import { nav, site } from "@/lib/site";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-navy-deep pb-24 text-on-navy md:pb-0">
+    <footer className="bg-navy-deep pb-[calc(6rem+env(safe-area-inset-bottom))] text-on-navy lg:pb-0">
       <div className="mx-auto max-w-6xl px-5 py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           <div>
@@ -40,7 +40,6 @@ export function SiteFooter() {
 
         <div className="label mt-12 flex flex-wrap justify-between gap-3 border-t border-on-navy/20 pt-5 text-on-navy/45">
           <span>© {new Date().getFullYear()} {site.legalName}</span>
-          <span>Demo build · MVP</span>
         </div>
       </div>
     </footer>

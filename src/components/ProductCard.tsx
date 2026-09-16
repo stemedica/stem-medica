@@ -1,54 +1,45 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import type { Product } from "@/content/products";
+import type { CmsProduct } from "@/lib/cms-schema";
 import { ImagePlaceholder } from "./ImagePlaceholder";
 
 /**
  * Catalogue entry styled as an equipment nameplate: squared, hairline-bordered,
  * with the index stamped in the corner and the data row set in mono.
  */
-export function ProductCard({
-  product,
-  index,
-  demo = false,
-}: {
-  product: Product;
-  index: number;
-  /** Render inert for the /v1 and /v2 design comparisons. */
-  demo?: boolean;
-}) {
-  const cls = "plate plate-hover lift group flex flex-col overflow-hidden";
+export function ProductCard({ product, index }: { product: CmsProduct; index: number }) {
+  const cls = "group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy/50";
 
   const body = (
     <>
-      <div className="relative border-b border-hair">
-        <ImagePlaceholder label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
+      {product.image ? <div className="relative border-b border-hair">
+        <ImagePlaceholder src={product.image} label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
         <span className="stamp absolute bottom-2 right-3 text-3xl text-navy/10">
           {String(index + 1).padStart(2, "0")}
         </span>
-      </div>
+      </div> : null}
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-display wdth-n text-[17px] font-semibold leading-snug text-balance transition-colors group-hover:text-navy">
           {product.name}
         </h3>
-        <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-soft">
+        {product.summary ? <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-soft">
           {product.summary}
-        </p>
+        </p> : null}
 
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-hair pt-3.5 font-mono text-[11px]">
           <div>
             <dt className="text-steel">Brand</dt>
-            <dd className="mt-0.5 truncate text-ink">{product.brand}</dd>
+            <dd className="mt-0.5 break-words text-ink">{product.brand}</dd>
           </div>
-          <div>
+          {product.origin ? <div>
             <dt className="text-steel">Origin</dt>
-            <dd className="mt-0.5 truncate text-ink">{product.origin}</dd>
-          </div>
+            <dd className="mt-0.5 break-words text-ink">{product.origin}</dd>
+          </div> : null}
         </dl>
 
         <span className="label mt-4 inline-flex items-center gap-2 font-semibold text-navy">
-          Specification
+          View equipment
           <ArrowRight
             size={13}
             aria-hidden="true"
@@ -59,10 +50,8 @@ export function ProductCard({
     </>
   );
 
-  return demo ? (
-    <div className={`${cls} demo-inert`}>{body}</div>
-  ) : (
-    <Link href={`/products/${product.slug}`} className={cls}>
+  return (
+    <Link prefetch={false} href={`/products/${product.slug}`} className={cls}>
       {body}
     </Link>
   );

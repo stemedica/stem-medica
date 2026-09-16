@@ -2,28 +2,29 @@ import type { Metadata } from "next";
 import { Phone, MessageCircle, Mail, Link2 } from "lucide-react";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contact",
   description: `Call ${site.phone} or email ${site.email}. STEM MEDICA, Addis Ababa.`,
 };
 
-/** Channels and values are real. Notes are LOREM placeholder. */
 const channels = [
-  { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Lorem ipsum dolor sit amet." },
-  { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Consectetur adipiscing elit." },
-  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Sed do eiusmod tempor incididunt." },
-  { icon: Link2, label: "LinkedIn", value: "/company/stem-medica", href: site.linkedin, note: "Ut labore et dolore magna." },
+  { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment or support." },
+  { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send your equipment requirements in a message." },
+  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Share specifications, quantities and procurement documents." },
+  { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page. Opens in a new tab." },
 ];
 
 export default function ContactPage() {
   return (
     <Section
+      headingLevel="h1"
       index="01"
       label="Contact"
       meta={site.city}
-      title="Call us, it's faster than a form"
-      lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      title="How can we help?"
+      lede="Contact our Addis Ababa team for equipment enquiries, quotations and support. Choose the channel that works best for you."
     >
       <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">
         {channels.map(({ icon: Icon, label, value, href, note }) => (
@@ -51,9 +52,9 @@ export default function ContactPage() {
         <div className="label text-steel">Procurement</div>
         <h2 className="font-display wdth-n mt-2.5 text-xl font-semibold">Requesting a proforma</h2>
         <p className="mt-2 max-w-[58ch] text-[15px] leading-relaxed text-ink-soft">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam.
+          Include your facility name, equipment list, quantities and delivery location. Our team will confirm the details and prepare a proforma for your review.
         </p>
+        <Link href="/quote" className="btn-primary mt-5 min-h-11">Request a quotation</Link>
       </aside>
     </Section>
   );

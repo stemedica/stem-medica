@@ -33,11 +33,11 @@ export type Proforma = {
   payment: string;
 };
 
-export const money = (n: number, currency: string) =>
-  `${currency} ${n.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
+const amountFormat = new Intl.NumberFormat("en-US", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+export const money = (n: number, currency: string) => `${currency} ${amountFormat.format(n)}`;
 
 export const lineTotal = (i: LineItem) => i.qty * i.price;
 
@@ -47,39 +47,15 @@ export function totals(p: Proforma) {
   return { subtotal, vat, grand: subtotal + vat };
 }
 
-/** Sequential numbering, per browser. See docs/ADMIN.md for the limitation. */
-const SEQ_KEY = "stem:proforma:seq";
-
+/** Unique references without a database counter. These are not sequential invoice numbers. */
 export function nextNumber(): string {
-  const year = new Date().getFullYear();
-  let seq = 1;
-  try {
-    const raw = localStorage.getItem(SEQ_KEY);
-    const parsed = raw ? JSON.parse(raw) : null;
-    seq = parsed && parsed.year === year ? parsed.seq + 1 : 1;
-    localStorage.setItem(SEQ_KEY, JSON.stringify({ year, seq }));
-  } catch {
-    /* private window or storage disabled: fall back to 1 */
-  }
-  return `SM/PI/${year}/${String(seq).padStart(4, "0")}`;
-}
-
-export function peekNumber(): string {
-  const year = new Date().getFullYear();
-  try {
-    const raw = localStorage.getItem(SEQ_KEY);
-    const parsed = raw ? JSON.parse(raw) : null;
-    const seq = parsed && parsed.year === year ? parsed.seq : 0;
-    return `SM/PI/${year}/${String(seq + 1).padStart(4, "0")}`;
-  } catch {
-    return `SM/PI/${year}/0001`;
-  }
+  return `SM/PI/${new Date().getFullYear()}/${crypto.randomUUID().replaceAll("-", "").slice(0, 16).toUpperCase()}`;
 }
 
 export const today = () => new Date().toISOString().slice(0, 10);
 
 export const blankItem = (): LineItem => ({
-  id: Math.random().toString(36).slice(2, 9),
+  id: crypto.randomUUID(),
   description: "",
   qty: 1,
   unit: "pcs",

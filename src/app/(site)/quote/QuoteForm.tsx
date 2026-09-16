@@ -17,13 +17,14 @@ type Field = {
   placeholder: string;
   required?: boolean;
   type?: string;
+  autoComplete?: string;
 };
 
 const FIELDS: Field[] = [
-  { name: "facility", label: "Facility", placeholder: "Hospital or laboratory name", required: true },
-  { name: "contact", label: "Your name", placeholder: "Who should we reply to?", required: true },
-  { name: "phone", label: "Phone", placeholder: "09.. or +251..", required: true, type: "tel" },
-  { name: "email", label: "Email", placeholder: "Optional", type: "email" },
+  { name: "facility", label: "Facility", placeholder: "Hospital or laboratory name", required: true, autoComplete: "organization" },
+  { name: "contact", label: "Your name", placeholder: "Who should we reply to?", required: true, autoComplete: "name" },
+  { name: "phone", label: "Phone", placeholder: "09.. or +251..", required: true, type: "tel", autoComplete: "tel" },
+  { name: "email", label: "Email", placeholder: "Optional", type: "email", autoComplete: "email" },
 ];
 
 export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
@@ -55,7 +56,8 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mt-10 grid gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} onChange={() => setSent(false)} className="mt-8 grid gap-5 sm:grid-cols-2">
+      <p className="text-sm leading-relaxed text-ink-soft sm:col-span-2">Fields marked * are required. This prepares a message in your email app; you’ll review and send it there.</p>
       {FIELDS.map((f) => (
         <label key={f.name} className="block">
           <span className="label text-steel">
@@ -65,7 +67,12 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
           <input
             name={f.name}
             type={f.type ?? "text"}
+            autoComplete={f.autoComplete}
             required={f.required ?? false}
+            maxLength={200}
+            pattern={f.required ? ".*\\S.*" : undefined}
+            onInvalid={(event) => event.currentTarget.setCustomValidity(f.type === "email" ? "Enter a valid email address, or leave this optional field empty." : `Please enter ${f.label.toLowerCase()}.`)}
+            onInput={(event) => event.currentTarget.setCustomValidity("")}
             placeholder={f.placeholder}
             className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
           />
@@ -78,7 +85,11 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
         </span>
         <input
           name="equipment"
+          onInvalid={(event) => event.currentTarget.setCustomValidity("Tell us which equipment you need.")}
+          onInput={(event) => event.currentTarget.setCustomValidity("")}
           required
+          pattern=".*\S.*"
+          maxLength={500}
           defaultValue={presetItem}
           placeholder="e.g. neonatal CPAP, patient monitor, mobile X-ray"
           className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
@@ -89,6 +100,11 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
         <span className="label text-steel">Quantity</span>
         <input
           name="quantity"
+          onInvalid={(event) => event.currentTarget.setCustomValidity("Enter a whole number of 1 or more, or leave quantity empty.")}
+          onInput={(event) => event.currentTarget.setCustomValidity("")}
+          type="number"
+          min={1}
+          step={1}
           inputMode="numeric"
           placeholder="e.g. 2"
           className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
@@ -100,6 +116,7 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
         <textarea
           name="notes"
           rows={4}
+          maxLength={3000}
           placeholder="Department, case load, installation site, deadline"
           className="mt-2 w-full resize-y rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
         />
@@ -111,7 +128,7 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
             type="submit"
             className="label inline-flex items-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
-            <Send size={14} aria-hidden="true" /> Send request
+            <Send size={14} aria-hidden="true" /> Prepare email request
           </button>
           <a
             href={`tel:${site.phoneIntl}`}

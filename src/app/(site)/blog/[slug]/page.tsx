@@ -1,105 +1,55 @@
+import { PostKindBadge } from "@/components/PostKindBadge";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { ArrowLeft, ArrowRight, Phone } from "lucide-react";
-import { EcgRule, SectionHead } from "@/components/Section";
-import { WaveField } from "@/components/WaveField";
-import { Button } from "@/components/Button";
-import { getPost, getPostSlugs, getAllPosts, formatDate } from "@/lib/posts";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getPost, getAllPosts, formatDate } from "@/lib/post-store";
+import { PostBody } from "@/components/PostBody";
+import { PostGallery } from "@/components/PostGallery";
+import { readingMinutes, postSections } from "@/lib/post-slug";
 import { site } from "@/lib/site";
+import { MobileCardRail } from "@/components/MobileCardRail";
+import { V2Photo } from "@/components/V2";
+import { hasArrivalNotice } from "@/lib/arrival-notice";
 
-export function generateStaticParams() {
-  return getPostSlugs().map((slug) => ({ slug }));
-}
+export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
-  params,
-}: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPost(slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const post = await getPost((await params).slug);
   if (!post) return {};
-  return { title: post.title, description: post.excerpt };
+  const url = `${site.url}/blog/${post.slug}`;
+  return {
+    title: post.title, description: post.excerpt, alternates: { canonical: url },
+    openGraph: { type: "article", title: post.title, description: post.excerpt, url, siteName: "STEM MEDICA", authors: [post.author], publishedTime: `${post.date}T12:00:00.000Z`, images: post.image ? [{ url: `${site.url}${post.image}`, alt: post.title }] : [] },
+  };
 }
 
-export default async function PostPage({
-  params,
-}: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const post = getPost(slug);
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const post = await getPost((await params).slug);
   if (!post) notFound();
-
-  const more = getAllPosts().filter((p) => p.slug !== post.slug).slice(0, 2);
-
-  return (
-    <>
-      <div className="relative overflow-hidden bg-navy-deep text-on-navy">
-        <WaveField />
-        <div className="relative mx-auto max-w-3xl px-5 py-12 sm:py-16">
-          <Link href="/blog" className="label inline-flex items-center gap-2 text-scarlet-lift">
-            <ArrowLeft size={13} aria-hidden="true" /> Insights
-          </Link>
-          <div className="label mt-8 flex flex-wrap gap-x-6 gap-y-1 text-on-navy/50">
-            <span className="text-on-navy">{post.kind}</span>
-            <span className="tabular-nums">{formatDate(post.date)}</span>
-            <span>{post.author}</span>
-          </div>
-          <h1 className="font-display wdth-w mt-4 text-[2rem] font-bold uppercase leading-[1] tracking-[-0.03em] text-balance sm:text-[2.75rem]">
-            {post.title}
-          </h1>
-          <div className="mt-7 h-0.5 w-16 bg-scarlet" />
-        </div>
+  const more = (await getAllPosts()).filter((item) => item.id !== post.id).slice(0, 2);
+  const sections = postSections(post.body);
+  return <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-16">
+    <Link href="/blog" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-navy"><ArrowLeft size={16} aria-hidden="true" /> Updates &amp; blog</Link>
+    <article>
+      <header className={`mx-auto max-w-3xl pb-7 pt-5 sm:pb-14 ${hasArrivalNotice(post) ? "arrival-heading mt-6" : ""}`}>
+        <div className="flex flex-wrap items-center gap-3 text-sm text-steel"><Link href={`/blog?kind=${encodeURIComponent(post.kind)}`} className="inline-flex min-h-11 items-center rounded-full"><PostKindBadge post={post} /></Link><span>{readingMinutes(post.body)} min read</span></div>
+        <h1 className="font-display mt-5 break-words text-3xl font-semibold leading-[1.15] tracking-tight text-navy sm:text-5xl lg:text-6xl">{post.title}</h1>
+        <p className="mt-4 break-words text-base leading-relaxed text-ink-soft sm:text-xl">{post.excerpt}</p>
+        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm"><span className="font-medium text-navy">{post.author}</span><time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time></div>
+      </header>
+      {post.image ? <figure className="mb-12 overflow-hidden rounded-2xl bg-navy-tint">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={post.image} alt={post.title} className="aspect-[16/9] max-h-[600px] w-full object-cover" />
+      </figure> : null}
+      <div className="mx-auto max-w-3xl">
+        {sections.length >= 3 ? <details className="mb-8 rounded-xl border border-hair bg-white p-4 sm:p-5"><summary className="min-h-11 cursor-pointer py-2 font-medium text-navy">In this article</summary><nav aria-label="In this article" className="mt-2"><ol className="space-y-1">{sections.map((section) => <li key={section.id}><a href={`#${section.id}`} className="inline-flex min-h-11 items-center text-sm text-navy underline underline-offset-4">{section.title}</a></li>)}</ol></nav></details> : null}
+        <PostBody body={post.body} />
+        <PostGallery images={post.gallery} title={post.title} />
+        <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-y border-hair py-5 text-sm text-steel"><span>Published by {post.author}</span><Link className="inline-flex min-h-11 items-center gap-2 font-medium text-navy" href="/blog">All updates <ArrowRight size={16} aria-hidden="true" /></Link></footer>
+        <aside className="mt-10 rounded-2xl bg-navy-tint p-6 sm:p-8"><p className="label text-navy">Let’s talk</p><h2 className="font-display mt-3 text-2xl font-semibold text-navy">Have a question about equipment?</h2><p className="mt-3 leading-relaxed text-ink-soft">Our team can help with availability, procurement and support.</p><Link href="/quote" className="btn-outline mt-6">Make an enquiry <ArrowRight size={16} aria-hidden="true" /></Link></aside>
       </div>
-
-      <EcgRule />
-
-      <article className="mx-auto max-w-3xl px-5 py-14">
-        <p className="border-l-2 border-scarlet pl-5 text-lg leading-relaxed text-ink">
-          {post.excerpt}
-        </p>
-        <div
-          className="prose-sm-ink mt-9 text-[16.5px]"
-          dangerouslySetInnerHTML={{ __html: post.html }}
-        />
-
-        <aside className="plate ticks mt-14 p-6">
-          <div className="label text-steel">Enquiry</div>
-          <h2 className="font-display wdth-n mt-2.5 text-xl font-semibold">Talk to an engineer</h2>
-          <p className="mt-2 max-w-[52ch] text-[15px] leading-relaxed text-ink-soft">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-          <div className="mt-6">
-            <Button href={`tel:${site.phoneIntl}`}>
-              <Phone size={14} aria-hidden="true" /> Call {site.phone}
-            </Button>
-          </div>
-        </aside>
-
-        {more.length > 0 ? (
-          <div className="mt-16">
-            <SectionHead index="//" label="Keep reading" meta={`${more.length} more`} />
-            <div className="mt-5 border-t border-hair">
-              {more.map((p) => (
-                <Link
-                  key={p.slug}
-                  href={`/blog/${p.slug}`}
-                  className="group flex items-baseline justify-between gap-5 border-b border-hair py-4 transition-colors hover:bg-navy-tint/35"
-                >
-                  <div>
-                    <div className="label text-scarlet">{p.kind}</div>
-                    <h3 className="font-display wdth-n mt-1.5 font-semibold leading-snug">{p.title}</h3>
-                  </div>
-                  <ArrowRight
-                    size={14}
-                    aria-hidden="true"
-                    className="shrink-0 text-navy transition-transform duration-300 group-hover:translate-x-1"
-                  />
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </article>
-    </>
-  );
+    </article>
+    {more.length ? <section aria-labelledby="more-posts" className="mt-16 border-t border-hair pt-10"><h2 id="more-posts" className="font-display text-3xl font-semibold text-navy">Keep reading</h2><div className="mt-6"><MobileCardRail label="More stories" columns={2}>{more.map((item) => <Link href={`/blog/${item.slug}`} key={item.id} className={`flex flex-col overflow-hidden rounded-xl border border-hair bg-white transition-colors hover:border-navy/40 ${hasArrivalNotice(item) ? "arrival-card" : ""}`}><V2Photo src={item.image || undefined} label={item.title} className="aspect-video w-full" /><div className="p-5"><PostKindBadge post={item} /><p className="mt-3 text-xs text-steel">{formatDate(item.date)}</p><h3 className="font-display mt-3 break-words text-xl font-semibold text-navy">{item.title}</h3><p className="mt-3 line-clamp-3 break-words text-sm leading-relaxed text-ink-soft">{item.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-navy">Read story <ArrowRight size={16} aria-hidden="true" /></span></div></Link>)}</MobileCardRail></div></section> : null}
+  </div>;
 }

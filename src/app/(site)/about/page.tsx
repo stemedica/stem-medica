@@ -1,76 +1,31 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Section } from "@/components/Section";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About",
-  description:
-    "STEM MEDICA is a registered medical equipment importer and distributor in Addis Ababa, founded by biomedical engineer Geremew Zewdie.",
+  description: "STEM MEDICA — medical equipment supply, installation and support in Ethiopia.",
 };
 
-/** Labels are real (from public posts); values marked Lorem are placeholder. */
-const facts = [
-  ["Founded by", "Geremew Zewdie, Biomedical Engineer"],
-  ["Based", "Addis Ababa, Ethiopia"],
-  ["Team", "11–50 staff"],
-  ["Category", "Medical & diagnostic equipment"],
-  ["Coverage", "Nationwide delivery"],
-];
-
 export default function AboutPage() {
-  return (
-    <>
-      <Section
-        index="01"
-        label="About"
-        title="Founded by an engineer, not a trader"
-        lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-      >
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_340px]">
-          <div className="max-w-[65ch] space-y-5 text-[16.5px] leading-relaxed text-ink-soft">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-              ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat.
-            </p>
-            <p>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
-              dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
-            <p>
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
-              ab illo inventore veritatis et quasi architecto beatae vitae dicta.
-            </p>
-          </div>
-
-          <aside className="plate ticks h-fit p-6">
-            <div className="label text-steel">At a glance</div>
-            <dl className="mt-5 space-y-4">
-              {facts.map(([k, v]) => (
-                <div key={k} className="border-b border-hair pb-4 last:border-0 last:pb-0">
-                  <dt className="label text-steel">{k}</dt>
-                  <dd className="mt-1.5 font-mono text-sm text-ink">{v}</dd>
-                </div>
-              ))}
-            </dl>
-          </aside>
-        </div>
-      </Section>
-
-      <Section
-        tone="dark"
-        index="02"
-        label="Amharic"
-        title="Bilingual, when the copy is ready"
-        lede="Amharic here is a placeholder proving the typeface and layout. It should be written by someone on the team, because machine-translated Amharic is obvious to the audience that matters most."
-      >
-        <p className="font-ethiopic mt-8 max-w-[46ch] text-lg leading-loose text-on-navy/85">
-          ሎረም ኢፕሱም ዶሎር ሲት አሜት፣ ኮንሰክቴቱር አዲፒሲንግ ኤሊት፣ ሴድ ዶ ኢዩስሞድ ቴምፖር
-          ኢንሲዲዱንት ኡት ላቦሬ ኤት ዶሎሬ ማኛ አሊኳ።
-        </p>
-      </Section>
-    </>
-  );
+  return <Section headingLevel="h1" index="01" label="About STEM MEDICA"
+    title="Equipment for your facility. Support for your team."
+    lede="Medical equipment supply, installation and support, based in Addis Ababa, Ethiopia.">
+    <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
+      <div className="max-w-[65ch] space-y-5 text-base leading-relaxed text-ink-soft">
+        <p>STEM MEDICA works with healthcare facilities on their equipment requirements. Browse our catalogue by department, or contact us about equipment you cannot find online.</p>
+        <p>Tell us your intended use, quantities and installation location. Our team can discuss specifications, availability and the support needed for your order.</p>
+        <p>Pricing is confirmed through a quotation, not an automatic online checkout. Request a proforma with the equipment and terms your procurement team needs to review.</p>
+        <div className="flex flex-wrap gap-3 pt-2"><Link href="/products" className="btn-primary min-h-11">Browse equipment</Link><Link href="/contact" className="btn-outline min-h-11">Contact the team</Link></div>
+      </div>
+      <aside className="plate p-6">
+        <h2 className="text-lg font-semibold text-navy">Get in touch</h2>
+        <p className="mt-3 text-sm text-ink-soft">{site.city}</p>
+        <a href={`tel:${site.phoneIntl}`} className="mt-3 flex min-h-11 items-center text-navy underline">{site.phone}</a>
+        <a href={`mailto:${site.email}`} className="flex min-h-11 items-center text-navy underline">{site.email}</a>
+        <Link href="/service" className="mt-3 inline-flex min-h-11 items-center text-sm text-navy underline">Service &amp; support</Link>
+      </aside>
+    </div>
+  </Section>;
 }

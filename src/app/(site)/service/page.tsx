@@ -10,25 +10,25 @@ export const metadata: Metadata = {
     "How STEM MEDICA supports equipment after delivery: site survey, installation, commissioning, user training, spares and warranty.",
 };
 
-/** Stage names are structural; the descriptions are LOREM placeholder. */
 const stages = [
-  { n: "01", icon: Search, title: "Site survey", body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
-  { n: "02", icon: FileText, title: "Quotation & proforma", body: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
-  { n: "03", icon: Truck, title: "Delivery & installation", body: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
-  { n: "04", icon: GraduationCap, title: "User training", body: "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." },
-  { n: "05", icon: ShieldCheck, title: "Warranty & spares", body: "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem." },
-  { n: "06", icon: Headset, title: "Ongoing support", body: "Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni." },
+  { n: "01", icon: Search, title: "Site requirements", body: "Share the installation location, available space and utilities so we can discuss the equipment’s requirements." },
+  { n: "02", icon: FileText, title: "Quotation & proforma", body: "Request a written quotation with equipment details, quantities, pricing and terms for your procurement review." },
+  { n: "03", icon: Truck, title: "Delivery & installation", body: "Confirm the delivery schedule and installation scope with our team before placing your order." },
+  { n: "04", icon: GraduationCap, title: "User training", body: "Discuss training needs for your clinical and technical teams as part of the supply agreement." },
+  { n: "05", icon: ShieldCheck, title: "Warranty & spares", body: "Ask about the warranty terms, consumables and spare parts available for your selected equipment." },
+  { n: "06", icon: Headset, title: "Ongoing support", body: "For a support enquiry, send the equipment model, serial number and a description of the issue." },
 ];
 
 export default function ServicePage() {
   return (
     <>
       <Section
+        headingLevel="h1"
         index="01"
         label="Service & support"
         meta="06 stages"
         title="What happens after the purchase order"
-        lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        lede="Plan the support your facility needs, from equipment selection to use. Services and timelines are confirmed for each order."
       >
         <ol className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {stages.map(({ n, icon: Icon, title, body }) => (
@@ -51,7 +51,7 @@ export default function ServicePage() {
         index="02"
         label="For manufacturers"
         title="Looking for Ethiopian distribution?"
-        lede="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+        lede="Introduce your equipment range and share your distribution requirements with the STEM MEDICA team."
       >
         <div className="mt-9 flex flex-wrap gap-3">
           <Button href={`mailto:${site.email}`}>Email {site.email}</Button>

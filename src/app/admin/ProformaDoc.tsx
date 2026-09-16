@@ -1,10 +1,11 @@
 import { money, lineTotal, totals, type Issuer, type Proforma } from "./proforma";
+import { memo } from "react";
 
 /**
  * The document itself. One component renders both the on-screen preview and the
  * printed/exported page, so what you see is exactly what is issued.
  */
-export function ProformaDoc({ issuer, p }: { issuer: Issuer; p: Proforma }) {
+export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Issuer; p: Proforma }) {
   const t = totals(p);
 
   return (
@@ -101,4 +102,4 @@ export function ProformaDoc({ issuer, p }: { issuer: Issuer; p: Proforma }) {
       </footer>
     </article>
   );
-}
+});

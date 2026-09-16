@@ -3,9 +3,8 @@
 import dynamic from "next/dynamic";
 
 /**
- * The builder is a browser-only tool: it reads and writes localStorage and
- * drives window.print(). Skipping prerender lets it initialise state straight
- * from storage instead of rendering defaults and correcting them in an effect.
+ * The builder uses browser printing and creates a fresh random draft reference.
+ * Draft persistence goes through the authenticated API, not browser storage.
  *
  * `ssr: false` only works inside a Client Component, hence this wrapper.
  */

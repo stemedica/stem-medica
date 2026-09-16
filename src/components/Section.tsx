@@ -30,6 +30,7 @@ export function SectionHead({
   lede,
   meta,
   tone = "light",
+  headingLevel = "h2",
 }: {
   index: string;
   label: string;
@@ -37,12 +38,14 @@ export function SectionHead({
   lede?: ReactNode;
   meta?: string;
   tone?: "light" | "dark";
+  headingLevel?: "h1" | "h2";
 }) {
   const dark = tone === "dark";
+  const Heading = headingLevel;
   return (
     <header>
       <div className={`rule-head pt-3 ${dark ? "text-on-navy/35" : "text-ink"}`}>
-        <div className={`label flex items-baseline justify-between gap-4 ${dark ? "text-on-navy/50" : "text-steel"}`}>
+        <div className={`label flex flex-wrap items-baseline justify-between gap-4 ${dark ? "text-on-navy/50" : "text-steel"}`}>
           <span className="flex items-baseline gap-3">
             <span className="text-scarlet">{index}</span>
             <span className={dark ? "text-on-navy" : "text-ink"}>{label}</span>
@@ -51,9 +54,9 @@ export function SectionHead({
         </div>
       </div>
       {title ? (
-        <h2 className="font-display wdth-w mt-5 max-w-[20ch] text-[2rem] font-bold uppercase leading-[1.02] tracking-[-0.03em] text-balance sm:text-[2.6rem]">
+        <Heading className="font-display wdth-w mt-5 max-w-[20ch] text-[2rem] font-bold uppercase leading-[1.08] tracking-[-0.03em] text-balance sm:text-[2.6rem]">
           {title}
-        </h2>
+        </Heading>
       ) : null}
       {lede ? (
         <p className={`mt-4 max-w-[58ch] text-[17px] leading-relaxed ${dark ? "text-on-navy/70" : "text-ink-soft"}`}>
@@ -73,6 +76,7 @@ export function Section({
   children,
   tone = "light",
   className = "",
+  headingLevel = "h2",
 }: {
   index: string;
   label: string;
@@ -82,6 +86,7 @@ export function Section({
   children?: ReactNode;
   tone?: "light" | "dark" | "tint";
   className?: string;
+  headingLevel?: "h1" | "h2";
 }) {
   const dark = tone === "dark";
   const ground = dark ? "bg-navy-deep text-on-navy" : tone === "tint" ? "bg-navy-tint/40" : "";
@@ -89,7 +94,7 @@ export function Section({
   return (
     <section className={`relative ${ground} ${className}`}>
       {dark ? <WaveField /> : null}
-      <div className="relative mx-auto max-w-6xl px-5 py-16 sm:py-20 lg:py-24">
+      <div className="relative mx-auto max-w-6xl px-5 py-10 sm:py-16 lg:py-20">
         <SectionHead
           index={index}
           label={label}
@@ -97,6 +102,7 @@ export function Section({
           lede={lede}
           meta={meta}
           tone={dark ? "dark" : "light"}
+          headingLevel={headingLevel}
         />
         {children}
       </div>

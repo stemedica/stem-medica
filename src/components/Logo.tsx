@@ -43,6 +43,9 @@ function findLogo(): Found | null {
   return null;
 }
 
+// Deployment assets are immutable; avoid synchronous disk reads on every render.
+const discoveredLogo = findLogo();
+
 /** Reduced mark: a broken blue orbit around a solid red centre. */
 export function Mark({ size = 32 }: { size?: number }) {
   return (
@@ -73,7 +76,7 @@ export function Logo({
   onDark?: boolean;
   className?: string;
 }) {
-  const logo = findLogo();
+  const logo = discoveredLogo;
 
   if (!logo) {
     return (
@@ -90,7 +93,8 @@ export function Logo({
       alt="STEM MEDICA"
       width={logo.w}
       height={logo.h}
-      priority
+      sizes={`${Math.ceil(height * logo.w / logo.h)}px`}
+      preload
       unoptimized={logo.vector}
       className="w-auto"
       style={{ height }}

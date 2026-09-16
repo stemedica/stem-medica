@@ -16,7 +16,7 @@ export const site = {
 export const nav = [
   { href: "/products", label: "Products" },
   { href: "/service", label: "Service" },
-  { href: "/blog", label: "Insights" },
+  { href: "/blog", label: "Updates & blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/quote", label: "Request a quote", cta: true },

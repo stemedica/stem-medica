@@ -6,7 +6,12 @@
 export function ProformaStyles() {
   return (
     <style id="proforma-styles" dangerouslySetInnerHTML={{ __html: `
-.pf-stage { background:#e6e9ee; padding:24px; overflow-x:auto; }
+.pf-stage { min-width:0; background:#e6e9ee; padding:16px; overflow-x:auto; border:1px solid #c7cdd8; border-radius:12px; }
+.pf-stage:focus-visible { outline:2px solid #1a3e8f; outline-offset:3px; }
+@media screen and (min-width:1280px) {
+  [aria-label="Proforma preview"] { position:sticky; top:12rem; }
+  .pf-stage { max-height:calc(100dvh - 16rem); overflow:auto; }
+}
 .pf {
   width:210mm; min-height:297mm; box-sizing:border-box; margin:0 auto; padding:16mm 15mm;
   background:#fff; color:#111a2e; font-family:Arial, Helvetica, sans-serif;
@@ -40,9 +45,12 @@ export function ProformaStyles() {
 
 @media print {
   @page { size:A4; margin:0; }
-  html, body { background:#fff !important; }
+  html, body { background:#fff !important; padding-bottom:0 !important; }
+  .proforma-shell { background:#fff !important; min-height:0 !important; }
   .no-print, header.no-print { display:none !important; }
-  .pf-stage { padding:0; background:#fff; overflow:visible; }
+  .proforma-workspace { padding:0 !important; max-width:none !important; }
+  [aria-label="Proforma preview"] { grid-column:1 / -1; }
+  .pf-stage { padding:0; background:#fff; overflow:visible; border:0; border-radius:0; }
   .pf { box-shadow:none; margin:0; width:auto; min-height:auto; }
   .pf-items { page-break-inside:auto; }
   .pf-items tr { page-break-inside:avoid; }

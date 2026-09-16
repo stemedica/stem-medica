@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="true"] {
+  border-color: var(--color-vital);
+  outline: 1px solid var(--color-vital);
+  outline-offset: 1px;
+}
+
 /* ------------------------------------------------------------------
    STEM MEDICA design tokens. See docs/brand-direction.html
    Colours are sampled from the logo. Replace with the values from the
@@ -9,9 +15,9 @@
   --color-navy:        #1A3E8F;
   --color-navy-2:      #2E5BB8;
   --color-navy-deep:   #0F2555;
-  --color-scarlet:     #E12A22;
-  --color-scarlet-lift:#F2564C;
-  --color-vital:       #B31E18;
+  --color-scarlet:     #C4372E;
+  --color-scarlet-lift:#D9564B;
+  --color-vital:       #A32B23;
 
   --color-paper:    #EFF1F4;
   --color-paper-2:  #E1E5EC;
@@ -25,7 +31,7 @@
   /* tints: icon badges, panel grounds */
   --color-navy-tint:    #E7EDF9;
   --color-navy-tint-2:  #D6E0F4;
-  --color-scarlet-tint: #FDEBEA;
+  --color-scarlet-tint: #F7EBE9;
 
   /* radius scale: spent by role, not stamped on everything */
   --radius-xs: 6px;
@@ -59,6 +65,30 @@
 
 html { -webkit-text-size-adjust: 100%; }
 
+.skeleton-block { background-color: var(--color-paper-2); }
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton-block { animation: skeleton-breathe 1.6s ease-in-out infinite; }
+}
+@keyframes skeleton-breathe { 50% { opacity: .5; } }
+
+.public-site { overflow-wrap: anywhere; }
+.public-site :where(a, button, input, select, textarea):focus-visible { outline: 3px solid #608cf0; outline-offset: 3px; }
+.public-site :where(input, select, textarea) { font-size: 16px; }
+.public-site footer li a { display: inline-flex; align-items: center; min-height: 44px; }
+.public-site [id] { scroll-margin-top: 100px; }
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 100; transform: translateY(-150%); padding: 12px 20px; background: white; color: var(--color-navy); }
+.skip-link:focus { transform: translateY(0); }
+@media (max-width: 1023px) {
+  .public-site { padding-bottom: env(safe-area-inset-bottom); }
+  .public-site :where(input, select, textarea, button, a) { scroll-margin-bottom: 90px; }
+}
+@media (hover: none) {
+  .public-site .v2-card:hover, .public-site .lift:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .public-site *, .public-site *::before, .public-site *::after { animation: none !important; transition: none !important; }
+}
+
 body {
   background: var(--color-paper);
   color: var(--color-ink);
@@ -78,7 +108,7 @@ body {
   text-transform: uppercase;
 }
 
-/* The one motion on the site: the ECG divider draws itself once. */
+/* The ECG divider draws itself once. */
 @media (prefers-reduced-motion: no-preference) {
   .ecg-trace {
     stroke-dasharray: 1400;
@@ -88,9 +118,52 @@ body {
 }
 @keyframes ecg-draw { to { stroke-dashoffset: 0; } }
 
+/* Full-bleed linework: transform-only motion, no media downloads. */
+.hero-ribbon { transform-origin: center; }
+/* Brief directional cue, not an endless distraction. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.public-site) { scroll-behavior: smooth; }
+  .hero-scroll-arrow { animation: hero-scroll-cue 1.6s ease-in-out 3; }
+}
+@keyframes hero-scroll-cue {
+  0%, 100% { transform: translateY(-3px); }
+  50% { transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-ribbon-front { animation: hero-ribbon-flow 4.8s ease-in-out both; }
+  .hero-ribbon-back { animation: hero-ribbon-flow 4.8s ease-in-out both reverse; }
+}
+@keyframes hero-ribbon-flow {
+  from { transform: translate(-24px, 18px) rotate(-3deg) scale(1.08); }
+  to { transform: translate(24px, -18px) rotate(3deg) scale(1.08); }
+}
+
 :focus-visible {
-  outline: 2px solid var(--color-scarlet);
+  outline: 2px solid var(--color-navy);
   outline-offset: 2px;
+}
+
+/* Internal document controls share the site's quieter navy action palette. */
+.btn-primary, .btn-outline, .btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn-primary { background: var(--color-navy); color: white; }
+.btn-primary:hover { background: var(--color-navy-deep); }
+.btn-outline { border-color: var(--color-hair); background: white; }
+.btn-outline:hover, .btn-ghost:hover { background: var(--color-navy-tint); }
+.btn-primary:disabled, .btn-outline:disabled, .btn-ghost:disabled {
+  cursor: not-allowed;
+  opacity: .5;
 }
 
 .prose-sm-ink :where(h2) { font-family: var(--font-display); font-variation-settings: "wdth" 112; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; margin: 2rem 0 0.75rem; }
@@ -174,6 +247,7 @@ body {
 .v2-pill-tint  { background: var(--color-navy-tint); color: var(--color-navy); }
 
 .v2-frame { position: relative; overflow: hidden; border-radius: 36px; background: var(--color-paper-2); }
+.v2-frame.v2-frame-dark { background: var(--color-navy-deep); }
 
 /* Legibility scrim for type set over a photograph. */
 .v2-scrim::after {
@@ -187,6 +261,18 @@ body {
   transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out);
 }
 .v2-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lift); }
+
+/* Arrival announcements remain distinct after their short attention cue ends. */
+.arrival-card { border-color: #b4c9ee; border-top: 4px solid #245da8; background-color: #f4f8ff; }
+.arrival-card:hover { border-color: #245da8; }
+.arrival-heading { border-top: 4px solid #245da8; }
+@media (prefers-reduced-motion: no-preference) {
+  .arrival-pulse { animation: arrival-pulse 1.4s ease-out 3; }
+}
+@keyframes arrival-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  55% { transform: scale(1.8); opacity: .45; }
+}
 
 .v2-btn {
   display: inline-flex; align-items: center; gap: 12px; border-radius: 999px;
