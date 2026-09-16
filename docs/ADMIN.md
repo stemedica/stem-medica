@@ -1,6 +1,20 @@
-# Admin: proforma builder
+# Admin workspace
 
-Internal tool at `/admin`, also served at the root of any `admin.*` hostname.
+The current `/admin` home is a mobile-first overview with proformas as its primary action, real CMS counts, and catalogue/blog shortcuts. The builder lives at `/admin/proformas`; pricing, saved drafts and document exports are unchanged. The four primary navigation links stay visible on small screens, with Security and Sign out in the footer.
+
+Catalogue, blog and proforma editors share a save bar: bottom-pinned on phones, top-sticky on larger screens. Use the save button or Ctrl/Cmd+S. Saving is explicit, not automatic; saving CMS changes applies their publication settings. Errors leave local edits intact. Proforma Print/PDF is available beside Save draft and does not save the temporary draft automatically.
+
+Validation starts when you leave a field, then updates as you correct it. Untouched fields remain quiet until saving or exporting is attempted. A “Fields to check” summary identifies the product, post or proforma item; selecting an issue opens that item and focuses the field. New items and reloaded records reset their validation state. Partial proforma drafts can still be saved; export-only requirements are explained separately. Server validation still runs independently and returns friendly messages instead of raw schema errors.
+
+Save failures stay visible next to the save action and preserve edits. Success confirmations disappear when editing resumes. Saving shows progress and blocks duplicate submissions. Sign out checks for unsaved edits before ending the session; cancelling keeps both the session and form intact. Unexpected admin rendering failures have a friendly retry screen. Browser-controlled reload/tab-close warnings remain native because browsers cannot wait for a custom modal during unload.
+
+For the current email/password + authenticator implementation, local first-login setup and production activation checklist, see [Admin authentication](AUTH.md). The historical Basic-auth description below is no longer implemented.
+
+> Superseded implementation notes: see [CMS and temporary drafts](CMS.md).
+> Drafts now use private Blob JSON with seven-day expiry, and references are
+> generated without localStorage. The older notes below describe the original MVP.
+
+Historical MVP notes below; use the current routes and authentication guide above.
 
 ## Can this run on Vercel's free tier?
 
