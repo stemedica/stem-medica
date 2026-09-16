@@ -8,11 +8,11 @@ The source now uses sign-in pages only: HTTP Basic authentication and `ADMIN_AUT
 
 ## Local first login
 
-With Docker running, execute `npm run local:setup`, then `npm run dev`. Open **http://localhost:3000/auth/login**. The first visit offers **Create your admin account** for `natinael.96@gmail.com`. Choose a new password privately to enter the admin immediately. QR setup is not required. Subsequent visits show normal sign-in.
+With Docker running, execute `npm run local:setup`, then `npm run dev`. Open **http://localhost:3000/test/auth/login**. The first visit offers **Create your admin account** for `natinael.96@gmail.com`. Choose a new password privately to enter the admin immediately. QR setup is not required. Subsequent visits show normal sign-in.
 
 The setup command removes obsolete `ADMIN_USER`/`ADMIN_PASSWORD` settings from `.env.local`, preserves unrelated settings and CMS content, and creates a persistent database in the Docker volume `stem-medica-local-auth-data`. The container `stem-medica-local-auth` binds PostgreSQL to loopback port 55440. Running the command again starts the same database; it does not reset accounts. Do not delete its volume or rotate `BETTER_AUTH_SECRET` casually: the secret is needed to decrypt authenticator data.
 
-The first-account page and `/api/local-admin` require development mode, no Vercel environment, explicit `LOCAL_AUTH_SETUP=1`, a dedicated loopback database, a local canonical origin and a setup token. Creation is serialized under a database lock and closes once any account exists. Production returns 404 even if the flag is accidentally set. There is no public admin registration.
+The first-account page and `/test/api/local-admin` require development mode, no Vercel environment, explicit `LOCAL_AUTH_SETUP=1`, a dedicated loopback database, a local canonical origin and a setup token. Creation is serialized under a database lock and closes once any account exists. Production returns 404 even if the flag is accidentally set. There is no public admin registration.
 
 `127.0.0.1:3000` admin links redirect to the canonical `localhost:3000` origin, so cookies and origin checks agree. Use `npm run dev` (loopback-bound) for this local-only setup. Local accounts and CMS edits do not change production.
 
@@ -41,7 +41,7 @@ printf '%s' "$STEM_ADMIN_PASSWORD" | npm run auth:create-admin
 unset STEM_ADMIN_PASSWORD
 ```
 
-Open `/auth/login` and sign in with email and password. To opt into extra protection, open Security, confirm the password and scan the QR code in an authenticator app. Save recovery codes, then verify the six-digit code. Until verification, enrollment is not enabled and password-only login remains available.
+Open `/test/auth/login` and sign in with email and password. To opt into extra protection, open Security, confirm the password and scan the QR code in an authenticator app. Save recovery codes, then verify the six-digit code. Until verification, enrollment is not enabled and password-only login remains available.
 
 ## Security behavior
 

@@ -10,14 +10,14 @@ export const site = {
   email: "info@stemedicaet.com",
   whatsapp: "https://wa.me/251921136180",
   linkedin: "https://www.linkedin.com/company/stem-medica",
-  url: "https://stemedicaet.com",
+  url: "https://stemedicaet.com/test",
 } as const;
 
 export const nav = [
-  { href: "/products", label: "Products" },
-  { href: "/service", label: "Service" },
-  { href: "/blog", label: "Updates & blog" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/quote", label: "Request a quote", cta: true },
+  { href: "/test/products", label: "Products" },
+  { href: "/test/service", label: "Service" },
+  { href: "/test/blog", label: "Updates & blog" },
+  { href: "/test/about", label: "About" },
+  { href: "/test/contact", label: "Contact" },
+  { href: "/test/quote", label: "Request a quote", cta: true },
 ] as const;

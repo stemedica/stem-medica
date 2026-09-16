@@ -4,7 +4,7 @@ test.skip(!process.env.QA_STORAGE_STATE, "Use npm run test:e2e:local.");
 test("confirmation modals cancel safely, trap focus, restore focus and protect navigation", async ({ page }) => {
   const nativeDialogs: string[] = [];
   page.on("dialog", async (dialog) => { nativeDialogs.push(dialog.type()); await dialog.dismiss(); });
-  await page.goto("/admin/proformas");
+  await page.goto("/test/admin/proformas");
   await page.getByLabel("Name", { exact: true }).fill("Keep my edits");
   let signOutRequests = 0;
   await page.route("**/api/auth/sign-out", (route) => { signOutRequests++; return route.fulfill({ status: 503, json: { message: "Temporarily unavailable" } }); });
@@ -47,7 +47,7 @@ test("confirmation modals cancel safely, trap focus, restore focus and protect n
   await page.getByRole("link", { name: "Updates & blog", exact: true }).click();
   await leave.getByRole("button", { name: "Leave page" }).click();
   await expect(page).toHaveURL(/\/admin\/posts$/);
-  await page.goto("/admin/catalogue");
+  await page.goto("/test/admin/catalogue");
   await expect(page.getByRole("status")).toContainText("Catalogue loaded");
   const name = page.getByLabel("Name", { exact: true });
   const previous = await name.inputValue();

@@ -14,7 +14,7 @@ function renderSkeleton(variant: string) {
 test.use({ baseURL: "http://127.0.0.1:3000" });
 
 test("skeleton layouts are accessible, responsive and reduced-motion safe", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/test");
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const variant of ["page", "catalogue", "product", "blog", "article", "admin"] as const) {
@@ -31,7 +31,7 @@ test("skeleton layouts are accessible, responsive and reduced-motion safe", asyn
   await expect(page.locator(".skeleton-block").first()).toHaveCSS("animation-name", "none");
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(page.locator(".skeleton-block").first()).toHaveCSS("animation-name", "skeleton-breathe");
-  await page.goto("/blog");
+  await page.goto("/test/blog");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.locator("[data-loading-skeleton]:visible")).toHaveCount(0);
 });

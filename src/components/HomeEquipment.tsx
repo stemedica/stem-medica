@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight, ImageIcon } from "lucide-react";
 import type { homeEquipment } from "@/lib/home-equipment";
+import { publicMediaUrl } from "@/lib/preview-paths";
 
 export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipment> }) {
   const [selected, setSelected] = useState("");
@@ -17,7 +18,7 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
     container.scrollTo({ left: card.offsetLeft - (container.firstElementChild as HTMLElement).offsetLeft,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
   }
-  const catalogueUrl = current.slug ? `/products?cat=${encodeURIComponent(current.slug)}` : "/products";
+  const catalogueUrl = current.slug ? `/test/products?cat=${encodeURIComponent(current.slug)}` : "/test/products";
   return <section id="equipment" aria-labelledby="equipment-heading" className="border-b border-hair bg-white px-4 py-10 sm:px-6 sm:py-14 lg:py-20">
     <div className="mx-auto max-w-6xl">
       <header className="flex flex-wrap items-end justify-between gap-5">
@@ -26,10 +27,10 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
           <h2 id="equipment-heading" className="font-display mt-3 text-4xl font-semibold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
           <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">Find the right equipment for your facility. Explore by category, then talk to us about specifications and availability.</p>
         </div>
-        <Link href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">View full catalogue <ArrowUpRight size={18} aria-hidden="true" /></Link>
+        <Link href="/test/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">View full catalogue <ArrowUpRight size={18} aria-hidden="true" /></Link>
       </header>
       <nav aria-label="Equipment categories" className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 py-2 sm:mt-8 lg:flex-wrap">
-        {groups.map(group => <a key={group.slug} href={group.slug ? `/products?cat=${encodeURIComponent(group.slug)}` : "/products"}
+        {groups.map(group => <a key={group.slug} href={group.slug ? `/test/products?cat=${encodeURIComponent(group.slug)}` : "/test/products"}
           aria-current={current.slug === group.slug ? "true" : undefined} aria-controls="home-equipment-results"
           onClick={event => { if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return; event.preventDefault(); setSelected(group.slug); setSlide(0); }}
           className={`inline-flex min-h-11 max-w-[280px] shrink-0 items-center gap-3 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${current.slug === group.slug ? "border-navy bg-navy text-white" : "border-hair bg-white text-ink-soft hover:border-navy hover:text-navy"}`}>
@@ -55,10 +56,10 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
               Math.min(current.products.length - 1, Math.round(el.scrollLeft / (second.offsetLeft - first.offsetLeft))));
           }}
           className="flex snap-x snap-mandatory scroll-px-1 gap-3 overflow-x-auto overscroll-x-contain p-1 pb-3 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-3">
-          {current.products.map(product => <Link key={product.slug} href={`/products/${product.slug}`} className={`group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy ${current.products.length > 1 ? "w-[86%]" : "w-full"} sm:w-auto`}>
+          {current.products.map(product => <Link key={product.slug} href={`/test/products/${product.slug}`} className={`group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy ${current.products.length > 1 ? "w-[86%]" : "w-full"} sm:w-auto`}>
             <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-hair bg-navy-tint/60 p-3 sm:p-6">
               {product.image ? /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={product.image} alt={`${product.name}: product photo`} loading="lazy" decoding="async" className="h-full w-full object-contain" /> :
+                <img src={publicMediaUrl(product.image)} alt={`${product.name}: product photo`} loading="lazy" decoding="async" className="h-full w-full object-contain" /> :
                 <div className="flex flex-col items-center gap-3 text-center text-navy/70"><ImageIcon size={36} strokeWidth={1.2} aria-hidden="true" /><span className="text-xs">Product photo<br />coming soon</span></div>}
             </div>
             <div className="flex flex-1 flex-col p-3 sm:p-5">

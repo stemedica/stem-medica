@@ -4,7 +4,7 @@ test.skip(!process.env.QA_STORAGE_STATE, "Use npm run test:e2e:local.");
 
 test("save actions stay reachable, support shortcuts and preserve edits on failure", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/admin/proformas");
+  await page.goto("/test/admin/proformas");
   await page.getByLabel("Name", { exact: true }).fill("Save bar test hospital");
   await page.getByLabel("Notes", { exact: true }).fill("Keep these edits after a failed save.");
   const bar = page.getByRole("region", { name: "Save actions" });
@@ -19,7 +19,7 @@ test("save actions stay reachable, support shortcuts and preserve edits on failu
   await expect(page.getByLabel("Notes", { exact: true })).toHaveValue("Keep these edits after a failed save.");
   await expect(bar.getByRole("button", { name: "Save as draft", exact: true })).toBeEnabled();
   let blockedSaveRequests = 0;
-  page.on("request", (request) => { if (request.url().endsWith("/admin/api/drafts") && request.method() === "PUT") blockedSaveRequests++; });
+  page.on("request", (request) => { if (request.url().endsWith("/test/admin/api/drafts") && request.method() === "PUT") blockedSaveRequests++; });
   await page.getByRole("button", { name: "New proforma", exact: true }).click();
   const modal = page.getByRole("dialog", { name: "Start a new proforma?" });
   await page.keyboard.press("Control+s");
@@ -56,6 +56,6 @@ test("save actions stay reachable, support shortcuts and preserve edits on failu
   await expect(bar.getByRole("button", { name: "Save as draft", exact: true })).toBeEnabled();
   await page.keyboard.press("Control+s");
   await expect(bar.getByRole("button", { name: "Save as draft", exact: true })).toBeDisabled();
-  await page.goto("/admin");
+  await page.goto("/test/admin");
   expect(await page.evaluate(() => document.body.style.paddingBottom)).toBe("");
 });

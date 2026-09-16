@@ -1,6 +1,6 @@
 # Admin workspace
 
-The current `/admin` home is a mobile-first overview with proformas as its primary action, real CMS counts, and catalogue/blog shortcuts. The builder lives at `/admin/proformas`; pricing, saved drafts and document exports are unchanged. The four primary navigation links stay visible on small screens, with Security and Sign out in the footer.
+The current `/test/admin` home is a mobile-first overview with proformas as its primary action, real CMS counts, and catalogue/blog shortcuts. The builder lives at `/test/admin/proformas`; pricing, saved drafts and document exports are unchanged. The four primary navigation links stay visible on small screens, with Security and Sign out in the footer.
 
 Catalogue, blog and proforma editors share a save bar: bottom-pinned on phones, top-sticky on larger screens. Use the save button or Ctrl/Cmd+S. Saving is explicit, not automatic; saving CMS changes applies their publication settings. Errors leave local edits intact. Proforma Print/PDF is available beside Save draft and does not save the temporary draft automatically.
 
@@ -38,9 +38,9 @@ unnecessary.
 
 `src/proxy.ts` (Next 16 renamed `middleware.ts` to `proxy.ts`) does two things:
 
-1. Rewrites requests arriving on an `admin.*` host to `/admin`, so the subdomain
+1. Rewrites requests arriving on an `admin.*` host to `/test/admin`, so the subdomain
    shows the builder and nothing else.
-2. Requires HTTP Basic auth for anything under `/admin`, on any hostname.
+2. Requires HTTP Basic auth for anything under `/test/admin`, on any hostname.
 
 It **fails closed**: with no credentials configured the admin is unreachable
 rather than open.
@@ -63,7 +63,7 @@ replace this with real auth.
 2. Add the CNAME Vercel gives you at your DNS provider.
 3. Nothing else: `proxy.ts` already routes that hostname.
 
-Until the domain exists, reach it at `/admin` on the main URL.
+Until the domain exists, reach it at `/test/admin` on the main URL.
 
 ## Creating a proforma
 

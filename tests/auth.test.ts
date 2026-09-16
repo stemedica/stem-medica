@@ -25,7 +25,7 @@ test("password login works without MFA; opting in enforces codes, rejects replay
   const jars = new Map<string, Map<string, string>>();
   async function call(path: string, body?: object, jarName = "main") {
     const jar = jars.get(jarName) ?? new Map<string, string>(); jars.set(jarName, jar);
-    const response = await auth.handler(new Request(`${config.baseURL}/api/auth${path}`, {
+    const response = await auth.handler(new Request(`${config.baseURL}/test/api/auth${path}`, {
       method: body ? "POST" : "GET", headers: { "Content-Type": "application/json", Origin: config.baseURL, "x-forwarded-for": "127.0.0.1", Cookie: [...jar].map(([k, v]) => `${k}=${v}`).join("; ") }, body: body ? JSON.stringify(body) : undefined,
     }));
     for (const cookie of response.headers.getSetCookie()) { const [pair] = cookie.split(";"); const split = pair.indexOf("="); jar.set(pair.slice(0, split), pair.slice(split + 1)); }

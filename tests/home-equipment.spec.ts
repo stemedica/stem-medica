@@ -5,7 +5,7 @@ test.setTimeout(60000);
 test("homepage puts browsable equipment immediately after the hero", async ({ page }) => {
   const errors: string[] = [];
   page.on("pageerror", error => errors.push(error.message));
-  await page.goto("/");
+  await page.goto("/test");
   const equipment = page.getByRole("region", { name: "Explore our equipment." });
   await expect(equipment).toBeVisible();
   expect(await page.locator('section[aria-labelledby="hero-title"]').evaluate(el => el.nextElementSibling?.id)).toBe("equipment");
@@ -41,7 +41,7 @@ test("homepage puts browsable equipment immediately after the hero", async ({ pa
   for (let i = 1; i < await filters.count(); i++) {
     await filters.nth(i).click();
     await expect(filters.nth(i)).toHaveAttribute("aria-current", "true");
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(/\/test$/);
     await expect(equipment.getByRole("status")).toContainText(/Showing|No equipment/);
     if (await equipment.getByRole("button", { name: "Show all equipment" }).count()) {
       await expect(equipment.getByRole("link", { name: /enquir/i })).toHaveCount(0);
@@ -57,7 +57,7 @@ test("homepage puts browsable equipment immediately after the hero", async ({ pa
 test("mobile slide navigation resets on category changes and respects reduced motion", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto("/test");
   const equipment = page.locator("#equipment");
   const filters = equipment.getByRole("navigation").getByRole("link");
   const next = equipment.getByRole("button", { name: "Next product", exact: true });
@@ -73,10 +73,10 @@ test("equipment and catalogue links remain available without JavaScript", async 
   test.fixme(true, "Existing Next streamed loading boundary leaves content hidden with JavaScript disabled in local dev; requires a separate site-wide fallback pass.");
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto(process.env.QA_AUTH_E2E ? "http://127.0.0.1:3001" : "http://127.0.0.1:3000");
+  await page.goto(process.env.QA_AUTH_E2E ? "http://127.0.0.1:3001/test" : "http://127.0.0.1:3000/test");
   const equipment = page.getByRole("region", { name: "Explore our equipment." });
   await expect(equipment).toBeVisible();
-  await expect(equipment.getByRole("link", { name: "View full catalogue" })).toHaveAttribute("href", "/products");
+  await expect(equipment.getByRole("link", { name: "View full catalogue" })).toHaveAttribute("href", "/test/products");
   const filters = equipment.getByRole("navigation").getByRole("link");
   if (await filters.count() > 1) {
     await filters.nth(1).click();

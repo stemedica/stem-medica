@@ -15,7 +15,7 @@ source the team actually notices.
 **Recommended: outbound only, no bot framework.**
 
 ```
-src/app/api/enquiry/route.ts   POST  → Telegram Bot API sendMessage
+src/app/test/api/enquiry/route.ts   POST  → Telegram Bot API sendMessage
 src/components/EnquiryForm.tsx       → product-scoped form, posts to the route
 ```
 

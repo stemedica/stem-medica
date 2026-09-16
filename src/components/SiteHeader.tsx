@@ -24,7 +24,7 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
   return (
     <header ref={header} className="sticky top-0 z-50 border-b border-hair bg-white/95 text-ink backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
-        <Link href="/" aria-label={`${site.name} home`} className="flex items-center" onClick={() => setOpen(false)}>
+        <Link href="/test" aria-label={`${site.name} home`} className="flex items-center" onClick={() => setOpen(false)}>
           {logo}
           <span className="sr-only">{site.name} home</span>
         </Link>
@@ -49,7 +49,7 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
             {site.phone}
           </a>
           <Link
-            href="/quote"
+            href="/test/quote"
             className="label inline-flex min-h-11 items-center whitespace-nowrap rounded-xl bg-navy px-4 py-2.5 font-semibold text-white transition-colors hover:bg-navy-deep"
           >
             Request a quote

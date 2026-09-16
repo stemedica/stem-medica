@@ -12,9 +12,9 @@ test.setTimeout(120_000);
 test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, request }) => {
   const runtimeErrors: string[] = [];
   page.on("pageerror", (error) => runtimeErrors.push(error.message));
-  expect((await fetch(`${baseURL}/admin/api/catalogue`)).status).toBe(401);
+  expect((await fetch(`${baseURL}/test/admin/api/catalogue`)).status).toBe(401);
 
-  await page.goto("/admin/catalogue");
+  await page.goto("/test/admin/catalogue");
   await expect(page.getByRole("status")).toContainText("Catalogue loaded");
   // Each run uses unique slugs so a failed run can be retried without deleting data.
   const suffix = Date.now().toString(36);
@@ -32,7 +32,7 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
   await page.getByLabel("Name", { exact: true }).fill(`QA equipment renamed ${suffix}`);
   await page.getByRole("button", { name: /^Save (catalogue|draft|changes)$/, exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Saved.");
-  expect((await (await request.get("/admin/api/catalogue")).json()).catalogue.categories.some((c: { slug: string }) => c.slug === categorySlug)).toBe(true);
+  expect((await (await request.get("/test/admin/api/catalogue")).json()).catalogue.categories.some((c: { slug: string }) => c.slug === categorySlug)).toBe(true);
   await page.getByRole("button", { name: "Products", exact: true }).click();
   await page.getByRole("button", { name: "Add product", exact: true }).click();
   await page.getByLabel("Name", { exact: true }).fill("QA monitor");
@@ -44,27 +44,33 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
   await page.getByLabel("Description", { exact: true }).fill("QA monitor description");
   await page.getByRole("button", { name: /^Save (catalogue|draft|changes)$/, exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Saved.");
-  expect((await request.get(`/products/${productSlug}`)).status()).toBe(404);
+  // A streamed Next.js not-found response can have HTTP 200. Verify that
+  // visitors see the unavailable page and never the draft product instead.
+  const draftPage = await page.context().newPage();
+  await draftPage.goto(`/test/products/${productSlug}`);
+  await expect(draftPage.getByRole("heading", { name: "This page isn’t available", exact: true })).toBeVisible();
+  await expect(draftPage.getByRole("heading", { name: "QA monitor", exact: true })).toHaveCount(0);
+  await draftPage.close();
   await page.getByLabel("Photo", { exact: false }).setInputFiles({ name: "test.png", mimeType: "image/png", buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a2ioAAAAASUVORK5CYII=", "base64") });
   await expect(page.getByRole("status")).toContainText("Image uploaded");
   await page.getByRole("button", { name: "Publish product", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Product published.");
-  const saved = await (await request.get("/admin/api/catalogue")).json();
+  const saved = await (await request.get("/test/admin/api/catalogue")).json();
   const image = saved.catalogue.products.find((p: { slug: string }) => p.slug === productSlug).image;
-  expect((await request.get(image)).status()).toBe(200);
-  const badOrigin = await request.put("/admin/api/catalogue", { headers: { Origin: "https://untrusted.example" }, data: saved });
+  expect((await request.get("/test" + image)).status()).toBe(200);
+  const badOrigin = await request.put("/test/admin/api/catalogue", { headers: { Origin: "https://untrusted.example" }, data: saved });
   expect(badOrigin.status()).toBe(403);
-  const conflict = await request.put("/admin/api/catalogue", { headers: { Origin: baseURL }, data: { catalogue: saved.catalogue, etag: "stale" } });
+  const conflict = await request.put("/test/admin/api/catalogue", { headers: { Origin: baseURL }, data: { catalogue: saved.catalogue, etag: "stale" } });
   expect(conflict.status()).toBe(409);
-  const versions = await (await request.get("/admin/api/history")).json();
+  const versions = await (await request.get("/test/admin/api/history")).json();
   expect(versions.versions.length).toBeGreaterThan(0);
-  expect((await request.get(`/admin/api/history?key=${encodeURIComponent(versions.versions[0].pathname)}`)).status()).toBe(200);
+  expect((await request.get(`/test/admin/api/history?key=${encodeURIComponent(versions.versions[0].pathname)}`)).status()).toBe(200);
   await page.screenshot({ path: "test-results/cms-desktop.png", fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/cms-mobile.png", fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(`/products?cat=${categorySlug}`);
+  await page.goto(`/test/products?cat=${categorySlug}`);
   await expect(page.getByRole("heading", { name: "QA monitor", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "S5 Heart-Lung (Bypass) Machine", exact: true })).toHaveCount(0);
   await page.getByRole("link", { name: /QA monitor/ }).click();
@@ -72,23 +78,23 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
   await page.getByRole("complementary").getByRole("link", { name: "Request a quote", exact: true }).click();
   await expect(page.getByLabel("Equipment needed")).toHaveValue("QA monitor");
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto(`/products?cat=${categorySlug}`);
+  await page.goto(`/test/products?cat=${categorySlug}`);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/catalogue-mobile.png", fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto("/admin");
+  await page.goto("/test/admin");
   const overview = page.getByRole("region", { name: "Content overview" });
   await expect(overview.getByRole("link", { name: /^Published products/ })).toHaveText(`Published products${saved.catalogue.products.filter((p: { published: boolean }) => p.published).length}`);
-  await page.goto("/admin/proformas");
+  await page.goto("/test/admin/proformas");
   await page.getByLabel("Name", { exact: true }).fill("QA Hospital");
   await page.getByLabel("Description", { exact: true }).fill("QA monitor, agreed price");
   await page.getByLabel("Price", { exact: true }).fill("1250.50");
   await page.getByRole("button", { name: "Save as draft", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("Draft saved until");
-  const drafts = await (await request.get("/admin/api/drafts")).json();
+  const drafts = await (await request.get("/test/admin/api/drafts")).json();
   const draft = drafts.drafts.find((d: { client: string }) => d.client === "QA Hospital");
   expect(draft).toBeTruthy();
-  const first = await (await request.get(`/admin/api/drafts?id=${draft.id}`)).json();
+  const first = await (await request.get(`/test/admin/api/drafts?id=${draft.id}`)).json();
   expect(new Date(first.draft.expiresAt).getTime() - new Date(first.draft.createdAt).getTime()).toBe(7 * 86400000);
   await page.reload();
   await page.getByRole("button", { name: "Open saved drafts", exact: true }).click();
@@ -106,7 +112,7 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/proforma-mobile.png", fullPage: true });
   expect(await page.evaluate(() => localStorage.getItem("stem:proforma:draft"))).toBeNull();
-  const response = await request.put("/admin/api/drafts", { headers: { Origin: baseURL }, data: { id: draft.id, etag: first.etag, draft: { issuer: first.draft.issuer, doc: { ...first.draft.doc, notes: "Edited" } } } });
+  const response = await request.put("/test/admin/api/drafts", { headers: { Origin: baseURL }, data: { id: draft.id, etag: first.etag, draft: { issuer: first.draft.issuer, doc: { ...first.draft.doc, notes: "Edited" } } } });
   expect(response.status()).toBe(200);
   expect((await response.json()).draft.expiresAt).toBe(first.draft.expiresAt);
   // Expire only this test-created draft in the explicitly selected local QA store.
@@ -115,11 +121,11 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
     const expired = JSON.parse(await readFile(file, "utf8"));
     expired.expiresAt = new Date(Date.now() - 1000).toISOString();
     await writeFile(file, JSON.stringify(expired));
-    expect((await request.get(`/admin/api/drafts?id=${draft.id}`)).status()).toBe(410);
-    expect((await request.get("/api/cron/cleanup")).status()).toBe(401);
-    const cleanup = await request.get("/api/cron/cleanup", { headers: { Authorization: "Bearer local-test-only" } });
+    expect((await request.get(`/test/admin/api/drafts?id=${draft.id}`)).status()).toBe(410);
+    expect((await request.get("/test/api/cron/cleanup")).status()).toBe(401);
+    const cleanup = await request.get("/test/api/cron/cleanup", { headers: { Authorization: "Bearer local-test-only" } });
     expect(cleanup.status()).toBe(200);
-    expect((await request.get(`/admin/api/drafts?id=${draft.id}`)).status()).toBe(404);
+    expect((await request.get(`/test/admin/api/drafts?id=${draft.id}`)).status()).toBe(404);
   }
   expect(runtimeErrors).toEqual([]);
 });

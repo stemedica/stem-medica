@@ -6,7 +6,7 @@ test.skip(process.env.QA_NEON_PREVIEW !== "1", "Uses published test-branch artic
 test("arrival styling is responsive and legacy post links still work", async ({ page }) => {
   for (const width of [390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.goto("/blog");
+    await page.goto("/test/blog");
     await expect(page.getByRole("navigation", { name: "Post types" })).not.toContainText("Order update");
     const card = page.locator(".arrival-card").first();
     await expect(card).toBeVisible();
@@ -18,11 +18,11 @@ test("arrival styling is responsive and legacy post links still work", async ({ 
     await card.click();
     await expect(page.locator(".arrival-heading .arrival-badge")).toBeVisible();
   }
-  await page.goto("/blog/test-order-review-checklist");
+  await page.goto("/test/blog/test-order-review-checklist");
   await expect(page.locator("article header").getByRole("link", { name: "Blog", exact: true })).toBeVisible();
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/blog?kind=Upcoming+arrival");
+  await page.goto("/test/blog?kind=Upcoming+arrival");
   await expect(page.locator(".arrival-pulse").first()).toHaveCSS("animation-name", "none");
-  await page.goto("/");
+  await page.goto("/test");
   await expect(page.locator(".arrival-card").first()).toBeVisible();
 });

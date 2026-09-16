@@ -51,7 +51,7 @@ export function ProductCard({ product, index }: { product: CmsProduct; index: nu
   );
 
   return (
-    <Link prefetch={false} href={`/products/${product.slug}`} className={cls}>
+    <Link prefetch={false} href={`/test/products/${product.slug}`} className={cls}>
       {body}
     </Link>
   );

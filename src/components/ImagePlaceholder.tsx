@@ -1,4 +1,5 @@
 import { ImageIcon } from "lucide-react";
+import { publicMediaUrl } from "@/lib/preview-paths";
 
 /**
  * Conventional image placeholder: deliberately plain grey with a diagonal
@@ -22,7 +23,7 @@ export function ImagePlaceholder({
 }) {
   if (src) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={src} alt={label} loading="lazy" className={`w-full object-contain ${className}`} style={{ aspectRatio: ratio }} />;
+    return <img src={publicMediaUrl(src)} alt={label} loading="lazy" className={`w-full object-contain ${className}`} style={{ aspectRatio: ratio }} />;
   }
   const dark = tone === "dark";
   const c = dark
