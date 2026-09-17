@@ -1,4 +1,5 @@
 import { PostKindBadge } from "@/components/PostKindBadge";
+import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { V2Button, V2Photo, V2Head } from "@/components/V2";
@@ -10,19 +11,68 @@ import { HomeEquipment } from "@/components/HomeEquipment";
 import { homeEquipment } from "@/lib/home-equipment";
 import { MobileCardRail } from "@/components/MobileCardRail";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
+import { HomeEquipmentSkeleton, HomeUpdatesSkeleton } from "@/components/HomeSkeleton";
 export const dynamic = "force-dynamic";
 
+type CataloguePromise = ReturnType<typeof getCatalogue>;
+type PostsPromise = ReturnType<typeof getAllPosts>;
 
+async function EquipmentSection({ catalogue }: { catalogue: CataloguePromise }) {
+  const { products, categories } = await catalogue;
+  return <HomeEquipment groups={homeEquipment({ products, categories })} />;
+}
 
-export default async function Home() {
-  const [{ products, categories }, allPosts] = await Promise.all([getCatalogue(), getAllPosts()]);
+async function UpdatesSection({ posts: postsPromise }: { posts: PostsPromise }) {
+  const allPosts = await postsPromise;
   const posts = allPosts.slice(0, 6);
+
+  if (posts.length === 0) return null;
+
+  return <section aria-label="Latest updates and blog" className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
+    <V2Head
+      eyebrow="Updates & blog"
+      title="The latest from STEM MEDICA"
+      lede="Upcoming equipment and notes from our team."
+    />
+    <div className="mt-9"><MobileCardRail label="Latest updates">
+      {posts.map((post) => (
+        <Link prefetch={false} key={post.slug} href={`/test/blog/${post.slug}`} className={`v2-card group flex flex-col p-5 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
+          <V2Photo src={post.image || undefined} label={post.image ? post.title : `Cover image · ${post.title}`} className="mb-4 aspect-video w-full" />
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <PostKindBadge post={post} />
+            <span className="label text-steel tabular-nums">{formatDate(post.date)}</span>
+          </div>
+          <h3 className="font-display wdth-n mt-4 text-[17px] font-semibold leading-snug text-balance">
+            {post.title}
+          </h3>
+          <p className="mt-2 line-clamp-3 flex-1 text-[14.5px] leading-relaxed text-ink-soft">{post.excerpt}</p>
+          <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-medium text-navy">
+            Read
+            <ArrowRight
+              size={15}
+              aria-hidden="true"
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
+          </span>
+        </Link>
+      ))}
+    </MobileCardRail></div>
+    <div className="mt-7"><V2Button href="/test/blog" variant="outline">View all updates</V2Button></div>
+  </section>;
+}
+
+export default function Home() {
+  // Start independent reads together; each section streams as soon as its data is ready.
+  const catalogue = getCatalogue();
+  const posts = getAllPosts();
 
   return (
     <>
       <HomeHero />
 
-      <HomeEquipment groups={homeEquipment({ products, categories })} />
+      <Suspense fallback={<HomeEquipmentSkeleton />}>
+        <EquipmentSection catalogue={catalogue} />
+      </Suspense>
 
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 border-b border-hair px-5 py-6">
         <p className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-navy"><span>01 · Supply</span><span>02 · Installation</span><span>03 · Support</span></p>
@@ -47,37 +97,9 @@ export default async function Home() {
       </section>
 
       {/* Insights */}
-      {posts.length > 0 ? <section aria-label="Latest updates and blog" className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
-        <V2Head
-          eyebrow="Updates & blog"
-          title="The latest from STEM MEDICA"
-          lede="Upcoming equipment and notes from our team."
-        />
-        <div className="mt-9"><MobileCardRail label="Latest updates">
-          {posts.map((post) => (
-            <Link prefetch={false} key={post.slug} href={`/test/blog/${post.slug}`} className={`v2-card group flex flex-col p-5 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
-              <V2Photo src={post.image || undefined} label={post.image ? post.title : `Cover image · ${post.title}`} className="mb-4 aspect-video w-full" />
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <PostKindBadge post={post} />
-                <span className="label text-steel tabular-nums">{formatDate(post.date)}</span>
-              </div>
-              <h3 className="font-display wdth-n mt-4 text-[17px] font-semibold leading-snug text-balance">
-                {post.title}
-              </h3>
-              <p className="mt-2 line-clamp-3 flex-1 text-[14.5px] leading-relaxed text-ink-soft">{post.excerpt}</p>
-              <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-medium text-navy">
-                Read
-                <ArrowRight
-                  size={15}
-                  aria-hidden="true"
-                  className="transition-transform duration-300 group-hover:translate-x-1"
-                />
-              </span>
-            </Link>
-          ))}
-        </MobileCardRail></div>
-        <div className="mt-7"><V2Button href="/test/blog" variant="outline">View all updates</V2Button></div>
-      </section> : null}
+      <Suspense fallback={<HomeUpdatesSkeleton />}>
+        <UpdatesSection posts={posts} />
+      </Suspense>
 
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">
