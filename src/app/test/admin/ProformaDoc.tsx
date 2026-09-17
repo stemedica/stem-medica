@@ -11,94 +11,94 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
   return (
     <article id="proforma-doc" className="pf">
       <header className="pf-head">
-        <div>
+        <div className="pf-brand">
+          {/* A plain image is intentional: the same markup is embedded into Word exports. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="" className="pf-logo" />
-          <div className="pf-issuer">
-            <strong>{issuer.name}</strong>
-            <span>{issuer.address}</span>
-            <span>TIN {issuer.tin} · VAT {issuer.vatReg}</span>
-            <span>{issuer.phone} · {issuer.email}</span>
-          </div>
-        </div>
-        <div className="pf-title">
-          <h1>Proforma Invoice</h1>
-          <table className="pf-meta">
-            <tbody>
-              <tr><th>No.</th><td>{p.number}</td></tr>
-              <tr><th>Date</th><td>{p.date}</td></tr>
-              <tr><th>Valid until</th><td>{p.validity}</td></tr>
-            </tbody>
-          </table>
+          <span>{issuer.name || "STEM MEDICA"}</span>
         </div>
       </header>
 
-      <section className="pf-to">
-        <div className="pf-label">Bill to</div>
-        <strong>{p.client.name || "—"}</strong>
-        {p.client.attn ? <div>Attn: {p.client.attn}</div> : null}
-        {p.client.address ? <div>{p.client.address}</div> : null}
-        {p.client.tin ? <div>TIN {p.client.tin}</div> : null}
+      <h1 className="pf-document-title">Proforma Invoice</h1>
+
+      <dl className="pf-meta">
+        <div><dt>Proforma Invoice No.:</dt><dd>{p.number || "—"}</dd></div>
+        <div><dt>Date:</dt><dd>{p.date || "—"}</dd></div>
+      </dl>
+
+      <section className="pf-parties">
+        <div className="pf-from">
+          <p className="pf-party-label">From :</p>
+          <strong>{issuer.name || "—"}</strong>
+          {issuer.address ? <span>{issuer.address}</span> : null}
+          {issuer.phone ? <span>Tel: {issuer.phone}</span> : null}
+          {issuer.email ? <span>Email: {issuer.email}</span> : null}
+          {issuer.tin ? <span>TIN No: {issuer.tin}</span> : null}
+          {issuer.vatReg ? <span>VAT Reg. No: {issuer.vatReg}</span> : null}
+        </div>
+
+        <div className="pf-to">
+          <strong>To : {p.client.name || "—"}</strong>
+          {p.client.attn ? <span>Attn: {p.client.attn}</span> : null}
+          {p.client.address ? <span>{p.client.address}</span> : null}
+          {p.client.tin ? <span>TIN No: {p.client.tin}</span> : null}
+        </div>
       </section>
 
-      <table className="pf-items">
-        <thead>
-          <tr>
-            <th className="n">#</th>
-            <th>Description</th>
-            <th className="n">Qty</th>
-            <th>Unit</th>
-            <th className="r">Unit price</th>
-            <th className="r">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {p.items.map((i, n) => (
-            <tr key={i.id}>
-              <td className="n">{n + 1}</td>
-              <td>{i.description || "—"}</td>
-              <td className="n">{i.qty}</td>
-              <td>{i.unit}</td>
-              <td className="r">{money(i.price, p.currency)}</td>
-              <td className="r">{money(lineTotal(i), p.currency)}</td>
+      <section className="pf-table-block">
+        <h2>Product / Service Details</h2>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="" className="pf-watermark" />
+        <table className="pf-items">
+          <thead>
+            <tr>
+              <th className="n">No</th>
+              <th>Description</th>
+              <th>Unit</th>
+              <th className="n">Qty</th>
+              <th className="r">Unit Price</th>
+              <th className="r">Total ({p.currency})</th>
             </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr><th colSpan={5} className="r">Subtotal</th><td className="r">{money(t.subtotal, p.currency)}</td></tr>
-          <tr><th colSpan={5} className="r">VAT {p.vatRate}%</th><td className="r">{money(t.vat, p.currency)}</td></tr>
-          <tr className="pf-grand"><th colSpan={5} className="r">Total</th><td className="r">{money(t.grand, p.currency)}</td></tr>
-        </tfoot>
-      </table>
+          </thead>
+          <tbody>
+            {p.items.map((i, n) => (
+              <tr key={i.id}>
+                <td className="n">{n + 1}</td>
+                <td>{i.description || "—"}</td>
+                <td>{i.unit}</td>
+                <td className="n">{i.qty}</td>
+                <td className="r">{money(i.price, p.currency)}</td>
+                <td className="r">{money(lineTotal(i), p.currency)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr><th colSpan={5} className="r">Subtotal :</th><td className="r">{money(t.subtotal, p.currency)}</td></tr>
+            {p.includeVat ? <tr><th colSpan={5} className="r">VAT {p.vatRate}% :</th><td className="r">{money(t.vat, p.currency)}</td></tr> : null}
+            <tr className="pf-grand"><th colSpan={5} className="r">Total :</th><td className="r">{money(t.grand, p.currency)}</td></tr>
+          </tfoot>
+        </table>
+      </section>
 
       <section className="pf-terms">
-        <div>
-          <div className="pf-label">Delivery</div>
-          <p>{p.delivery || "—"}</p>
-          <div className="pf-label">Payment</div>
-          <p>{p.payment || "—"}</p>
-        </div>
-        <div>
-          <div className="pf-label">Bank</div>
-          <p>{issuer.bank}<br />{issuer.account}</p>
-        </div>
+        <p><strong>Delivery date :</strong> {p.delivery || "—"}</p>
+        <p><strong>Terms of payment :</strong> {p.payment || "—"}</p>
+        <p><strong>Validity:</strong> {p.validity || "—"}</p>
+        {issuer.bank || issuer.account ? (
+          <p><strong>Bank:</strong> {[issuer.bank, issuer.account].filter(Boolean).join(" · ")}</p>
+        ) : null}
       </section>
 
       {p.notes ? (
         <section className="pf-notes">
-          <div className="pf-label">Notes</div>
-          <p>{p.notes}</p>
+          <p><strong>Notes:</strong> {p.notes}</p>
         </section>
       ) : null}
 
+      <div className="pf-sign"><strong>Signature &amp; Stamp:</strong></div>
+
       <footer className="pf-foot">
-        <div className="pf-sign">
-          <span>Authorised signature</span>
-        </div>
-        <p className="pf-small">
-          This is a proforma invoice, not a tax invoice. Prices are valid until the
-          date shown and are subject to stock availability.
-        </p>
+        <p>{[issuer.address, issuer.phone ? `Phone No ${issuer.phone}` : ""].filter(Boolean).join(" , ")}</p>
       </footer>
     </article>
   );

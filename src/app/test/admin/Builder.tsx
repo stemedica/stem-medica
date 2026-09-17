@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
 import { draftSchema } from "@/lib/cms-schema";
 import { Plus, Trash2, Printer, FileDown, RotateCcw } from "lucide-react";
@@ -12,7 +12,7 @@ import { AdminSaveBar } from "@/components/AdminSaveBar";
 import { formProblems, type FormProblem, UserFacingError, userError } from "@/lib/form-errors";
 import { FormProblems, FieldProblem, fieldProblemProps, focusProblem } from "@/components/FormProblems";
 import {
-  blankItem, nextNumber, today,
+  addCatalogueProduct, blankItem, nextNumber, today,
   type Issuer, type Proforma,
 } from "./proforma";
 
@@ -32,6 +32,7 @@ const DEFAULT_DOC = (): Proforma => ({
   date: today(),
   validity: "",
   currency: "ETB",
+  includeVat: true,
   vatRate: 15,
   client: { name: "", attn: "", address: "", tin: "" },
   items: [blankItem()],
@@ -53,6 +54,8 @@ export function Builder() {
   const [busy, setBusy] = useState(false);
   const [savedState, setSavedState] = useState(() => JSON.stringify({ issuer, doc }));
   const [drafts, setDrafts] = useState<{ id: string; number: string; client: string; expiresAt: string; etag: string }[]>([]);
+  const previewIssuer = useDeferredValue(issuer);
+  const previewDoc = useDeferredValue(doc);
   const serializedDraft = useMemo(() => JSON.stringify({ issuer, doc }), [issuer, doc]);
   const dirty = serializedDraft !== savedState;
   const validation = useMemo(() => draftSchema.safeParse({ issuer, doc }), [issuer, doc]);
@@ -133,15 +136,14 @@ export function Builder() {
     setBusy(true);
     try {
     const copy = node.cloneNode(true) as HTMLElement;
-    const logo = copy.querySelector("img");
-    if (logo) {
-      const response = await fetch(logo.src);
-      if (!response.ok) throw new Error("Unable to load the document logo");
+    for (const image of copy.querySelectorAll("img")) {
+      const response = await fetch(image.src);
+      if (!response.ok) throw new Error("Unable to load a document image");
       const blob = await response.blob();
-      logo.src = await new Promise<string>((resolve, reject) => {
+      image.src = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result));
-        reader.onerror = () => reject(new Error("Unable to embed the document logo"));
+        reader.onerror = () => reject(new Error("Unable to embed a document image"));
         reader.readAsDataURL(blob);
       });
     }
@@ -215,8 +217,31 @@ export function Builder() {
             <Field path="doc.date" problems={problems} label="Date" type="date" value={doc.date} onChange={(v) => setDoc((d) => ({ ...d, date: v }))} />
             <Field path="doc.validity" problems={problems} label="Valid until" type="date" value={doc.validity} onChange={(v) => setDoc((d) => ({ ...d, validity: v }))} />
             <Field path="doc.currency" problems={problems} label="Currency" value={doc.currency} onChange={(v) => setDoc((d) => ({ ...d, currency: v }))} />
-            <Field path="doc.vatRate" problems={problems} label="VAT %" type="number" value={String(doc.vatRate)}
-                   onChange={(v) => setDoc((d) => ({ ...d, vatRate: Number(v) || 0 }))} />
+            <div className="sm:col-span-2 flex min-h-14 items-center justify-between gap-4 border border-hair px-3 py-2.5">
+              <div>
+                <div className="label text-steel">Include VAT</div>
+                <p className="mt-1 text-xs text-steel">Show VAT separately and include it in the invoice total.</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <span aria-hidden="true" className="min-w-6 text-right text-xs font-medium text-ink-soft">
+                  {doc.includeVat ? "On" : "Off"}
+                </span>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-label="Include VAT"
+                  aria-checked={doc.includeVat}
+                  onClick={() => setDoc((d) => ({ ...d, includeVat: !d.includeVat }))}
+                  className={`inline-flex h-7 w-12 shrink-0 items-center rounded-full border p-[3px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy ${doc.includeVat ? "border-navy bg-navy" : "border-hair bg-paper"}`}
+                >
+                  <span aria-hidden="true" className={`block h-5 w-5 rounded-full border border-black/10 bg-white shadow-sm transition-transform ${doc.includeVat ? "translate-x-[22px]" : "translate-x-0"}`} />
+                </button>
+              </div>
+            </div>
+            {doc.includeVat ? (
+              <Field path="doc.vatRate" problems={problems} label="VAT %" type="number" value={String(doc.vatRate)}
+                     onChange={(v) => setDoc((d) => ({ ...d, vatRate: Number(v) || 0 }))} />
+            ) : <p className="self-center text-xs text-steel">VAT is excluded. The saved rate remains {doc.vatRate}% if you turn it back on.</p>}
           </div>
           <button type="button" onClick={issueNumber} className="btn-ghost mt-1">
             Generate new reference
@@ -231,15 +256,14 @@ export function Builder() {
         </Group>
 
         <Group title="Items">
-          <CataloguePicker disabled={doc.items.length >= 100} onAdd={(product) => {
-            resetFields(); setAttempted(false); setExportAttempted(false);
-            setDoc((current) => {
-              if (current.items.length >= 100) return current;
-              const item = { ...blankItem(), description: `${product.name} — ${product.brand}` };
-              const empty = current.items.findIndex((entry) => !entry.description.trim() && entry.price === 0 && entry.qty === 1 && entry.unit === "pcs");
-              return { ...current, items: empty < 0 ? [...current.items, item] : current.items.map((entry, index) => index === empty ? item : entry) };
-            });
-          }} />
+          <CataloguePicker
+            limitReached={doc.items.length >= 100}
+            selectedItems={doc.items}
+            onAdd={(product) => {
+              resetFields(); setAttempted(false); setExportAttempted(false);
+              setDoc((current) => addCatalogueProduct(current, product));
+            }}
+          />
           <div className="space-y-3">
             {doc.items.map((i, n) => (
               <div key={i.id} className="border border-hair p-3">
@@ -295,8 +319,8 @@ export function Builder() {
           <h2 className="font-display text-lg font-semibold text-navy">Document preview</h2>
           <p id="preview-help" className="text-xs text-steel">A4 layout · Scroll sideways on smaller screens</p>
         </div>
-      <div className="pf-stage" tabIndex={0} role="region" aria-label="Scrollable A4 document" aria-describedby="preview-help">
-        <ProformaDoc issuer={issuer} p={doc} />
+      <div className="pf-stage" tabIndex={0} role="region" aria-label="Scrollable A4 document" aria-describedby="preview-help" aria-busy={previewIssuer !== issuer || previewDoc !== doc}>
+        <ProformaDoc issuer={previewIssuer} p={previewDoc} />
       </div>
       </section>
     </div>

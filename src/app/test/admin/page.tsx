@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { ArrowRight, Package, Newspaper, FileText } from "lucide-react";
 import { requireAdminPage } from "@/lib/auth/guard";
-import { readCatalogue } from "@/lib/catalogue";
-import { readPosts, formatDate } from "@/lib/post-store";
+import { getCatalogueDocument } from "@/lib/catalogue";
+import { getPostsDocument, formatDate } from "@/lib/post-store";
 import { storageReady } from "@/lib/storage";
 
 export default async function AdminPage() {
   await requireAdminPage();
-  const [catalogueResult, postsResult] = await Promise.allSettled([readCatalogue(), readPosts()]);
-  const catalogue = catalogueResult.status === "fulfilled" ? catalogueResult.value.catalogue : null;
-  const posts = postsResult.status === "fulfilled" ? postsResult.value.posts : null;
+  const [catalogueResult, postsResult] = await Promise.allSettled([getCatalogueDocument(), getPostsDocument()]);
+  const catalogue = catalogueResult.status === "fulfilled" ? catalogueResult.value : null;
+  const posts = postsResult.status === "fulfilled" ? postsResult.value : null;
   const available = storageReady();
   const stats = [
     { label: "Published products", count: catalogue?.products.filter((item) => item.published).length, href: "/test/admin/catalogue" },

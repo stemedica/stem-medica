@@ -9,7 +9,7 @@ let connection: ReturnType<typeof connect> | undefined;
 function connect() {
   const connectionString = process.env.CMS_DATABASE_URL || process.env.DATABASE_URL;
   if (!connectionString) throw new Error("CMS database is not configured");
-  const pool = new Pool({ connectionString, max: 3, idleTimeoutMillis: 5000, connectionTimeoutMillis: 10000 });
+  const pool = new Pool({ connectionString, max: 3, idleTimeoutMillis: 30_000, connectionTimeoutMillis: 10_000, keepAlive: true });
   if (process.env.VERCEL) attachDatabasePool(pool);
   return { pool, db: drizzle(pool) };
 }

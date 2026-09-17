@@ -3,12 +3,20 @@ import { createHash } from "node:crypto";
 import { revalidateTag, revalidatePath } from "next/cache";
 import { adminGuard, apiError, json, requestJson } from "@/lib/admin-api";
 import { catalogueSchema } from "@/lib/cms-schema";
-import { CATALOGUE_KEY, readCatalogue } from "@/lib/catalogue";
+import { CATALOGUE_KEY, getCatalogue, readCatalogue } from "@/lib/catalogue";
+import { cataloguePickerPage } from "@/lib/catalogue-picker";
 import { writeJson, ConflictError } from "@/lib/storage";
 
 export async function GET(request: Request) {
   const denied = await adminGuard(request); if (denied) return denied;
-  try { return json(await readCatalogue()); } catch (e) { return apiError(e); }
+  try {
+    const url = new URL(request.url);
+    if (url.searchParams.get("view") === "picker") {
+      const query = (url.searchParams.get("q") ?? "").slice(0, 200);
+      return json(cataloguePickerPage(await getCatalogue(), query, url.searchParams.get("page") ?? undefined));
+    }
+    return json(await readCatalogue());
+  } catch (e) { return apiError(e); }
 }
 export async function PUT(request: Request) {
   const denied = await adminGuard(request); if (denied) return denied;

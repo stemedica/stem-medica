@@ -13,7 +13,7 @@ test("catalogue picker recovers, searches and preserves manual items", async ({ 
   catalogue.products.push({ slug: "qa-picker-monitor", name: "QA picker monitor", brand: "QA", origin: "Test", category: "qa-picker", image: "", summary: "Test fixture", availability: "On request", leadTime: "Confirm on enquiry", featured: true, published: true, specs: [], services: [] });
   expect((await request.put("/test/admin/api/catalogue", { headers: { Origin: process.env.QA_BASE_URL ?? "http://127.0.0.1:3001" }, data: { catalogue, etag: snapshot.etag } })).status()).toBe(200);
   await page.goto("/test/admin/proformas");
-  await page.route("**/admin/api/catalogue", (route) => route.fulfill({ status: 503, json: { error: "Unavailable" } }));
+  await page.route("**/admin/api/catalogue?*", (route) => route.fulfill({ status: 503, json: { error: "Unavailable" } }));
   await page.getByRole("button", { name: "Browse catalogue" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "Catalogue unavailable" })).toContainText("enter an item manually");
   await page.unroute("**/admin/api/catalogue");
@@ -29,9 +29,10 @@ test("catalogue picker recovers, searches and preserves manual items", async ({ 
   await expect(page.getByLabel("Description", { exact: true })).toHaveValue(`${product.name} — ${product.brand}`);
   await page.getByLabel("Price", { exact: true }).fill("1250");
   await page.getByRole("button", { name: `Add ${product.name}`, exact: true }).click();
-  await expect(page.getByLabel("Description", { exact: true })).toHaveCount(2);
-  await expect(page.getByLabel("Price", { exact: true }).first()).toHaveValue("1250");
-  await expect(page.getByLabel("Price", { exact: true }).last()).toHaveValue("0");
+  await expect(page.getByLabel("Description", { exact: true })).toHaveCount(1);
+  await expect(page.getByLabel("Qty", { exact: true })).toHaveValue("2");
+  await expect(page.getByLabel("Price", { exact: true })).toHaveValue("1250");
+  await expect(page.getByText(`${product.name} quantity increased to 2.`)).toBeVisible();
   await page.getByLabel("Search catalogue").scrollIntoViewIfNeeded();
   await page.screenshot({ path: "test-results/picker-desktop.png" });
   await page.setViewportSize({ width: 390, height: 844 });

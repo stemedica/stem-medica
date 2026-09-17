@@ -3,6 +3,7 @@
 
 export type LineItem = {
   id: string;
+  catalogueSlug?: string;
   description: string;
   qty: number;
   unit: string;
@@ -25,6 +26,7 @@ export type Proforma = {
   date: string;
   validity: string;
   currency: string;
+  includeVat: boolean;
   vatRate: number;
   client: { name: string; attn: string; address: string; tin: string };
   items: LineItem[];
@@ -43,8 +45,33 @@ export const lineTotal = (i: LineItem) => i.qty * i.price;
 
 export function totals(p: Proforma) {
   const subtotal = p.items.reduce((s, i) => s + lineTotal(i), 0);
-  const vat = subtotal * (p.vatRate / 100);
+  const vat = p.includeVat ? subtotal * (p.vatRate / 100) : 0;
   return { subtotal, vat, grand: subtotal + vat };
+}
+
+export function addCatalogueProduct(
+  p: Proforma,
+  product: { slug: string; name: string; brand: string },
+): Proforma {
+  const generatedDescription = `${product.name} — ${product.brand}`;
+  const existing = p.items.findIndex((item) => item.catalogueSlug === product.slug
+    || (!item.catalogueSlug && item.description.trim() === generatedDescription));
+  if (existing >= 0) {
+    return {
+      ...p,
+      items: p.items.map((item, index) => index === existing
+        ? { ...item, catalogueSlug: product.slug, qty: Math.min(1_000_000, item.qty + 1) }
+        : item),
+    };
+  }
+  if (p.items.length >= 100) return p;
+  const item = {
+    ...blankItem(),
+    catalogueSlug: product.slug,
+    description: generatedDescription,
+  };
+  const empty = p.items.findIndex((entry) => !entry.description.trim() && entry.price === 0 && entry.qty === 1 && entry.unit === "pcs");
+  return { ...p, items: empty < 0 ? [...p.items, item] : p.items.map((entry, index) => index === empty ? item : entry) };
 }
 
 /** Unique references without a database counter. These are not sequential invoice numbers. */

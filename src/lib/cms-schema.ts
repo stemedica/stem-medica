@@ -28,6 +28,13 @@ export const catalogueSchema = z.object({
     if (p.category && !categories.has(p.category)) ctx.addIssue({ code: "custom", message: `Move ${p.name} to an existing category first`, path: ["products", i, "category"] });
   });
 });
+export const cataloguePickerPageSchema = z.object({
+  products: z.array(productSchema),
+  page: z.number().int().positive(),
+  pages: z.number().int().positive(),
+  total: z.number().int().nonnegative(),
+});
+export type CataloguePickerPage = z.infer<typeof cataloguePickerPageSchema>;
 export type Catalogue = z.infer<typeof catalogueSchema>;
 export type CmsProduct = z.infer<typeof productSchema>;
 export type CmsCategory = z.infer<typeof categorySchema>;
@@ -37,9 +44,9 @@ export const draftSchema = z.object({
   issuer: z.object({ name: draftText, address: draftText, tin: draftText, vatReg: draftText, phone: draftText, email: draftText, bank: draftText, account: draftText }),
   doc: z.object({
     number: z.string().max(100), date: z.iso.date(), validity: z.union([z.literal(""), z.iso.date()]),
-    currency: z.string().trim().min(1).max(10), vatRate: z.number().min(0).max(100),
+    currency: z.string().trim().min(1).max(10), includeVat: z.boolean().default(true), vatRate: z.number().min(0).max(100),
     client: z.object({ name: draftText, attn: draftText, address: draftText, tin: draftText }),
-    items: z.array(z.object({ id: z.string().min(1).max(100), description: draftText, qty: z.number().positive().max(1e6), unit: z.string().max(30), price: z.number().min(0).max(1e10) })).min(1).max(100).superRefine((items, ctx) => {
+    items: z.array(z.object({ id: z.string().min(1).max(100), catalogueSlug: slug.optional(), description: draftText, qty: z.number().positive().max(1e6), unit: z.string().max(30), price: z.number().min(0).max(1e10) })).min(1).max(100).superRefine((items, ctx) => {
       const ids = new Set<string>();
       items.forEach((item, index) => {
         if (ids.has(item.id)) ctx.addIssue({ code: "custom", path: [index, "id"], message: "Duplicate line item identifier" });
