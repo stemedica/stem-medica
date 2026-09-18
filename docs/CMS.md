@@ -1,6 +1,6 @@
 # Catalogue CMS and temporary proformas
 
-CMS documents can use Neon PostgreSQL (`CONTENT_STORAGE_DRIVER=postgres`): catalogue, posts, catalogue history and seven-day proforma drafts are stored as JSONB in `content_document`. Images remain in private Vercel Blob (or local development media). There is no browser-storage dependency. Without this explicit setting, the legacy Blob/local document backend remains available. Admin authentication is separate; see [authentication setup](AUTH.md).
+CMS documents can use Neon PostgreSQL (`CONTENT_STORAGE_DRIVER=postgres`): catalogue, posts and seven-day proforma drafts are stored as JSONB in `content_document`. Images remain in private Vercel Blob (or local development media). There is no browser-storage dependency. Without this explicit setting, the legacy Blob/local document backend remains available. Admin authentication is separate; see [authentication setup](AUTH.md).
 
 ## Neon test migration
 
@@ -33,7 +33,7 @@ Do not put Blob credentials in `NEXT_PUBLIC_` variables. Vercel's Hobby plan is 
 - All categories are public after saving; only products marked Published appear publicly.
 - Category links are generated from the name automatically; there is no slug field. Renaming a saved category preserves its link and product assignments. Categories with assigned products cannot be removed until those products are moved.
 - The homepage displays CMS categories, featured published products and published posts only when present. Empty sections, demo catalogue fallbacks, mock media and lorem ipsum have been removed.
-- Delete, discard, restore and in-app navigation confirmations use accessible modals. Browser-owned tab-close/reload warnings remain for unsaved changes; inline validation remains next to forms.
+- Delete, discard and in-app navigation confirmations use accessible modals. Browser-owned tab-close/reload warnings remain for unsaved changes; inline validation remains next to forms.
 - Products require a name and brand; categories require a name. Other descriptive fields are optional and grouped under Additional details. An empty category short name uses its full name. Products without a category appear under All products.
 - Product URLs are generated automatically before the first save and then remain stable when renamed. Possible duplicate product names and brands show a warning with an action to open the existing item.
 - Products and posts have explicit Save draft, Publish and Unpublish actions, plus All/Published/Drafts filters. Unpublishing hides the item without deleting its content or changing its URL. CMS drafts have no seven-day expiry; that limit applies only to proformas.
@@ -41,9 +41,8 @@ Do not put Blob credentials in `NEXT_PUBLIC_` variables. Vercel's Hobby plan is 
 - Saving preserves publication statuses. Publish/Unpublish changes the selected item's status. Each action saves all pending edits in that editor as one atomic JSON document. ETags reject stale saves from other tabs/editors.
 - Images are limited to JPEG, PNG or WebP, up to 3 MB. Optimise before uploading.
 - Uploaded images stay private until referenced by a public category or published product. The public media route serves only referenced images. Previously delivered public images may remain cached for up to one hour.
-- The previous catalogue is archived before each update. Version history loads an earlier version for review; click Save catalogue to publish it. Daily cleanup retains the newest 30 backups.
 - Public data uses a five-minute Next.js cache, explicitly invalidated on save. Storage reads bypass Blob's CDN cache so an old JSON file is not republished accidentally.
-- Removing an image reference does not delete the image file, so older catalogue versions can still be restored. Storage usage therefore grows with uploads; audit unused images periodically.
+- Removing an image reference does not delete the image file. Storage usage therefore grows with uploads; audit unused images periodically.
 
 ## Seven-day drafts
 

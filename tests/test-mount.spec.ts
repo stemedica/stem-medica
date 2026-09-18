@@ -20,9 +20,10 @@ test("the full website is mounted at root", async ({ page, request }) => {
   await expect(page.getByRole("search")).toHaveAttribute("action", "/blog");
 
   if (!process.env.QA_BASE_URL) {
-    for (const api of ["catalogue", "posts", "drafts", "media", "history"]) {
+    for (const api of ["catalogue", "posts", "drafts", "media"]) {
       expect((await request.get(`/admin/api/${api}`)).status()).toBe(401);
     }
+    expect((await request.get("/admin/api/history")).status()).toBe(404);
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/auth\/login$/);
   }

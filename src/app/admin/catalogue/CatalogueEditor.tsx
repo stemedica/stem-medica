@@ -33,7 +33,6 @@ export function CatalogueEditor() {
   const [busy, setBusy] = useState(true);
   const [dirty, setDirty] = useState(false);
   const { message, tone, setMessage } = useAdminFeedback("");
-  const [history, setHistory] = useState<{ pathname: string; uploadedAt: string }[]>([]);
   const validation = useMemo(() => data ? validateCatalogue(data) : null, [data]);
   const allProblems = validation && !validation.success ? formProblems(validation.error.issues, "catalogue") : [];
   const { problems, onBlurCapture, resetFields } = useFieldValidation(allProblems, attempted);
@@ -139,19 +138,6 @@ export function CatalogueEditor() {
     } catch (e) { setMessage(userError(e, "Upload failed"), "error"); }
     finally { setBusy(false); }
   }
-  async function versions() {
-    setBusy(true);
-    try { const r = await fetch("/admin/api/history"); const b = await r.json(); if (!r.ok) throw new UserFacingError(b.error); setHistory(b.versions); setMessage(b.versions.length ? "Choose a previous version to load for review." : "No previous versions yet."); }
-    catch (e) { setMessage(userError(e, "Unable to load history"), "error"); }
-    finally { setBusy(false); }
-  }
-  async function restore(key: string) {
-    if (dirty && !await confirm({ title: "Replace unsaved edits?", message: "Load this previous version for review? Your current unsaved edits will be lost.", action: "Load version" })) return;
-    setBusy(true);
-    try { const r = await fetch(`/admin/api/history?key=${encodeURIComponent(key)}`); const b = await r.json(); if (!r.ok) throw new UserFacingError(b.error); resetFields(); setAttempted(false); setData(b.catalogue); newCategories.current.clear(); newProducts.current.clear(); setSelected(0); setDirty(true); setMessage("Previous version loaded. Review and save to publish it."); }
-    catch (e) { setMessage(userError(e, "Unable to load version"), "error"); }
-    finally { setBusy(false); }
-  }
   const current = data?.[mode][selected];
   const product = mode === "products" ? current as CmsProduct | undefined : undefined;
   const duplicateIndex = product && product.name.trim() && product.brand.trim() ? data!.products.findIndex((p, i) => i !== selected && normalize(p.name) === normalize(product.name) && normalize(p.brand) === normalize(product.brand)) : -1;
@@ -160,10 +146,7 @@ export function CatalogueEditor() {
       {confirmationModal}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div><h1 className="text-3xl font-semibold">Catalogue</h1><p className="mt-2 text-ink-soft">Manage equipment, categories and product photos.</p></div>
-        <div className="flex flex-wrap gap-2">
-          <button className={button} disabled={busy} onClick={async () => { if (!dirty || await confirm({ title: "Discard unsaved edits?", message: "Reload the saved catalogue? Your current unsaved edits will be lost.", action: "Discard and reload" })) { setBusy(true); void reload(); } }}>Reload</button>
-          <button className={button} disabled={busy || !configured} onClick={versions}>Version history</button>
-        </div>
+        <button className={button} disabled={busy} onClick={async () => { if (!dirty || await confirm({ title: "Discard unsaved edits?", message: "Reload the saved catalogue? Your current unsaved edits will be lost.", action: "Discard and reload" })) { setBusy(true); void reload(); } }}>Reload</button>
       </div>
       <AdminSaveBar label={product ? product.published ? "Save changes" : "Save draft" : "Save catalogue"} onSave={() => save()} disabled={!configured || !dirty} busy={busy} dirty={dirty} tone={tone} message={message}>
         {product ? <button type="button" className="btn-outline min-h-11" disabled={busy || !configured} onClick={async () => {
@@ -173,7 +156,6 @@ export function CatalogueEditor() {
       </AdminSaveBar>
       <p className="mt-3 text-sm text-steel">Saving keeps each item’s current publication status. These actions save all pending catalogue edits.</p>
       <FormProblems problems={attempted ? allProblems : []} onSelect={selectProblem} />
-      {history.length ? <details className="mb-6"><summary className="cursor-pointer text-navy">Previous versions</summary><div className="mt-3 flex flex-wrap gap-2">{history.map((h) => <button key={h.pathname} disabled={busy} className={button} onClick={() => restore(h.pathname)}>{new Date(h.uploadedAt).toLocaleString()}</button>)}</div></details> : null}
       {data ? <fieldset disabled={busy} className="mt-6 grid min-w-0 gap-6 md:grid-cols-[260px_minmax(0,1fr)] disabled:opacity-70">
         <aside className="min-w-0">
           <div className="mb-4 flex gap-2">{(["products", "categories"] as const).map((tab) => <button key={tab} className={`${button} ${mode === tab ? "bg-navy text-white hover:bg-navy-deep" : "bg-white"}`} aria-pressed={mode === tab} onClick={() => { setMode(tab); setSelected(0); }}>{tab === "products" ? "Products" : "Categories"}</button>)}</div>

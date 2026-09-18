@@ -16,6 +16,7 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
 
   await page.goto("/admin/catalogue");
   await expect(page.getByRole("status")).toContainText("Catalogue loaded");
+  await expect(page.getByRole("button", { name: "Version history" })).toHaveCount(0);
   // Each run uses unique slugs so a failed run can be retried without deleting data.
   const suffix = Date.now().toString(36);
   const categorySlug = `qa-equipment-${suffix}`;
@@ -62,9 +63,7 @@ test("CMS publishing, drafts, auth, expiry and mobile layouts", async ({ page, r
   expect(badOrigin.status()).toBe(403);
   const conflict = await request.put("/admin/api/catalogue", { headers: { Origin: baseURL }, data: { catalogue: saved.catalogue, etag: "stale" } });
   expect(conflict.status()).toBe(409);
-  const versions = await (await request.get("/admin/api/history")).json();
-  expect(versions.versions.length).toBeGreaterThan(0);
-  expect((await request.get(`/admin/api/history?key=${encodeURIComponent(versions.versions[0].pathname)}`)).status()).toBe(200);
+  expect((await request.get("/admin/api/history")).status()).toBe(404);
   await page.screenshot({ path: "test-results/cms-desktop.png", fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);

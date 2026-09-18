@@ -9,7 +9,8 @@ test("email and password protect every admin surface", async ({ page, request })
   await expect(page).toHaveURL(/\/auth\/login/);
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  for (const path of ["catalogue", "posts", "drafts", "media", "history"]) expect((await request.get(`/admin/api/${path}`)).status()).toBe(401);
+  for (const path of ["catalogue", "posts", "drafts", "media"]) expect((await request.get(`/admin/api/${path}`)).status()).toBe(401);
+  expect((await request.get("/admin/api/history")).status()).toBe(404);
   expect((await request.post("/api/auth/sign-up/email", { data: {} })).status()).toBe(404);
   expect((await request.post("/api/auth/sign-in/email", { headers: { Origin: "https://untrusted.example" }, data: {} })).status()).toBe(403);
 
