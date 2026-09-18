@@ -185,7 +185,7 @@ export function Builder() {
       <fieldset disabled={busy} className="no-print min-w-0 space-y-5 disabled:opacity-70">
         <FormProblems problems={attempted ? submitProblems : []} onSelect={(problem) => focusProblem(problem.path)} />
         <Group title="Temporary drafts" note="Saved privately for seven days from creation. Saving edits does not extend expiry.">
-          <div className="flex flex-wrap gap-2"><button type="button" className="btn-outline min-h-11" onClick={listDrafts}>Open saved drafts</button>{etag ? <button type="button" className="btn-ghost min-h-11" onClick={() => deleteDraft(draftId, etag, doc.number)}>Remove current draft</button> : null}</div>
+          <div className="action-stack gap-2"><button type="button" className="btn-outline min-h-11" onClick={listDrafts}>Open saved drafts</button>{etag ? <button type="button" className="btn-ghost min-h-11" onClick={() => deleteDraft(draftId, etag, doc.number)}>Remove current draft</button> : null}</div>
           {expiresAt ? <p className="text-xs text-steel">Expires {new Date(expiresAt).toLocaleString()}{dirty ? " · Unsaved edits" : ""}</p> : null}
           {drafts.map((d) => <div key={d.id} className="rounded-lg border border-hair p-3 text-sm" data-draft-id={d.id}>
             <p className="break-words font-medium">{d.number} · {d.client || "Unnamed client"}</p>
@@ -232,9 +232,11 @@ export function Builder() {
                   aria-label="Include VAT"
                   aria-checked={doc.includeVat}
                   onClick={() => setDoc((d) => ({ ...d, includeVat: !d.includeVat }))}
-                  className={`inline-flex h-7 w-12 shrink-0 items-center rounded-full border p-[3px] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy ${doc.includeVat ? "border-navy bg-navy" : "border-hair bg-paper"}`}
+                  className="relative inline-flex h-11 w-14 shrink-0 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
                 >
-                  <span aria-hidden="true" className={`block h-5 w-5 rounded-full border border-black/10 bg-white shadow-sm transition-transform ${doc.includeVat ? "translate-x-[22px]" : "translate-x-0"}`} />
+                  <span aria-hidden="true" className={`relative block h-7 w-12 rounded-full border p-[3px] transition-colors ${doc.includeVat ? "border-navy bg-navy" : "border-hair bg-paper"}`}>
+                    <span className={`block h-5 w-5 rounded-full border border-black/10 bg-white shadow-sm transition-transform ${doc.includeVat ? "translate-x-[22px]" : "translate-x-0"}`} />
+                  </span>
                 </button>
               </div>
             </div>
@@ -297,7 +299,7 @@ export function Builder() {
           <Field path="doc.notes" problems={problems} label="Notes" value={doc.notes} onChange={(v) => setDoc((d) => ({ ...d, notes: v }))} />
         </Group>
 
-        <div className="flex flex-wrap gap-2.5 border-t border-hair pt-6">
+        <div className="action-stack gap-2.5 border-t border-hair pt-6">
           <button type="button" onClick={downloadDoc} className="btn-outline">
             <FileDown size={14} /> Download .doc
           </button>

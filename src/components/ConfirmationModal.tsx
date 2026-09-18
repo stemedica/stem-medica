@@ -52,7 +52,7 @@ function ConfirmationModal({ pending, finish }: { pending: Confirmation | null; 
     <div>
       <h2 id={`${id}-title`} className="font-display text-2xl font-semibold">{pending?.title}</h2>
       <p id={`${id}-message`} className="mt-3 break-words text-sm leading-relaxed text-ink-soft">{pending?.message}</p>
-      <div className="mt-6 flex flex-wrap justify-end gap-3">
+      <div className="action-stack mt-6 justify-end">
         <button type="button" className="btn-outline" autoFocus onClick={() => finish(false)}>{pending?.cancel ?? "Cancel"}</button>
         <button type="button" className="btn-primary" onClick={() => finish(true)}>{pending?.action ?? "Continue"}</button>
       </div>

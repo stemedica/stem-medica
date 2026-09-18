@@ -153,12 +153,16 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 44px;
+  max-width: 100%;
   padding: 10px 14px;
   border: 1px solid transparent;
   border-radius: 10px;
   font-size: 13px;
   font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-align: center;
   cursor: pointer;
 }
 .btn-primary { background: var(--color-navy); color: white; }
@@ -168,6 +172,13 @@ body {
 .btn-primary:disabled, .btn-outline:disabled, .btn-ghost:disabled {
   cursor: not-allowed;
   opacity: .5;
+}
+.action-stack { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+@media (max-width: 359px) {
+  .action-stack > :where(button, a, .btn-primary, .btn-outline, .btn-ghost) {
+    flex: 1 1 100%;
+    width: 100%;
+  }
 }
 
 .prose-sm-ink :where(h2) { font-family: var(--font-display); font-variation-settings: "wdth" 112; font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; margin: 2rem 0 0.75rem; }
@@ -280,7 +291,8 @@ body {
 
 .v2-btn {
   display: inline-flex; align-items: center; gap: 12px; border-radius: 999px;
-  font-size: 15px; font-weight: 500; line-height: 1;
+  min-height: 48px; max-width: 100%; justify-content: center; overflow-wrap: anywhere;
+  font-size: 15px; font-weight: 500; line-height: 1.2; text-align: center;
   transition: background-color .3s var(--ease-out), border-color .3s var(--ease-out), color .3s var(--ease-out);
 }
 .v2-btn-badge { padding: 8px 8px 8px 24px; }

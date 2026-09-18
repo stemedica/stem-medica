@@ -123,16 +123,16 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
       </label>
 
       <div className="sm:col-span-2">
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="action-stack items-center">
           <button
             type="submit"
-            className="label inline-flex items-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
+            className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
             <Send size={14} aria-hidden="true" /> Open request in email
           </button>
           <a
             href={`tel:${site.phoneIntl}`}
-            className="label inline-flex items-center gap-2.5 rounded-[2px] border border-ink px-6 py-3.5 font-semibold transition-colors duration-300 hover:bg-ink hover:text-paper"
+            className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] border border-ink px-6 py-3.5 text-center font-semibold transition-colors duration-300 hover:bg-ink hover:text-paper"
           >
             <Phone size={14} aria-hidden="true" /> Call instead
           </a>

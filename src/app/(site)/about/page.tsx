@@ -17,7 +17,7 @@ export default function AboutPage() {
         <p>Browse equipment by department. If you cannot find what you need, tell us what you are looking for.</p>
         <p>Share how the equipment will be used, how many units you need and where they will be installed. We will help confirm the right model and support.</p>
         <p>We confirm prices and terms in a written quote. If your team needs a proforma invoice, ask for one when you contact us.</p>
-        <div className="flex flex-wrap gap-3 pt-2"><Link href="/products" className="btn-primary min-h-11">Browse equipment</Link><Link href="/contact" className="btn-outline min-h-11">Contact the team</Link></div>
+        <div className="action-stack pt-2"><Link href="/products" className="btn-primary min-h-11">Browse equipment</Link><Link href="/contact" className="btn-outline min-h-11">Contact the team</Link></div>
       </div>
       <aside className="plate p-6">
         <h2 className="text-lg font-semibold text-navy">Get in touch</h2>
