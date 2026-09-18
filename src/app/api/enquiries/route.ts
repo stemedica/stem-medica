@@ -20,6 +20,10 @@ function wantsHtml(request: Request) {
     || request.headers.get("content-type")?.includes("multipart/form-data");
 }
 
+function quoteRedirect(result: "sent" | "details" | "limit" | "unavailable") {
+  return new Response(null, { status: 303, headers: { ...responseHeaders, Location: `/quote/${result}` } });
+}
+
 export async function POST(request: Request) {
   const html = wantsHtml(request);
   try {
@@ -28,11 +32,11 @@ export async function POST(request: Request) {
       : JSON.parse((await requestBytes(request, 10_000)).toString("utf8"));
     const parsed = enquirySchema.safeParse(raw);
     if (!parsed.success) {
-      if (html) return Response.redirect(new URL("/quote?error=details", request.url), 303);
+      if (html) return quoteRedirect("details");
       return Response.json({ message: parsed.error.issues[0]?.message || "Check the highlighted details and try again." }, { status: 400, headers: responseHeaders });
     }
     if (parsed.data.website) return html
-      ? Response.redirect(new URL("/quote?sent=1", request.url), 303)
+      ? quoteRedirect("sent")
       : Response.json({ submitted: true }, { status: 201, headers: responseHeaders });
     const input = {
       facility: parsed.data.facility,
@@ -45,14 +49,14 @@ export async function POST(request: Request) {
     };
     const allowed = await createEnquiry(input, clientKey(request), request.headers.get("user-agent"));
     if (!allowed) {
-      if (html) return Response.redirect(new URL("/quote?error=limit", request.url), 303);
+      if (html) return quoteRedirect("limit");
       return Response.json({ message: "Too many requests were sent from this connection. Please call or try again in one hour." }, { status: 429, headers: responseHeaders });
     }
     return html
-      ? Response.redirect(new URL("/quote?sent=1", request.url), 303)
+      ? quoteRedirect("sent")
       : Response.json({ submitted: true }, { status: 201, headers: responseHeaders });
   } catch {
-    if (html) return Response.redirect(new URL("/quote?error=unavailable", request.url), 303);
+    if (html) return quoteRedirect("unavailable");
     return Response.json({ message: "We couldn’t save your request. Please call or try again." }, { status: 503, headers: responseHeaders });
   }
 }

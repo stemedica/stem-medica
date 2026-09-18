@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Send, Phone } from "lucide-react";
 import { site } from "@/lib/site";
+import { quoteResultMessage } from "./quote-result";
 
 type Field = {
   name: string;
@@ -21,6 +22,21 @@ const FIELDS: Field[] = [
 ];
 
 type FormState = { kind: "idle" | "busy" | "success" | "error"; message: string };
+
+function subscribeToLocation(onChange: () => void) {
+  window.addEventListener("popstate", onChange);
+  return () => window.removeEventListener("popstate", onChange);
+}
+
+export function QuoteFormFromUrl() {
+  const search = useSyncExternalStore(subscribeToLocation, () => window.location.search, () => "");
+  const searchParams = new URLSearchParams(search);
+  const presetItem = (searchParams.get("item") ?? "").slice(0, 500);
+  const initialMessage = searchParams.get("sent") === "1"
+    ? quoteResultMessage("sent")
+    : quoteResultMessage(searchParams.get("error"));
+  return <QuoteForm key={`${presetItem}-${initialMessage}`} presetItem={presetItem} initialMessage={initialMessage} />;
+}
 
 export function QuoteForm({ presetItem = "", initialMessage = "" }: { presetItem?: string; initialMessage?: string }) {
   const [state, setState] = useState<FormState>(initialMessage

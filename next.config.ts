@@ -6,12 +6,17 @@ const scripts = process.env.NODE_ENV === "development"
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  // Preserve the absolute canonical-host redirect (localhost and 127.0.0.1
-  // must not be collapsed into a same-path redirect loop by Proxy).
-  skipProxyUrlNormalize: true,
   // Hides the floating dev-route indicator in the corner. Development only; it
   // never shipped to production. Compile and runtime errors are still surfaced.
   devIndicators: false,
+  async redirects() {
+    return [{
+      source: "/",
+      has: [{ type: "host", value: "admin\\..+" }],
+      destination: "/admin",
+      permanent: false,
+    }];
+  },
   async headers() {
     return [{
       source: "/:path*",

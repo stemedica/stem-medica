@@ -30,7 +30,7 @@ test("quotation submission works without JavaScript", async ({ browser }) => {
   await page.getByLabel("Phone number").fill("0911000000");
   await page.getByLabel("Equipment needed").fill("Microscope");
   await page.getByRole("button", { name: "Send quotation request" }).click();
-  await expect(page).toHaveURL(/\/quote\?sent=1$/);
+  await expect(page).toHaveURL(/\/quote\/sent$/);
   await expect(page.getByRole("status")).toContainText("request is saved");
   await context.close();
 });
