@@ -4,8 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "tsx scripts/dev-neon.ts",
-    "dev:local": "next dev --hostname 127.0.0.1",
-    "local:setup": "tsx scripts/local-setup.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -16,13 +14,12 @@
     "auth:migrate": "tsx scripts/auth-migrate.ts",
     "content:migrate": "tsx scripts/content-migrate.ts",
     "content:import-test": "tsx scripts/import-test-content.ts",
-    "auth:create-admin": "tsx scripts/auth-create-admin.ts"
+    "auth:create-admin": "tsx scripts/auth-create-admin.ts",
+    "auth:reset-password": "tsx scripts/auth-reset-password.ts"
   },
   "dependencies": {
-    "@better-auth/drizzle-adapter": "^1.7.5",
     "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.8",
-    "better-auth": "^1.7.5",
     "drizzle-orm": "^0.45.2",
     "gray-matter": "^4.0.3",
     "lucide-react": "^1.46.0",
@@ -31,7 +28,6 @@
     "pg": "^8.23.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-qr-code": "^2.2.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -50,7 +46,9 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@esbuild-kit/core-utils": { "esbuild": "^0.25.0" }
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.25.0"
+    }
   },
   "description": "STEM MEDICA — medical equipment distribution, Ethiopia. MVP demo."
 }

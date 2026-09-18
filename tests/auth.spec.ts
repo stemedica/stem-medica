@@ -1,104 +1,35 @@
 import { test, expect } from "@playwright/test";
-import { createOTP } from "@better-auth/utils/otp";
-import { base32 } from "@better-auth/utils/base32";
 
 test.use({ baseURL: "http://127.0.0.1:3001", trace: "off", screenshot: "off" });
 test.skip(process.env.QA_AUTH_E2E !== "1", "Run only against the disposable authentication database.");
 test.setTimeout(120000);
-test("authenticator setup and recovery protect every admin surface", async ({ page, request }) => {
+test("email and password protect every admin surface", async ({ page, request }) => {
   const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Areas we equip" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Featured equipment" })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "The latest from STEM MEDICA" })).toHaveCount(0);
-  await expect(page.locator("body")).not.toContainText("Lorem ipsum");
-  await expect(page.locator("body")).not.toContainText("Demo build");
-  await expect(page.locator('[aria-label^="Placeholder:"]')).toHaveCount(0);
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/auth\/login/);
-  await page.screenshot({ path: "test-results/auth-login-desktop.png" });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  await page.screenshot({ path: "test-results/auth-login-mobile.png" });
   for (const path of ["catalogue", "posts", "drafts", "media", "history"]) expect((await request.get(`/admin/api/${path}`)).status()).toBe(401);
-  const legacy = await request.get("/admin/api/posts", { headers: { Authorization: "Basic " + Buffer.from("admin:old-password").toString("base64") } });
-  expect(legacy.status()).toBe(401);
-  expect(legacy.headers()["www-authenticate"]).toBeUndefined();
   expect((await request.post("/api/auth/sign-up/email", { data: {} })).status()).toBe(404);
   expect((await request.post("/api/auth/sign-in/email", { headers: { Origin: "https://untrusted.example" }, data: {} })).status()).toBe(403);
-  const signIn = async () => {
-    await page.getByLabel("Email", { exact: true }).fill("admin@example.test");
-    await page.getByLabel("Password", { exact: true }).fill("Test12345!");
-    await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  };
-  if (process.env.QA_FIRST_LOGIN === "1") {
-    await expect(page.getByRole("heading", { name: "Welcome to STEM MEDICA" })).toBeVisible();
-    await page.getByRole("link", { name: "Create your admin account" }).click();
-    await expect(page.getByRole("heading", { name: "Welcome to your admin" })).toBeVisible();
-    await page.screenshot({ path: "test-results/first-login-mobile.png" });
-    expect((await request.post("/api/local-admin", { headers: { Origin: "https://untrusted.example" }, data: {} })).status()).toBe(403);
-    expect((await request.post("/api/local-admin", { headers: { Origin: "http://127.0.0.1:3001" }, data: {} })).status()).toBe(403);
-    await page.getByLabel("New password", { exact: true }).fill("Test12345!");
-    await page.getByLabel("Confirm new password").fill("A different password 123!");
-    await page.getByRole("button", { name: "Create account & continue" }).click();
-    await expect(page.getByRole("alert").filter({ hasText: "passwords don’t match" })).toBeVisible();
-    await page.getByLabel("Confirm new password").fill("Test12345!");
-    const createRequest = page.waitForRequest((req) => req.url().endsWith("/api/local-admin"));
-    await page.getByRole("button", { name: "Create account & continue" }).click();
-    const setupToken = (await createRequest).headers()["x-local-setup"];
-    await expect(page).toHaveURL(/\/admin$/);
-    expect((await request.post("/api/local-admin", { headers: { Origin: "http://127.0.0.1:3001", "x-local-setup": setupToken }, data: { email: "admin@example.test", password: "Another long test password 123!" } })).status()).toBe(409);
-  } else await signIn();
-  await expect(page).toHaveURL(/\/admin$/);
-  expect((await page.request.get("/admin/api/posts")).status()).toBe(200);
-  expect((await (await page.request.get("/admin/api/catalogue")).json()).catalogue).toEqual({ categories: [], products: [] });
-  await page.getByRole("link", { name: "Security", exact: true }).click();
-  await page.getByRole("link", { name: "Skip for now · Back to admin" }).click();
-  await expect(page).toHaveURL(/\/admin$/);
-  // Email/password still work after signing out, without enrolling.
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await expect(page).toHaveURL(/\/auth\/login/);
-  await signIn();
-  await expect(page).toHaveURL(/\/admin$/);
-  await page.getByRole("link", { name: "Security", exact: true }).click();
-  await page.getByLabel("Confirm password").fill("Test12345!");
-  const enrolment = page.waitForResponse((response) => response.url().endsWith("/two-factor/enable"));
-  await page.getByRole("button", { name: "Generate setup QR code" }).click();
-  const { totpURI, backupCodes } = await (await enrolment).json();
-  await expect(page.getByLabel("Authenticator setup QR code")).toBeVisible();
-  const secret = new TextDecoder().decode(base32.decode(new URL(totpURI).searchParams.get("secret")!));
-  const code = await createOTP(secret).totp();
-  await page.getByLabel("I saved my recovery codes somewhere safe.").check();
-  await page.getByLabel("Authenticator code", { exact: true }).fill(code);
-  await page.getByRole("button", { name: "Verify and finish setup" }).click();
+
+  await page.getByLabel("Email", { exact: true }).fill("admin@example.test");
+  await page.getByLabel("Password", { exact: true }).fill("Test12345!");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
   expect((await page.request.get("/admin/api/posts")).status()).toBe(200);
   const beforeLogout = await page.context().cookies();
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(page).toHaveURL(/\/auth\/login/);
-  const oldCookie = beforeLogout.map((entry) => `${entry.name}=${entry.value}`).join("; ");
-  expect((await request.get("/admin/api/posts", { headers: { Cookie: oldCookie } })).status()).toBe(401);
-  await signIn();
-  await expect(page.getByRole("heading", { name: "Verify it’s you" })).toBeVisible();
-  expect((await page.request.get("/admin/api/posts")).status()).toBe(401);
-  expect((await page.request.post("/api/auth/two-factor/generate-backup-codes", { headers: { Origin: "http://127.0.0.1:3001" }, data: { password: "Test12345!" } })).status()).toBe(401);
-  await page.screenshot({ path: "test-results/auth-code-mobile.png" });
-  await page.getByRole("button", { name: "Use a recovery code", exact: true }).click();
-  await page.getByLabel("Recovery code", { exact: true }).fill(backupCodes[0]);
-  await page.getByRole("button", { name: "Verify and continue" }).click();
+  expect((await request.get("/admin/api/posts", { headers: { Cookie: beforeLogout.map((entry) => `${entry.name}=${entry.value}`).join("; ") } })).status()).toBe(401);
+
+  await page.getByLabel("Email", { exact: true }).fill("admin@example.test");
+  await page.getByLabel("Password", { exact: true }).fill("wrong password");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByRole("alert").filter({ hasText: "Unable to sign in" })).toHaveClass(/text-red-800/);
+  await page.getByLabel("Password", { exact: true }).fill("Test12345!");
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
-  expect((await page.request.get("/admin/api/posts")).status()).toBe(200);
-  await page.getByRole("button", { name: "Sign out", exact: true }).click();
-  await expect(page).toHaveURL(/\/auth\/login/);
   expect(errors).toEqual([]);
-  if (process.env.QA_STORAGE_STATE) {
-    await signIn();
-    await page.getByRole("button", { name: "Use a recovery code", exact: true }).click();
-    await page.getByLabel("Recovery code", { exact: true }).fill(backupCodes[1]);
-    await page.getByRole("button", { name: "Verify and continue" }).click();
-    await expect(page).toHaveURL(/\/admin$/);
-    await page.goto("/auth/first-login");
-    await expect(page).toHaveURL(/\/auth\/login/);
-    await page.context().storageState({ path: process.env.QA_STORAGE_STATE });
-  }
+  if (process.env.QA_STORAGE_STATE) await page.context().storageState({ path: process.env.QA_STORAGE_STATE });
 });

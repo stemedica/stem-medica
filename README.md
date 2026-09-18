@@ -9,12 +9,11 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
 Brand direction and rationale: **[docs/brand-direction.html](docs/brand-direction.html)**, open it in a browser.
 
 ```bash
-npm run local:setup  # Docker required; persistent local admin database
-npm run dev     # http://127.0.0.1:3000/
+npm run dev     # Neon development branch · http://127.0.0.1:3000/
 npm run build   # production build
 ```
 
-First admin visit: [http://localhost:3000/auth/login](http://localhost:3000/auth/login). Create your password privately (10 characters minimum). Authenticator setup is optional under Security. There is no browser password popup. See [admin setup](docs/AUTH.md); local setup does not change production.
+Admin sign-in: [http://localhost:3000/auth/login](http://localhost:3000/auth/login). Development uses the isolated Neon branch configured in `.env.neon-test`; provision its account privately as described in [admin setup](docs/AUTH.md).
 
 ## What's in the MVP
 

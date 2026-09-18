@@ -1,6 +1,7 @@
 import { timingSafeEqual, createHash } from "node:crypto";
 import { listObjects, readJson, readObject, deleteObject } from "@/lib/storage";
 import { savedDraftSchema, isExpired } from "@/lib/cms-schema";
+import { authDatabase } from "@/lib/auth/database";
 
 export async function GET(request: Request) {
   const secret = process.env.CRON_SECRET;
@@ -17,6 +18,8 @@ export async function GET(request: Request) {
       const saved = await readObject(object.pathname);
       if (saved) await deleteObject(object.pathname, saved.etag);
     }
-    return Response.json({ deleted }, { headers: { "Cache-Control": "no-store" } });
+    const sessions = await authDatabase().pool.query('DELETE FROM auth_session WHERE "expiresAt" < NOW() RETURNING id');
+    const throttles = await authDatabase().pool.query('DELETE FROM auth_throttle WHERE "expiresAt" < NOW() - INTERVAL \'1 day\' RETURNING key');
+    return Response.json({ deleted, expiredSessions: sessions.rowCount, expiredThrottles: throttles.rowCount }, { headers: { "Cache-Control": "no-store" } });
   } catch { return Response.json({ error: "Cleanup failed; retry required", deleted }, { status: 503 }); }
 }

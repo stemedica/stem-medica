@@ -21,6 +21,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="py-2"><AdminNav /></div>
     </div></header>
     {children}
-    <footer className="no-print mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 border-t border-hair px-5 py-4 text-sm text-ink-soft"><Link href="/auth/setup" className="inline-flex min-h-11 items-center underline underline-offset-4">Security</Link><SignOut /></footer>
+    <footer className="no-print mx-auto flex max-w-6xl justify-end border-t border-hair px-5 py-4 text-sm text-ink-soft"><SignOut /></footer>
   </>;
 }

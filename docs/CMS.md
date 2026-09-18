@@ -21,7 +21,7 @@ Setup performed on 2026-09-16: private store `stem-medica-content` in `fra1` con
 
 1. In the Vercel project's Storage tab, create a **private** Blob store. Connect it to this project. Use separate stores for production and testing.
 2. Configure the server-only `BLOB_READ_WRITE_TOKEN`, or the connected store's `BLOB_STORE_ID` and Vercel-managed OIDC credentials.
-3. Configure [email/password and authenticator authentication](AUTH.md). Admin APIs check sessions themselves and reject cross-origin mutations. Basic credentials are no longer accepted.
+3. Configure [email/password authentication](AUTH.md). Admin APIs check sessions themselves and reject cross-origin mutations. Basic credentials are no longer accepted.
 4. Set `CRON_SECRET` to a long random value. The daily job in `vercel.json` sends it as a bearer token.
 5. Deploy and open `/admin/catalogue`. A new store starts empty: add your categories and products, then save. No sample entries are published automatically.
 
@@ -59,7 +59,7 @@ References are randomly generated unique identifiers, **not sequential invoice n
 
 Set `STORAGE_DRIVER=local` in `.env.development.local` for filesystem-backed development (configured in this workspace). `.local-storage/` is ignored by Git. This mode is disabled on Vercel; production never falls back to ephemeral disk or browser storage. Local edits do not publish to production.
 
-Run `npm run local:setup` for a persistent local admin database and first-login screen. Legacy local Basic credentials have been removed. Do not overwrite `.env.local` with production settings.
+Run `npm run dev` with the isolated Neon branch configured in `.env.neon-test`. Provision the development admin with the private command in [AUTH.md](AUTH.md). Never use production database credentials for local development or automated tests.
 
 Run `npm test`, `npm run lint`, `npx tsc --noEmit`, and `npm run build`.
 
@@ -71,7 +71,7 @@ npm run test:e2e:local
 
 Use a newly created temporary directory for each test run. Install Chromium with `npx playwright install chromium` or set `PLAYWRIGHT_CHROMIUM_EXECUTABLE` to an installed browser. Tests publish sample QA content, modify their own test draft to exercise expiry, and run cleanup, so never point them at production.
 
-Admin sign-in requires an approved email/password account. Authenticator verification is optional and applies only after enabling it under Security. See [AUTH.md](AUTH.md) for provisioning, recovery limitations and launch checks.
+Admin sign-in requires a privately provisioned email/password account. See [AUTH.md](AUTH.md) for provisioning, password resets and launch checks.
 # Catalogue-to-proforma workflow
 
 ## Homepage equipment discovery

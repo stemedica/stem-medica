@@ -17,6 +17,8 @@ export const account = pgTable("auth_account", {
   accessToken: text("accessToken"), refreshToken: text("refreshToken"), idToken: text("idToken"), scope: text("scope"),
   accessTokenExpiresAt: timestamp("accessTokenExpiresAt"), refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt"), ...dates(),
 }, (table) => [index("auth_account_user_idx").on(table.userId)]);
+// Legacy columns/tables remain in the migration so existing password hashes carry over safely.
+// The first-party runtime uses only auth_user, credential auth_account rows, auth_session and auth_throttle.
 export const verification = pgTable("auth_verification", {
   id: text("id").primaryKey(), identifier: text("identifier").notNull(), value: text("value").notNull(), expiresAt: timestamp("expiresAt").notNull(), ...dates(),
 }, (table) => [index("auth_verification_identifier_idx").on(table.identifier)]);

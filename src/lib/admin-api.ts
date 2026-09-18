@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
 import { ConflictError, StorageUnavailable } from "./storage";
-import { getAuth } from "./auth";
+import { readSession } from "./auth";
 import { hasAdminAccess } from "./auth/policy";
 import { formProblems } from "./form-errors";
 export async function adminGuard(request: Request) {
   if (!request.headers.get("cookie")) return json({ error: "Please sign in again to continue. Keep your unsaved edits before leaving this page." }, 401);
   try {
-    const session = await getAuth().api.getSession({ headers: request.headers, query: { disableCookieCache: true } });
+    const session = await readSession(request.headers);
     if (!hasAdminAccess(session)) return json({ error: "Please complete admin sign-in to continue. Your edits are still here." }, 401);
   } catch { return json({ error: "We couldn’t verify your sign-in right now. Please try again." }, 503); }
   if (!["GET", "HEAD"].includes(request.method)) {

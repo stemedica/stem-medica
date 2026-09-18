@@ -8,7 +8,7 @@ Validation starts when you leave a field, then updates as you correct it. Untouc
 
 Save failures stay visible next to the save action and preserve edits. Success confirmations disappear when editing resumes. Saving shows progress and blocks duplicate submissions. Sign out checks for unsaved edits before ending the session; cancelling keeps both the session and form intact. Unexpected admin rendering failures have a friendly retry screen. Browser-controlled reload/tab-close warnings remain native because browsers cannot wait for a custom modal during unload.
 
-For the current email/password + authenticator implementation, local first-login setup and production activation checklist, see [Admin authentication](AUTH.md). The historical Basic-auth description below is no longer implemented.
+For the current Neon-backed email/password implementation, account provisioning and production activation checklist, see [Admin authentication](AUTH.md). The historical Basic-auth description below is no longer implemented.
 
 > Superseded implementation notes: see [CMS and temporary drafts](CMS.md).
 > Drafts now use private Blob JSON with seven-day expiry, and references are
