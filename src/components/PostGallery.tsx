@@ -10,7 +10,7 @@ export function PostGallery({ images, title, preview = false }: { images: CmsPos
       {images.map((image, index) => <figure key={image.src} className="min-w-0">
         {/* Native images preserve authenticated media access in the admin preview. */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={preview ? `/test/admin/api/media?id=${image.src.split("/").pop()}` : publicMediaUrl(image.src)} alt={image.alt || `${title} — gallery image ${index + 1}`} loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-xl border border-hair bg-navy-tint object-contain" />
+        <img src={preview ? `/admin/api/media?id=${image.src.split("/").pop()}` : publicMediaUrl(image.src)} alt={image.alt || `${title} — gallery image ${index + 1}`} loading="lazy" decoding="async" className="aspect-[4/3] w-full rounded-xl border border-hair bg-navy-tint object-contain" />
         {image.caption ? <figcaption className="mt-3 break-words text-sm leading-relaxed text-ink-soft">{image.caption}</figcaption> : null}
       </figure>)}
     </MobileCardRail>

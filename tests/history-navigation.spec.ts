@@ -15,7 +15,7 @@ for (const editor of [
     const nativeDialogs: string[] = [];
     page.on("dialog", async dialog => { nativeDialogs.push(dialog.type()); await dialog.dismiss(); });
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("/test/admin");
+    await page.goto("/admin");
     await page.getByRole("navigation", { name: "Admin navigation" }).getByRole("link", { name: editor.nav, exact: true }).click();
     if (editor.add) await page.getByRole("button", { name: editor.add, exact: true }).click();
     const field = page.getByLabel(editor.field, { exact: true });
@@ -25,7 +25,7 @@ for (const editor of [
     await page.evaluate(() => history.back());
     const modal = page.getByRole("dialog", { name: "Leave without saving?" });
     await expect(modal).toBeVisible();
-    await expect(page).toHaveURL(new RegExp(`/test/admin/${editor.route}$`));
+    await expect(page).toHaveURL(new RegExp(`/admin/${editor.route}$`));
     await expect(modal.getByRole("button", { name: "Cancel", exact: true })).toBeFocused();
     await page.screenshot({ path: `test-results/history-${editor.route}-mobile.png` });
     await page.keyboard.press("Escape");
@@ -40,7 +40,7 @@ for (const editor of [
     await modal.getByRole("button", { name: "Leave page", exact: true }).click();
     await expect(page).toHaveURL(/\/admin$/);
     await page.evaluate(() => history.forward());
-    await expect(page).toHaveURL(new RegExp(`/test/admin/${editor.route}$`));
+    await expect(page).toHaveURL(new RegExp(`/admin/${editor.route}$`));
     await expect(page.getByRole("dialog")).not.toBeVisible();
     // A clean editor can leave normally; no history trap or duplicate entries.
     await page.getByRole("heading", { name: editor.route === "proformas" ? "Proforma builder" : editor.nav, exact: true }).waitFor();
@@ -52,7 +52,7 @@ for (const editor of [
 }
 
 test("dirty editor protects Forward and multi-entry traversal without dropping forward history", async ({ page }) => {
-  await page.goto("/test/admin");
+  await page.goto("/admin");
   const nav = page.getByRole("navigation", { name: "Admin navigation" });
   await nav.getByRole("link", { name: "Proformas", exact: true }).click();
   await page.getByLabel("Name", { exact: true }).waitFor();
@@ -83,7 +83,7 @@ test("dirty editor protects Forward and multi-entry traversal without dropping f
 });
 
 test("hash entries, repeated Back, save and reload retain normal history behaviour", async ({ page }) => {
-  await page.goto("/test/admin");
+  await page.goto("/admin");
   await page.getByRole("navigation", { name: "Admin navigation" }).getByRole("link", { name: "Proformas", exact: true }).click();
   const field = page.getByLabel("Name", { exact: true });
   await field.fill("History regression draft");

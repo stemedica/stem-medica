@@ -1,4 +1,4 @@
-/** Database media references stay portable; only their public URL is mounted. */
+/** Database media references are already rooted at the public media route. */
 export function publicMediaUrl(src: string) {
-  return src.startsWith("/media/") ? `/test${src}` : src;
+  return src;
 }

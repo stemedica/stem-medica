@@ -7,17 +7,17 @@ test.skip(!process.env.QA_STORAGE_STATE, "Run npm run test:e2e:local for isolate
 
 test("catalogue picker recovers, searches and preserves manual items", async ({ page, request }) => {
   // Explicit fixtures only: the application no longer seeds demo catalogue data.
-  const snapshot = await (await request.get("/test/admin/api/catalogue")).json();
+  const snapshot = await (await request.get("/admin/api/catalogue")).json();
   const catalogue = snapshot.catalogue;
   catalogue.categories.push({ slug: "qa-picker", name: "QA picker", short: "QA", blurb: "Test category", image: "" });
   catalogue.products.push({ slug: "qa-picker-monitor", name: "QA picker monitor", brand: "QA", origin: "Test", category: "qa-picker", image: "", summary: "Test fixture", availability: "On request", leadTime: "Confirm on enquiry", featured: true, published: true, specs: [], services: [] });
-  expect((await request.put("/test/admin/api/catalogue", { headers: { Origin: process.env.QA_BASE_URL ?? "http://127.0.0.1:3001" }, data: { catalogue, etag: snapshot.etag } })).status()).toBe(200);
-  await page.goto("/test/admin/proformas");
+  expect((await request.put("/admin/api/catalogue", { headers: { Origin: process.env.QA_BASE_URL ?? "http://127.0.0.1:3001" }, data: { catalogue, etag: snapshot.etag } })).status()).toBe(200);
+  await page.goto("/admin/proformas");
   await page.route("**/admin/api/catalogue?*", (route) => route.fulfill({ status: 503, json: { error: "Unavailable" } }));
   await page.getByRole("button", { name: "Browse catalogue" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "Catalogue unavailable" })).toContainText("enter an item manually");
   await page.unroute("**/admin/api/catalogue");
-  const response = await page.request.get("/test/admin/api/catalogue");
+  const response = await page.request.get("/admin/api/catalogue");
   const saved = await response.json();
   const product = saved.catalogue.products.find((entry: { published: boolean }) => entry.published);
   expect(product).toBeTruthy();

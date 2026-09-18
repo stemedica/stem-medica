@@ -10,7 +10,7 @@ export function createAdminAuth(options: {
 }) {
   return betterAuth({
     appName: "STEM MEDICA Admin", baseURL: new URL(options.baseURL).origin, secret: options.secret, database: options.database,
-    basePath: "/test/api/auth",
+    basePath: "/api/auth",
     trustedOrigins: [new URL(options.baseURL).origin],
     emailAndPassword: { enabled: true, disableSignUp: !options.bootstrap, minPasswordLength: 10, maxPasswordLength: 128, autoSignIn: false },
     session: {

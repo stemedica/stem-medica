@@ -4,7 +4,7 @@ test.skip(process.env.QA_NEON_PREVIEW !== "1", "Read-only test branch check.");
 test("test article has a cover and responsive CMS gallery", async ({ page }) => {
   test.setTimeout(420_000);
   await expect(async () => {
-    await page.goto("/test/blog/test-preparing-an-equipment-enquiry");
+    await page.goto("/blog/test-preparing-an-equipment-enquiry");
     await expect(page.getByRole("region", { name: "Article gallery" })).toBeVisible({ timeout: 1000 });
   }).toPass({ timeout: 330_000, intervals: [10_000] });
   for (const width of [390, 1440]) {

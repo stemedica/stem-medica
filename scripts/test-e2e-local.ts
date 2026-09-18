@@ -32,7 +32,7 @@ async function main() {
     server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "--hostname", "127.0.0.1", "--port", "3001"], { env, stdio: "inherit", detached: true });
     for (let i = 0; ; i++) {
       if (server.exitCode !== null) throw new Error("Test server exited; stop your normal dev server first");
-      try { if ((await fetch("http://127.0.0.1:3001/test/auth/login")).ok) break; } catch { /* wait for startup */ }
+      try { if ((await fetch("http://127.0.0.1:3001/auth/login")).ok) break; } catch { /* wait for startup */ }
       if (i > 60) throw new Error("Test server did not become ready");
       await new Promise((r) => setTimeout(r, 500));
     }

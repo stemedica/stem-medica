@@ -20,6 +20,6 @@ test("article contents use unique IDs matching rendered block indices", () => {
 test("preview content is valid, labelled and does not specify prices", () => {
   assert.equal(previewCatalogue.products.length, 3);
   assert.equal(previewPosts.length, 3);
-  for (const product of previewCatalogue.products) { assert.match(product.name, /test/); assert.equal(product.availability, "On request"); assert.equal("price" in product, false); }
-  for (const post of previewPosts) { assert.match(post.title, /test/); assert.ok(!/lorem ipsum/i.test(post.body)); }
+  for (const product of previewCatalogue.products) { assert.match(product.name, /test/i); assert.equal(product.availability, "On request"); assert.equal("price" in product, false); }
+  for (const post of previewPosts) { assert.match(post.title, /test/i); assert.ok(!/lorem ipsum/i.test(post.body)); }
 });

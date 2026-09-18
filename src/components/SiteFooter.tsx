@@ -15,7 +15,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <div className="label text-on-navy/50">Company</div>
+            <div className="label text-on-navy/65">Company</div>
             <ul className="mt-1 flex flex-wrap gap-x-5">
               {nav.map((item) => (
                 <li key={item.href}>
@@ -28,7 +28,7 @@ export function SiteFooter() {
           </div>
 
           <div>
-            <div className="label text-on-navy/50">Contact</div>
+            <div className="label text-on-navy/65">Contact</div>
             <ul className="mt-1 flex flex-wrap gap-x-5 font-mono text-sm text-on-navy/80">
               <li><a href={`tel:${site.phoneIntl}`} className="hover:text-white">{site.phone}</a></li>
               <li><a href={`mailto:${site.email}`} className="hover:text-white">{site.email}</a></li>
@@ -38,7 +38,7 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="label mt-7 flex flex-wrap justify-between gap-3 border-t border-on-navy/20 pt-4 text-on-navy/45">
+        <div className="label mt-7 flex flex-wrap justify-between gap-3 border-t border-on-navy/20 pt-4 text-on-navy/65">
           <span>© {new Date().getFullYear()} {site.legalName}</span>
         </div>
       </div>

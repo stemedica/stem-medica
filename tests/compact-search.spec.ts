@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 test.use({ baseURL: "http://127.0.0.1:3000" });
 test("equipment search stays compact and submits search and category together", async ({ page }) => {
-  await page.goto("/test/products");
+  await page.goto("/products");
   const form = page.getByRole("search", { name: "Find equipment" });
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });

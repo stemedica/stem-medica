@@ -10,27 +10,25 @@ Brand direction and rationale: **[docs/brand-direction.html](docs/brand-directio
 
 ```bash
 npm run local:setup  # Docker required; persistent local admin database
-npm run dev     # http://127.0.0.1:3000/test (root shows maintenance)
+npm run dev     # http://127.0.0.1:3000/
 npm run build   # production build
 ```
 
-First admin visit: [http://localhost:3000/test/auth/login](http://localhost:3000/test/auth/login). Create your password privately (10 characters minimum). Authenticator setup is optional under Security. There is no browser password popup. See [admin setup](docs/AUTH.md); local setup does not change production.
+First admin visit: [http://localhost:3000/auth/login](http://localhost:3000/auth/login). Create your password privately (10 characters minimum). Authenticator setup is optional under Security. There is no browser password popup. See [admin setup](docs/AUTH.md); local setup does not change production.
 
 ## What's in the MVP
 
 | Route | Notes |
 | --- | --- |
-| `/` | Maintenance message and contact details |
-| `/test` | Full website preview, equipment and latest posts |
-| `/test/products` | CMS catalogue, search and category filter via `?cat=`; 10 results per page |
-| `/test/products/[slug]` | Spec table, included services, enquiry rail |
-| `/test/blog` · `/test/blog/[slug]` | CMS posts, arrival notices and image galleries |
-| `/test/service` | The six-stage support sequence + manufacturer front door |
-| `/test/about` · `/test/contact` | Company, channels |
-| `/test/admin` | Protected CMS and manual proformas |
+| `/` | Homepage, equipment highlights and latest posts |
+| `/products` | CMS catalogue, search and category filter via `?cat=`; 10 results per page |
+| `/products/[slug]` | Spec table, included services, enquiry rail |
+| `/blog` · `/blog/[slug]` | CMS posts, arrival notices and image galleries |
+| `/service` | The six-stage support sequence + manufacturer front door |
+| `/about` · `/contact` | Company, channels |
+| `/admin` | Protected CMS and manual proformas |
 
-See [preview routing](docs/TEST-ROUTES.md) for auth, media and scheduled-job paths.
-The public preview is no-index, not password-protected; admin still requires sign-in.
+See [application routes](docs/ROUTES.md) for auth, media and scheduled-job paths. Admin routes require sign-in.
 
 ## Content
 

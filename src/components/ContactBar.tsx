@@ -14,7 +14,7 @@ export function ContactBar() {
         href={site.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
-        className="label bg-ink py-4 text-center font-semibold text-paper"
+        className="label bg-ink py-4 text-center font-semibold text-paper hover:bg-navy-deep focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white"
       >
         WhatsApp
       </a>

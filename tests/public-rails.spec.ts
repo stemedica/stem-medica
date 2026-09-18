@@ -8,22 +8,22 @@ test.setTimeout(120000);
 test("six homepage previews, ten per listing page, filters and mobile rails", async ({ page, request }) => {
   const posts = Array.from({ length: 25 }, (_, i) => ({ ...previewPosts[0], id: crypto.randomUUID(), slug: `qa-story-${i}`, title: `QA story ${i}`, kind: "Blog", published: true }));
   const products = Array.from({ length: 25 }, (_, i) => ({ ...previewCatalogue.products[0], slug: `qa-equipment-${i}`, name: `QA equipment ${i}`, published: true }));
-  const postSnapshot = await (await request.get("/test/admin/api/posts")).json();
-  expect((await request.put("/test/admin/api/posts", { data: { posts, etag: postSnapshot.etag }, headers: { Origin: "http://127.0.0.1:3001" } })).ok()).toBe(true);
-  const catalogueSnapshot = await (await request.get("/test/admin/api/catalogue")).json();
-  expect((await request.put("/test/admin/api/catalogue", { data: { catalogue: { categories: previewCatalogue.categories, products }, etag: catalogueSnapshot.etag }, headers: { Origin: "http://127.0.0.1:3001" } })).ok()).toBe(true);
+  const postSnapshot = await (await request.get("/admin/api/posts")).json();
+  expect((await request.put("/admin/api/posts", { data: { posts, etag: postSnapshot.etag }, headers: { Origin: "http://127.0.0.1:3001" } })).ok()).toBe(true);
+  const catalogueSnapshot = await (await request.get("/admin/api/catalogue")).json();
+  expect((await request.put("/admin/api/catalogue", { data: { catalogue: { categories: previewCatalogue.categories, products }, etag: catalogueSnapshot.etag }, headers: { Origin: "http://127.0.0.1:3001" } })).ok()).toBe(true);
   const errors: string[] = [];
   page.on("pageerror", e => errors.push(e.message));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/test");
+  await page.goto("/");
   const latest = page.getByRole("group", { name: "Latest updates", exact: true });
   await expect(latest.locator("[data-card-rail] > div")).toHaveCount(6);
   await expect(page.locator("#home-equipment-results a")).toHaveCount(6);
   await latest.getByRole("button", { name: "Next in Latest updates", exact: true }).click();
   await expect(latest.getByText("2 / 6", { exact: true })).toBeVisible();
   await page.getByRole("link", { name: "View all updates", exact: true }).click();
-  for (const [route, label] of [["/test/blog?kind=Blog&q=QA", "Blog posts"], ["/test/products?q=QA", "Catalogue products"]]) {
+  for (const [route, label] of [["/blog?kind=Blog&q=QA", "Blog posts"], ["/products?q=QA", "Catalogue products"]]) {
     await page.goto(route);
     let rail = page.getByRole("group", { name: label, exact: true });
     await expect(rail.locator("[data-card-rail] > div")).toHaveCount(10);

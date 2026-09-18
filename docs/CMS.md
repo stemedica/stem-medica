@@ -23,13 +23,13 @@ Setup performed on 2026-09-16: private store `stem-medica-content` in `fra1` con
 2. Configure the server-only `BLOB_READ_WRITE_TOKEN`, or the connected store's `BLOB_STORE_ID` and Vercel-managed OIDC credentials.
 3. Configure [email/password and authenticator authentication](AUTH.md). Admin APIs check sessions themselves and reject cross-origin mutations. Basic credentials are no longer accepted.
 4. Set `CRON_SECRET` to a long random value. The daily job in `vercel.json` sends it as a bearer token.
-5. Deploy and open `/test/admin/catalogue`. A new store starts empty: add your categories and products, then save. No sample entries are published automatically.
+5. Deploy and open `/admin/catalogue`. A new store starts empty: add your categories and products, then save. No sample entries are published automatically.
 
 Do not put Blob credentials in `NEXT_PUBLIC_` variables. Vercel's Hobby plan is restricted to non-commercial use; this company website requires an appropriate commercial plan.
 
 ## Editing
 
-- `/test/admin/catalogue`: products, categories, photos, specifications, services, publication and featured status.
+- `/admin/catalogue`: products, categories, photos, specifications, services, publication and featured status.
 - All categories are public after saving; only products marked Published appear publicly.
 - Category links are generated from the name automatically; there is no slug field. Renaming a saved category preserves its link and product assignments. Categories with assigned products cannot be removed until those products are moved.
 - The homepage displays CMS categories, featured published products and published posts only when present. Empty sections, demo catalogue fallbacks, mock media and lorem ipsum have been removed.
@@ -47,7 +47,7 @@ Do not put Blob credentials in `NEXT_PUBLIC_` variables. Vercel's Hobby plan is 
 
 ## Seven-day drafts
 
-`/test/admin` is the overview, with proformas as the primary action. The builder is at `/test/admin/proformas`. Save draft explicitly to store it; Open saved drafts lists active drafts across devices. Unsaved edits stay only in memory and closing the page loses them.
+`/admin` is the overview, with proformas as the primary action. The builder is at `/admin/proformas`. Save draft explicitly to store it; Open saved drafts lists active drafts across devices. Unsaved edits stay only in memory and closing the page loses them.
 
 Each draft JSON contains an independent snapshot of issuer, client, items, prices and terms. It expires exactly seven days after initial creation. Editing does not extend the expiry. Requests for expired drafts return 410 before the scheduled job physically deletes them, normally within the next day. Monitor cron failures; they can delay physical deletion but do not extend API access.
 
@@ -84,7 +84,7 @@ Known local limitation: with JavaScript disabled, the existing Next streamed loa
 
 ## Updates & blog
 
-Open `/test/admin/posts` to add, edit, preview, publish, unpublish or remove posts. Choose Blog, Upcoming arrival (expected equipment) or New arrival (already arrived). Legacy Order update records are read as Blog without deleting their content or changing their URLs. Active arrival notices use a blue accent and package badge on the homepage, blog index, related stories and article, with a short pulse that stops after 4.2 seconds and respects reduced motion.
+Open `/admin/posts` to add, edit, preview, publish, unpublish or remove posts. Choose Blog, Upcoming arrival (expected equipment) or New arrival (already arrived). Legacy Order update records are read as Blog without deleting their content or changing their URLs. Active arrival notices use a blue accent and package badge on the homepage, blog index, related stories and article, with a short pulse that stops after 4.2 seconds and respects reduced motion.
 
 Arrival notices default to **90 calendar days including the display date**, using Addis Ababa midnight boundaries. Under Additional details → Arrival notice, set an optional **Highlight until** date or disable the notice. Blank uses the 90-day default. Expiry must not precede the display date. The post stays published after expiry, labelled “Arrival update” without attention styling; it is never deleted or reclassified as a Blog. Older posts without these fields use the same defaults. The display date is not a publishing schedule, but the highlight starts on that date. Fresh page requests calculate current notice state independently of the cached post document; an already-open page updates on refresh.
 
@@ -100,7 +100,7 @@ Under Additional details, Article gallery accepts up to eight extra JPEG/PNG/Web
 - Tablet/desktop: regular grids. Mobile product details show the photo below the title, before description and enquiry information. Category headers show their CMS image.
 - Card images remain lazy-loaded; listing card links disable speculative detail-page prefetch. Only current-page card markup is sent to the browser. CMS documents remain cached on the server; this is presentation pagination, not a new row-level database query architecture.
 
-Changes are applied with **Save posts**. Published entries appear on the homepage and `/test/blog`, with filters by post type. The display date does not schedule publication. Drafts and their exclusive images are not exposed through public pages. Unpublishing removes the page, but previously downloaded/cached images cannot be recalled. Existing placeholder Markdown files are preserved on disk but no longer feed the website.
+Changes are applied with **Save posts**. Published entries appear on the homepage and `/blog`, with filters by post type. The display date does not schedule publication. Drafts and their exclusive images are not exposed through public pages. Unpublishing removes the page, but previously downloaded/cached images cannot be recalled. Existing placeholder Markdown files are preserved on disk but no longer feed the website.
 
 Posts persist as `posts/current.json` in the selected document backend (Neon JSONB or legacy private Blob), without browser storage. Concurrent saves are rejected instead of overwriting another editor. This first version supports 100 posts, each with up to 10,000 body characters. Posts do not expire; the seven-day expiry applies only to proforma drafts. Removal is permanent after saving; unpublish instead if you want to retain an article. There is no post revision history in this version.
 

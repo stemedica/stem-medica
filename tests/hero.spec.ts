@@ -5,7 +5,7 @@ test.use({ baseURL: process.env.QA_AUTH_E2E ? "http://127.0.0.1:3001" : "http://
 test("abstract hero fills the background, settles and stays usable on mobile", async ({ page }) => {
   const media: string[] = [];
   page.on("request", request => { if (request.url().includes("hero-preview")) media.push(request.url()); });
-  await page.goto("/test");
+  await page.goto("/");
   const hero = page.getByRole("region", { name: /Equipment for/ });
   await expect(hero.locator("video")).toHaveCount(0);
   const ribbon = hero.locator(".hero-ribbon-front");
@@ -36,9 +36,9 @@ test("abstract hero fills the background, settles and stays usable on mobile", a
 
 test("reduced motion keeps the hero still and calls to action accessible", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/test");
+  await page.goto("/");
   await expect(page.locator(".hero-ribbon-front")).toHaveCSS("animation-name", "none");
   await expect(page.locator(".hero-scroll-arrow")).toHaveCSS("animation-name", "none");
   await expect(page.getByRole("button", { name: "Pause background animation" })).toBeHidden();
-  await expect(page.getByRole("region", { name: /Equipment for/ }).getByRole("link", { name: "Request a quote" })).toHaveAttribute("href", "/test/quote");
+  await expect(page.getByRole("region", { name: /Equipment for/ }).getByRole("link", { name: "Request a quote" })).toHaveAttribute("href", "/quote");
 });

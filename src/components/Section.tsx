@@ -15,7 +15,7 @@ export function Tag({
   tone?: "light" | "dark";
 }) {
   return (
-    <span className={`tag font-medium ${tone === "dark" ? "text-on-navy/45" : "text-steel"}`}>
+    <span className={`tag font-medium ${tone === "dark" ? "text-on-navy/65" : "text-steel"}`}>
       <span className="tag-key">{index}</span>
       <span className={tone === "dark" ? "text-on-navy/80" : "text-ink"}>{children}</span>
     </span>
@@ -45,7 +45,7 @@ export function SectionHead({
   return (
     <header>
       <div className={`rule-head pt-3 ${dark ? "text-on-navy/35" : "text-ink"}`}>
-        <div className={`label flex flex-wrap items-baseline justify-between gap-4 ${dark ? "text-on-navy/50" : "text-steel"}`}>
+        <div className={`label flex flex-wrap items-baseline justify-between gap-4 ${dark ? "text-on-navy/65" : "text-steel"}`}>
           <span className="flex items-baseline gap-3">
             <span className="text-scarlet">{index}</span>
             <span className={dark ? "text-on-navy" : "text-ink"}>{label}</span>

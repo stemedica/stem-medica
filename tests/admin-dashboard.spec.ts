@@ -7,10 +7,10 @@ test("admin opens the mobile-first overview and navigates to each workspace", as
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   expect((await fetch("http://127.0.0.1:3001/admin/proformas", { redirect: "manual" })).status).toBe(307);
-  await page.goto("/test/admin");
+  await page.goto("/admin");
   await expect(page.getByRole("heading", { name: "Overview", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Proforma builder", exact: true })).toHaveCount(0);
-  const { catalogue } = await (await request.get("/test/admin/api/catalogue")).json();
+  const { catalogue } = await (await request.get("/admin/api/catalogue")).json();
   const overview = page.getByRole("region", { name: "Content overview" });
   await expect(overview.getByRole("link", { name: /^Categories/ })).toHaveText(`Categories${catalogue.categories.length}`);
   await expect(page.getByRole("navigation", { name: "Admin navigation" }).getByRole("link", { name: "Overview" })).toHaveAttribute("aria-current", "page");

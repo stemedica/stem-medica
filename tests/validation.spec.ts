@@ -4,7 +4,7 @@ test.skip(!process.env.QA_STORAGE_STATE, "Use npm run test:e2e:local.");
 
 test("validation identifies fields, navigates between items, and clears corrected errors", async ({ page, request }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/test/admin/catalogue");
+  await page.goto("/admin/catalogue");
   await expect(page.getByRole("status")).toContainText("Catalogue loaded");
   await page.getByRole("button", { name: "Add product", exact: true }).click();
   const name = page.getByLabel("Name", { exact: true });
@@ -39,12 +39,12 @@ test("validation identifies fields, navigates between items, and clears correcte
   await page.getByRole("button", { name: "Reload", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Discard and reload" }).click();
   await expect(page.getByRole("status")).toContainText("Catalogue loaded");
-  const snapshot = await (await request.get("/test/admin/api/catalogue")).json();
+  const snapshot = await (await request.get("/admin/api/catalogue")).json();
   snapshot.catalogue.products[0].slug = "INVALID ADDRESS";
-  const invalid = await request.put("/test/admin/api/catalogue", { headers: { Origin: "http://127.0.0.1:3001" }, data: snapshot });
+  const invalid = await request.put("/admin/api/catalogue", { headers: { Origin: "http://127.0.0.1:3001" }, data: snapshot });
   expect(invalid.status()).toBe(400);
   expect((await invalid.json()).error).not.toMatch(/regex|pattern|catalogue\.products/);
-  await page.goto("/test/admin/posts");
+  await page.goto("/admin/posts");
   await expect(page.getByRole("status")).toHaveText("Posts loaded.");
   await page.getByRole("button", { name: "Add post", exact: true }).click();
   await page.getByLabel("Title", { exact: true }).fill("");
@@ -59,7 +59,7 @@ test("validation identifies fields, navigates between items, and clears correcte
   await expect(page.getByLabel("Body", { exact: true })).toBeFocused();
   await page.getByRole("button", { name: "Reload", exact: true }).click();
   await page.getByRole("dialog").getByRole("button", { name: "Discard and reload" }).click();
-  await page.goto("/test/admin/proformas");
+  await page.goto("/admin/proformas");
   await page.getByLabel("Qty", { exact: true }).fill("-1");
   await expect(page.getByLabel("Qty", { exact: true })).not.toHaveAttribute("aria-invalid", "true");
   await page.getByLabel("Qty", { exact: true }).press("Tab");

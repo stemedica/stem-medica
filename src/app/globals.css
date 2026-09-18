@@ -23,7 +23,7 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
   --color-paper-2:  #E1E5EC;
   --color-ink:      #111A2E;
   --color-ink-soft: #3C4761;
-  --color-steel:    #6B7385;
+  --color-steel:    #646C7E;
   --color-hair:     #C7CDD8;
   --color-on-navy:  #E9EDF6;
 
@@ -63,7 +63,11 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
   --font-ethiopic: var(--font-ethiopic-face), "Nyala", serif;
 }
 
-html { -webkit-text-size-adjust: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-color: var(--color-navy) var(--color-paper-2);
+}
+::selection { background: var(--color-navy-tint-2); color: var(--color-navy-deep); }
 
 .skeleton-block { background-color: var(--color-paper-2); }
 @media (prefers-reduced-motion: no-preference) {

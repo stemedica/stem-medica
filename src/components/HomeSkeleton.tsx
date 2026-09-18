@@ -29,8 +29,7 @@ export function HomeEquipmentSkeleton() {
         <div aria-hidden="true">
           <header className="flex flex-wrap items-end justify-between gap-5">
             <div className="w-full max-w-2xl">
-              <SkeletonBlock className="h-3 w-52" />
-              <SkeletonBlock className="mt-4 h-10 w-3/4 sm:h-14 sm:w-2/3" />
+              <SkeletonBlock className="h-10 w-3/4 sm:h-14 sm:w-2/3" />
               <SkeletonBlock className="mt-5 h-4 w-full max-w-xl" />
               <SkeletonBlock className="mt-2 h-4 w-4/5 max-w-lg" />
             </div>
@@ -67,8 +66,7 @@ export function HomeUpdatesSkeleton() {
       className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20"
     >
       <div aria-hidden="true">
-        <SkeletonBlock className="h-3 w-28" />
-        <SkeletonBlock className="mt-4 h-9 w-4/5 max-w-xl sm:h-10" />
+        <SkeletonBlock className="h-9 w-4/5 max-w-xl sm:h-10" />
         <SkeletonBlock className="mt-4 h-4 w-full max-w-lg" />
         <div className="mt-9 flex gap-4 overflow-hidden md:grid md:grid-cols-2">
           {[0, 1, 2].map((index) => (

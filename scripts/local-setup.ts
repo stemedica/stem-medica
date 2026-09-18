@@ -49,7 +49,7 @@ async function main() {
     await migrate(drizzle(pool), { migrationsFolder: "drizzle" });
     const result = await pool.query("SELECT count(*)::int AS count FROM auth_user");
     console.log(`Local database ready (${result.rows[0].count} admin accounts). Existing data preserved.`);
-    console.log("Run npm run dev, then open http://127.0.0.1:3000/test/auth/login to create your account or sign in.");
+    console.log("Run npm run dev, then open http://127.0.0.1:3000/auth/login to create your account or sign in.");
   } finally { await pool.end(); }
 }
 main().catch((error) => {

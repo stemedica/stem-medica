@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { mapConcurrent } from "../src/lib/map-concurrent";
-import { addCatalogueProduct, money, blankItem, totals, type Proforma } from "../src/app/test/admin/proforma";
+import { addCatalogueProduct, money, blankItem, totals, type Proforma } from "../src/app/admin/proforma";
 import { draftSchema } from "../src/lib/cms-schema";
 
 test("bounded reads preserve order and do not exceed the concurrency limit", async () => {

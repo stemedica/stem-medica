@@ -11,7 +11,7 @@ export function SignOut() {
     try {
       if (!await confirmSignOut()) { setBusy(false); return; }
       const result = await authClient.signOut(); if (result.error) throw new Error();
-      window.dispatchEvent(new Event("admin:signed-out")); window.location.assign("/test/auth/login");
+      window.dispatchEvent(new Event("admin:signed-out")); window.location.assign("/auth/login");
     }
     catch { setError("Sign-out failed. Please retry."); setBusy(false); }
   }}>{busy ? "Signing out…" : "Sign out"}</button>{error ? <span role="alert" className="ml-2 text-sm">{error}</span> : null}</span>;

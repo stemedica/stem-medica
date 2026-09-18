@@ -51,7 +51,7 @@ The quotation form builds a `mailto:` URL; it does not submit a request to the w
 
 Suggested outcome: offer Copy request and a WhatsApp handoff that preserve entered details. Actual server submission with delivery feedback is another option, but requires a separate implementation decision and verified email configuration. Do not claim a request was sent merely because an email app was opened.
 
-Source: `src/app/test/(site)/quote/QuoteForm.tsx`, `onSubmit` around line 28.
+Source: `src/app/(site)/quote/QuoteForm.tsx`, `onSubmit` around line 28.
 
 ### 3. High-priority usability issue — save scope is broader than the selected item
 
@@ -59,7 +59,7 @@ Catalogue and Posts save all pending collection edits, while labels such as Save
 
 Suggested outcome: item-level saving, or clearly labelled Save all changes with a review of affected items. Preserve intentional draft/publication status and existing concurrency protection.
 
-Sources: `src/app/test/admin/posts/PostsEditor.tsx` around lines 137–144; `src/app/test/admin/catalogue/CatalogueEditor.tsx` around lines 168–174.
+Sources: `src/app/admin/posts/PostsEditor.tsx` around lines 137–144; `src/app/admin/catalogue/CatalogueEditor.tsx` around lines 168–174.
 
 ### 4. Medium priority — mobile editors start too far down the page
 
@@ -67,7 +67,7 @@ On mobile, users pass the navigation, instructions, filters, and item list befor
 
 Suggested outcome: separate list and edit views on narrow screens, a clear Back to products/posts action, focus movement into a newly selected editor, and catalogue search. Keep desktop split-pane editing where useful.
 
-Sources: `src/app/test/admin/catalogue/CatalogueEditor.tsx` around lines 177–185; `src/app/test/admin/posts/PostsEditor.tsx` around lines 145–159.
+Sources: `src/app/admin/catalogue/CatalogueEditor.tsx` around lines 177–185; `src/app/admin/posts/PostsEditor.tsx` around lines 145–159.
 
 ### 5. Medium priority — proforma workflow is scroll-heavy
 
@@ -81,7 +81,7 @@ Suggested outcome:
 - Clear distinction between fields required for a draft and fields required for export.
 - Keep pricing manual and preserve seven-day draft-expiry semantics.
 
-Sources: `src/app/test/admin/Builder.tsx` around lines 179, 270–299; `src/app/test/admin/styles.tsx`.
+Sources: `src/app/admin/Builder.tsx` around lines 179, 270–299; `src/app/admin/styles.tsx`.
 
 ### 6. Medium priority — important CMS controls are hidden
 
@@ -89,7 +89,7 @@ Product category, description, and photo are under Additional details (optional)
 
 Suggested outcome: visible, clearly named Content, Media, and Categorisation sections. Keep genuinely infrequent metadata collapsed. Add a small formatting toolbar to the Markdown-based blog body editor without removing safe rendering or preview.
 
-Sources: `src/app/test/admin/catalogue/CatalogueEditor.tsx` around line 194; `src/app/test/admin/posts/PostsEditor.tsx` around lines 163–168.
+Sources: `src/app/admin/catalogue/CatalogueEditor.tsx` around line 194; `src/app/admin/posts/PostsEditor.tsx` around lines 163–168.
 
 ### 7. Medium priority — sign-in and recovery need polish
 
@@ -97,7 +97,7 @@ Login email/password inputs computed to 14px in the browser. Password visibility
 
 Suggested outcome: 16px form inputs, accessible Show/Hide password controls, and a verified recovery procedure with clear contact or recovery steps. Keep the minimum password length at 10 and authenticator setup optional, as previously requested.
 
-Sources: `src/app/test/auth/login/LoginForm.tsx` around lines 30–32; first-login and authenticator setup forms.
+Sources: `src/app/auth/login/LoginForm.tsx` around lines 30–32; first-login and authenticator setup forms.
 
 ### 8. Medium priority — visual styles vary between public pages
 
@@ -114,7 +114,7 @@ Sources: `src/components/HomeHero.tsx`, `src/components/Section.tsx`, `src/app/g
 - Keep validation next to fields, retain actionable error summaries, and reserve confirmation modals for decisions.
 - Recheck focused controls around fixed/sticky action bars, including real mobile keyboards. Full-page screenshots containing fixed bars do not by themselves prove inaccessible overlap.
 
-Sources: `src/app/test/admin/proformas/page.tsx`, `src/components/SiteFooter.tsx`, `src/components/AdminSaveBar.tsx`, `src/components/FormProblems.tsx`.
+Sources: `src/app/admin/proformas/page.tsx`, `src/components/SiteFooter.tsx`, `src/components/AdminSaveBar.tsx`, `src/components/FormProblems.tsx`.
 
 Reference guidance:
 
