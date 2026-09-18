@@ -115,12 +115,12 @@ export function V2Photo({
         ) : (
           <ImageIcon size={24} className="text-white/35" aria-hidden="true" />
         )}
-        <span className="font-mono text-[10px] uppercase leading-relaxed tracking-[.16em] text-white/45">
+        <span className="max-w-[34ch] text-sm font-medium leading-relaxed text-white/75">
           {label}
         </span>
         {isVideo ? (
-          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-white/30">
-            Video · autoplay, muted, looping
+          <span className="text-xs text-white/65">
+            Video preview · muted and looping
           </span>
         ) : null}
       </div>
@@ -129,13 +129,11 @@ export function V2Photo({
 }
 
 export function V2Head({
-  eyebrow,
   title,
   lede,
   tone = "light",
   align = "left",
 }: {
-  eyebrow?: string;
   title: ReactNode;
   lede?: ReactNode;
   tone?: "light" | "dark";
@@ -144,11 +142,8 @@ export function V2Head({
   const dark = tone === "dark";
   return (
     <header className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-3xl"}>
-      {eyebrow ? (
-        <span className={`label font-medium ${dark ? "text-white/55" : "text-steel"}`}>{eyebrow}</span>
-      ) : null}
       <h2
-        className={`font-display wdth-n mt-3 text-[1.8rem] font-semibold leading-[1.1] tracking-[-0.022em] text-balance sm:text-[2.3rem] ${
+        className={`font-display wdth-n text-[1.8rem] font-semibold leading-[1.1] tracking-[-0.022em] text-balance sm:text-[2.3rem] ${
           dark ? "text-white" : "text-ink"
         }`}
       >

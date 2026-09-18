@@ -23,7 +23,7 @@ export function ProductCard({ product, index }: { product: CmsProduct; index: nu
         <h3 className="font-display wdth-n text-[17px] font-semibold leading-snug text-balance transition-colors group-hover:text-navy">
           {product.name}
         </h3>
-        {product.summary ? <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-ink-soft">
+        {product.summary ? <p className="mt-2 line-clamp-3 flex-1 text-[15px] leading-relaxed text-ink-soft">
           {product.summary}
         </p> : null}
 

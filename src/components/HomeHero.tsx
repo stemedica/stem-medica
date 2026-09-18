@@ -21,7 +21,6 @@ export function HomeHero() {
       <a href="#equipment" aria-label="Scroll down to explore equipment" className="absolute bottom-4 left-1/2 z-10 flex size-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/35 text-white hover:bg-white/10 sm:hidden">
         <ArrowDown size={20} className="hero-scroll-arrow" aria-hidden="true" />
       </a>
-      <p className="pointer-events-none absolute bottom-6 left-6 z-10 max-w-[35%] text-[9px] uppercase leading-relaxed tracking-[.12em] text-white/65 sm:left-10 sm:max-w-[45%] lg:left-16">STEM MEDICA · Equipment & support</p>
     </div>
   </section>;
 }

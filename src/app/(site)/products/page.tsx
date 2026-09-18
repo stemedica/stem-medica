@@ -33,9 +33,8 @@ export default async function ProductsPage({ searchParams }: {
     </nav>
     <header className={`grid items-center gap-5 ${category?.image ? "sm:grid-cols-[1fr_240px]" : "max-w-3xl"}`}>
       <div>
-      <p className="label text-navy">Equipment catalogue</p>
-      <h1 className="font-display mt-3 text-3xl font-semibold leading-tight tracking-tight text-navy sm:text-5xl">{category?.name ?? (missingCategory ? "Category unavailable" : "All equipment")}</h1>
-      <p className="mt-4 max-w-2xl leading-relaxed text-ink-soft">{category?.blurb || "Find equipment for your facility. Ask our team to confirm specifications, availability and delivery."}</p>
+      <h1 className="font-display max-w-[22ch] text-3xl font-semibold leading-tight tracking-[-0.025em] text-balance text-navy sm:text-5xl">{category?.name ?? (missingCategory ? "Category unavailable" : "All equipment")}</h1>
+      <p className="mt-4 max-w-[65ch] text-base leading-relaxed text-ink-soft">{category?.blurb || "Browse by category or search by name. Contact us to confirm the model, price and delivery time."}</p>
       </div>
       {category?.image ? <ImagePlaceholder src={category.image} label={category.name} ratio="4/3" className="max-h-48 rounded-2xl border border-hair bg-white" /> : null}
     </header>
@@ -58,7 +57,7 @@ export default async function ProductsPage({ searchParams }: {
     </div>
     {!filtered.length ? <div className="mt-5 rounded-2xl border border-hair bg-white p-6 sm:p-8">
       <h2 className="text-xl font-semibold text-navy">{missingCategory ? "This category is no longer available" : query ? "No matching equipment" : category ? "No equipment listed yet" : "Our catalogue is being updated"}</h2>
-      <p className="mt-3 max-w-xl leading-relaxed text-ink-soft">{missingCategory ? "Choose another category to browse available listings." : query ? "Try a shorter search or clear your filters to see available listings." : category ? "This category has no published products yet. Browse another category or check back later." : "There are no published products yet. Please check back later."}</p>
+      <p className="mt-3 max-w-[62ch] text-base leading-relaxed text-ink-soft">{missingCategory ? "Choose another category to see available equipment." : query ? "Try fewer words or clear the filters to see all equipment." : category ? "There is no equipment listed in this category yet. Try another category or check back later." : "We are adding equipment now. Please check back soon or contact us for help."}</p>
       <div className="mt-5 flex flex-wrap gap-3">{category && query ? <Link href={`/products?cat=${encodeURIComponent(category.slug)}`} className="btn-outline min-h-11">Clear search</Link> : null}{requestedCategory || query ? <Link href="/products" className="btn-primary min-h-11">Browse all equipment</Link> : <Link href="/" className="btn-outline min-h-11">Back to home</Link>}</div>
     </div> : <div className="mt-5"><MobileCardRail key={`${requestedCategory}-${query}-${result.page}`} label="Catalogue products">{result.items.map((p, i) => <ProductCard key={p.slug} product={p} index={(result.page - 1) * 10 + i} />)}</MobileCardRail></div>}
     <Pagination page={result.page} pages={result.pages} pathname="/products" filters={{ cat: requestedCategory, q: query }} />

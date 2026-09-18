@@ -24,9 +24,9 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="max-w-2xl">
           <h2 id="equipment-heading" className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-ink-soft sm:text-base">Find the right equipment for your facility. Explore by category, then talk to us about specifications and availability.</p>
+          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-soft">Browse by category. When you find an item, ask us to confirm the model, price and delivery time.</p>
         </div>
-        <Link href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">View full catalogue <ArrowUpRight size={18} aria-hidden="true" /></Link>
+        <Link href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">Browse all equipment <ArrowUpRight size={18} aria-hidden="true" /></Link>
       </header>
       <nav aria-label="Equipment categories" className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 py-2 sm:mt-8 lg:flex-wrap">
         {groups.map(group => <a key={group.slug} href={group.slug ? `/products?cat=${encodeURIComponent(group.slug)}` : "/products"}
@@ -70,12 +70,12 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
           </Link>)}
         </div> : <div className="rounded-2xl border border-hair bg-paper p-6 sm:p-10">
           <h3 className="font-display text-xl font-semibold text-navy">{current.slug ? "This category is being updated" : "Our catalogue is being updated"}</h3>
-          <p className="mt-2 text-sm leading-relaxed text-ink-soft">{current.slug ? "There are no published products here yet. Explore the other categories or check back later." : "New equipment listings will appear here once published. Please check back later."}</p>
+          <p className="mt-2 text-base leading-relaxed text-ink-soft">{current.slug ? "There is no equipment listed in this category yet. Try another category or check back later." : "We are adding equipment now. Please check back soon or contact us for help."}</p>
           {current.slug ? <button type="button" onClick={() => setSelected("")} className="btn-outline mt-5 min-h-11">Show all equipment</button> : null}
         </div>}
       </div>
       {current.count ? <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-hair pt-5">
-        <p className="max-w-md text-xs leading-relaxed text-ink-soft sm:text-sm">Specifications, availability and delivery confirmed with your enquiry.</p>
+        <p className="max-w-md text-sm leading-relaxed text-ink-soft">We’ll confirm the model, price and delivery time when you contact us.</p>
         <Link href={catalogueUrl} className="inline-flex min-h-12 items-center justify-center gap-4 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white hover:bg-navy-deep">{current.slug ? "View category" : "Browse all equipment"}<ArrowRight size={17} aria-hidden="true" /></Link>
       </div> : null}
     </div>

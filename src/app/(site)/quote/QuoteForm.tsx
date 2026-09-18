@@ -21,10 +21,10 @@ type Field = {
 };
 
 const FIELDS: Field[] = [
-  { name: "facility", label: "Facility", placeholder: "Hospital or laboratory name", required: true, autoComplete: "organization" },
-  { name: "contact", label: "Your name", placeholder: "Who should we reply to?", required: true, autoComplete: "name" },
-  { name: "phone", label: "Phone", placeholder: "09.. or +251..", required: true, type: "tel", autoComplete: "tel" },
-  { name: "email", label: "Email", placeholder: "Optional", type: "email", autoComplete: "email" },
+  { name: "facility", label: "Hospital or organization", placeholder: "Name of hospital, clinic or laboratory", required: true, autoComplete: "organization" },
+  { name: "contact", label: "Your name", placeholder: "Full name", required: true, autoComplete: "name" },
+  { name: "phone", label: "Phone number", placeholder: "09… or +251…", required: true, type: "tel", autoComplete: "tel" },
+  { name: "email", label: "Email (optional)", placeholder: "name@example.com", type: "email", autoComplete: "email" },
 ];
 
 export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
@@ -57,10 +57,10 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
 
   return (
     <form onSubmit={onSubmit} onChange={() => setSent(false)} className="mt-8 grid gap-5 sm:grid-cols-2">
-      <p className="text-sm leading-relaxed text-ink-soft sm:col-span-2">Fields marked * are required. This prepares a message in your email app; you’ll review and send it there.</p>
+      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. Your email app will open with these details filled in, ready for you to review and send.</p>
       {FIELDS.map((f) => (
         <label key={f.name} className="block">
-          <span className="label text-steel">
+          <span className="text-sm font-medium text-ink">
             {f.label}
             {f.required ? <span className="text-scarlet"> *</span> : null}
           </span>
@@ -74,13 +74,13 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
             onInvalid={(event) => event.currentTarget.setCustomValidity(f.type === "email" ? "Enter a valid email address, or leave this optional field empty." : `Please enter ${f.label.toLowerCase()}.`)}
             onInput={(event) => event.currentTarget.setCustomValidity("")}
             placeholder={f.placeholder}
-            className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
+            className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
           />
         </label>
       ))}
 
       <label className="block sm:col-span-2">
-        <span className="label text-steel">
+        <span className="text-sm font-medium text-ink">
           Equipment needed<span className="text-scarlet"> *</span>
         </span>
         <input
@@ -92,12 +92,12 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
           maxLength={500}
           defaultValue={presetItem}
           placeholder="e.g. neonatal CPAP, patient monitor, mobile X-ray"
-          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
+          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
         />
       </label>
 
       <label className="block">
-        <span className="label text-steel">Quantity</span>
+        <span className="text-sm font-medium text-ink">Quantity (optional)</span>
         <input
           name="quantity"
           onInvalid={(event) => event.currentTarget.setCustomValidity("Enter a whole number of 1 or more, or leave quantity empty.")}
@@ -107,18 +107,18 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
           step={1}
           inputMode="numeric"
           placeholder="e.g. 2"
-          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
+          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
         />
       </label>
 
       <label className="block sm:col-span-2">
-        <span className="label text-steel">Notes</span>
+        <span className="text-sm font-medium text-ink">Anything else? (optional)</span>
         <textarea
           name="notes"
           rows={4}
           maxLength={3000}
-          placeholder="Department, case load, installation site, deadline"
-          className="mt-2 w-full resize-y rounded-[2px] border border-hair bg-white px-3.5 py-3 text-[15px] outline-none transition-colors placeholder:text-steel/60 focus:border-navy"
+          placeholder="Department, delivery deadline, site details or questions"
+          className="mt-2 w-full resize-y rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
         />
       </label>
 
@@ -128,7 +128,7 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
             type="submit"
             className="label inline-flex items-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
-            <Send size={14} aria-hidden="true" /> Prepare email request
+            <Send size={14} aria-hidden="true" /> Open request in email
           </button>
           <a
             href={`tel:${site.phoneIntl}`}

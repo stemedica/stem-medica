@@ -31,7 +31,7 @@ async function UpdatesSection({ posts: postsPromise }: { posts: PostsPromise }) 
   return <section aria-label="Latest updates and blog" className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
     <V2Head
       title="The latest from STEM MEDICA"
-      lede="Upcoming equipment and notes from our team."
+      lede="New equipment and practical updates from our team."
     />
     <div className="mt-9"><MobileCardRail label="Latest updates">
       {posts.map((post) => (
@@ -44,8 +44,8 @@ async function UpdatesSection({ posts: postsPromise }: { posts: PostsPromise }) 
           <h3 className="font-display wdth-n mt-4 text-[17px] font-semibold leading-snug text-balance">
             {post.title}
           </h3>
-          <p className="mt-2 line-clamp-3 flex-1 text-[14.5px] leading-relaxed text-ink-soft">{post.excerpt}</p>
-          <span className="mt-5 inline-flex items-center gap-2 text-[14.5px] font-medium text-navy">
+          <p className="mt-2 line-clamp-3 flex-1 text-[15px] leading-relaxed text-ink-soft">{post.excerpt}</p>
+          <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-navy">
             Read
             <ArrowRight
               size={15}
@@ -85,7 +85,7 @@ export default function Home() {
           <div>
             <V2Head
               title="Medical equipment, with support"
-              lede="Learn about STEM MEDICA and our approach to equipment supply, installation and support."
+              lede="We help hospitals choose equipment, arrange delivery and installation, and get support afterward."
             />
             <div className="mt-7">
               <V2Button href="/about" badge>Read our story</V2Button>
@@ -106,7 +106,7 @@ export default function Home() {
             align="center"
             tone="dark"
             title="Tell us what your facility needs"
-            lede="Share the equipment you’re looking for and our team will help with your enquiry."
+            lede="Tell us what you need. We’ll help you choose the right equipment and prepare a quote."
           />
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <V2Button href="/quote" badge>Request a quote</V2Button>

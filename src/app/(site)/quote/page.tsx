@@ -18,11 +18,8 @@ export default async function QuotePage({
   return (
     <Section
       headingLevel="h1"
-      index="01"
-      label="Request a quote"
-      meta="Equipment enquiry"
       title="Tell us what your facility needs"
-      lede="Tell us the equipment, quantity and delivery location you need. Our team will confirm pricing and any installation or training requirements in your quotation."
+      lede="Tell us what you need, how many and where they should be delivered. We’ll reply with pricing and the next steps for installation or training."
     >
       <QuoteForm key={typeof item === "string" ? item : ""} presetItem={typeof item === "string" ? item.slice(0, 500) : ""} />
     </Section>

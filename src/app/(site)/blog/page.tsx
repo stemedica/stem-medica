@@ -36,8 +36,8 @@ export default async function BlogIndex({ searchParams }: { searchParams: Promis
   }
   return <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8 sm:py-14">
     <header className="grid gap-6 border-b border-hair pb-10 md:grid-cols-[1.5fr_1fr] md:items-end">
-      <div><p className="label text-navy">From the STEM MEDICA team</p><h1 className="font-display mt-4 text-4xl font-semibold tracking-tight text-navy sm:text-6xl">Updates &amp; insights.</h1></div>
-      <p className="max-w-md text-lg leading-relaxed text-ink-soft">New arrivals, company news and ideas for better-equipped healthcare.</p>
+      <h1 className="font-display max-w-[18ch] text-4xl font-semibold leading-tight tracking-[-0.025em] text-balance text-navy sm:text-6xl">Updates from STEM MEDICA</h1>
+      <p className="max-w-[46ch] text-lg leading-relaxed text-ink-soft">New equipment, company news and practical guidance for your facility.</p>
     </header>
     <form action="/blog" role="search" className="mt-6 flex flex-wrap items-end gap-3">
       {kind ? <input type="hidden" name="kind" value={kind} /> : null}
@@ -48,14 +48,14 @@ export default async function BlogIndex({ searchParams }: { searchParams: Promis
       {["All", ...postKinds].map((type) => <Link key={type} href={filterHref(type)} aria-current={(type === "All" ? !kind : kind === type) ? "page" : undefined} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-hair px-4 py-2 text-sm text-navy transition-colors hover:bg-navy-tint aria-[current=page]:border-navy aria-[current=page]:bg-navy aria-[current=page]:text-white">{type}<span className="text-xs opacity-70">{type === "All" ? matching.length : matching.filter((post) => post.kind === type).length}</span></Link>)}
     </nav>
     {query ? <div className="mb-5 flex flex-wrap items-center justify-between gap-3 text-sm"><p>{filtered.length} results for “{query}”</p><Link href="/blog" className="inline-flex min-h-11 items-center text-navy underline">Clear filters</Link></div> : null}
-    {!posts.length ? <div className="rounded-2xl border border-hair bg-white px-6 py-12 text-center"><p className="label text-steel">{kind ?? "Our journal"}</p><h2 className="font-display mt-3 text-2xl font-semibold text-navy">{query ? "No matching updates" : "More to share soon."}</h2><p className="mx-auto mt-3 max-w-md leading-relaxed text-ink-soft">{query ? "Try another topic, or browse all published updates." : "No updates published here yet. Check back soon."}</p><Link href={kind || query ? "/blog" : "/products"} className="btn-outline mt-6 min-h-11">{kind || query ? "View all updates" : "Explore the catalogue"}</Link></div> : <MobileCardRail key={`${kind}-${query}-${result.page}`} label="Blog posts" columns={2}>
+    {!posts.length ? <div className="rounded-2xl border border-hair bg-white px-6 py-12 text-center"><h2 className="font-display text-2xl font-semibold text-navy">{query ? "No matching updates" : "More to share soon"}</h2><p className="mx-auto mt-3 max-w-[46ch] text-base leading-relaxed text-ink-soft">{query ? "Try another topic or clear the filters to see every update." : "We have not added any updates here yet. Please check back soon."}</p><Link href={kind || query ? "/blog" : "/products"} className="btn-outline mt-6 min-h-11">{kind || query ? "View all updates" : "Browse equipment"}</Link></div> : <MobileCardRail key={`${kind}-${query}-${result.page}`} label="Blog posts" columns={2}>
       {posts.map((post, index) => <article key={post.id}>
         <Link prefetch={false} href={`/blog/${post.slug}`} className={`group flex h-full flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy/40 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
           <V2Photo src={post.image || undefined} label={post.image ? post.title : `Cover image · ${post.title}`} rounded={false} className="aspect-video w-full self-center" />
           <div className="flex flex-1 flex-col items-start p-5 sm:p-7">
             <div className="flex flex-wrap items-center gap-3 text-xs font-medium text-steel"><PostKindBadge post={post} /><time dateTime={post.date}>{formatDate(post.date)}</time>{index === 0 && result.page === 1 && !query ? <span>Latest</span> : null}</div>
             <h2 className="font-display mt-4 break-words text-xl font-semibold leading-tight tracking-tight text-navy sm:text-2xl">{post.title}</h2>
-            <p className="mb-6 mt-3 line-clamp-3 break-words text-sm leading-relaxed text-ink-soft sm:text-base">{post.excerpt}</p>
+            <p className="mb-6 mt-3 line-clamp-3 break-words text-[15px] leading-relaxed text-ink-soft sm:text-base">{post.excerpt}</p>
             <div className="mt-auto flex w-full flex-wrap items-center justify-between gap-4 border-t border-hair pt-5 text-sm"><span className="text-steel">{readingMinutes(post.body)} min read</span><span className="inline-flex items-center gap-2 font-medium text-navy">{post.kind !== "Blog" ? "View arrival details" : "Read story"} <ArrowRight size={16} aria-hidden="true" /></span></div>
           </div>
         </Link>

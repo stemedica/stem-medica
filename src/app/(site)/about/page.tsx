@@ -9,14 +9,14 @@ export const metadata: Metadata = {
 };
 
 export default function AboutPage() {
-  return <Section headingLevel="h1" index="01" label="About STEM MEDICA"
+  return <Section headingLevel="h1"
     title="Equipment for your facility. Support for your team."
-    lede="Medical equipment supply, installation and support, based in Addis Ababa, Ethiopia.">
+    lede="We supply medical equipment and help with installation and ongoing support across Ethiopia.">
     <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_340px]">
       <div className="max-w-[65ch] space-y-5 text-base leading-relaxed text-ink-soft">
-        <p>STEM MEDICA works with healthcare facilities on their equipment requirements. Browse our catalogue by department, or contact us about equipment you cannot find online.</p>
-        <p>Tell us your intended use, quantities and installation location. Our team can discuss specifications, availability and the support needed for your order.</p>
-        <p>Pricing is confirmed through a quotation, not an automatic online checkout. Request a proforma with the equipment and terms your procurement team needs to review.</p>
+        <p>Browse equipment by department. If you cannot find what you need, tell us what you are looking for.</p>
+        <p>Share how the equipment will be used, how many units you need and where they will be installed. We will help confirm the right model and support.</p>
+        <p>We confirm prices and terms in a written quote. If your team needs a proforma invoice, ask for one when you contact us.</p>
         <div className="flex flex-wrap gap-3 pt-2"><Link href="/products" className="btn-primary min-h-11">Browse equipment</Link><Link href="/contact" className="btn-outline min-h-11">Contact the team</Link></div>
       </div>
       <aside className="plate p-6">

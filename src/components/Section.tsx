@@ -32,8 +32,8 @@ export function SectionHead({
   tone = "light",
   headingLevel = "h2",
 }: {
-  index: string;
-  label: string;
+  index?: string;
+  label?: string;
   title?: ReactNode;
   lede?: ReactNode;
   meta?: string;
@@ -44,17 +44,17 @@ export function SectionHead({
   const Heading = headingLevel;
   return (
     <header>
-      <div className={`rule-head pt-3 ${dark ? "text-on-navy/35" : "text-ink"}`}>
+      {index || label || meta ? <div className={`rule-head pt-3 ${dark ? "text-on-navy/35" : "text-ink"}`}>
         <div className={`label flex flex-wrap items-baseline justify-between gap-4 ${dark ? "text-on-navy/65" : "text-steel"}`}>
           <span className="flex items-baseline gap-3">
-            <span className="text-scarlet">{index}</span>
-            <span className={dark ? "text-on-navy" : "text-ink"}>{label}</span>
+            {index ? <span className="text-scarlet">{index}</span> : null}
+            {label ? <span className={dark ? "text-on-navy" : "text-ink"}>{label}</span> : null}
           </span>
           {meta ? <span className="tabular-nums">{meta}</span> : null}
         </div>
-      </div>
+      </div> : null}
       {title ? (
-        <Heading className="font-display wdth-w mt-5 max-w-[20ch] text-[2rem] font-bold uppercase leading-[1.08] tracking-[-0.03em] text-balance sm:text-[2.6rem]">
+        <Heading className={`font-display wdth-w max-w-[22ch] text-[2rem] font-bold leading-[1.08] tracking-[-0.03em] text-balance sm:text-[2.75rem] ${index || label || meta ? "mt-5" : ""}`}>
           {title}
         </Heading>
       ) : null}
@@ -78,8 +78,8 @@ export function Section({
   className = "",
   headingLevel = "h2",
 }: {
-  index: string;
-  label: string;
+  index?: string;
+  label?: string;
   title?: ReactNode;
   lede?: ReactNode;
   meta?: string;

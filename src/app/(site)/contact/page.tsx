@@ -11,20 +11,17 @@ export const metadata: Metadata = {
 
 const channels = [
   { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment or support." },
-  { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send your equipment requirements in a message." },
-  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Share specifications, quantities and procurement documents." },
-  { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page. Opens in a new tab." },
+  { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
+  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send your equipment list and any documents we should review." },
+  { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];
 
 export default function ContactPage() {
   return (
     <Section
       headingLevel="h1"
-      index="01"
-      label="Contact"
-      meta={site.city}
       title="How can we help?"
-      lede="Contact our Addis Ababa team for equipment enquiries, quotations and support. Choose the channel that works best for you."
+      lede={`Contact our team in ${site.city} for equipment, quotes or support.`}
     >
       <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">
         {channels.map(({ icon: Icon, label, value, href, note }) => (
@@ -49,10 +46,9 @@ export default function ContactPage() {
       </div>
 
       <aside className="plate ticks mt-10 p-6">
-        <div className="label text-steel">Procurement</div>
-        <h2 className="font-display wdth-n mt-2.5 text-xl font-semibold">Requesting a proforma</h2>
-        <p className="mt-2 max-w-[58ch] text-[15px] leading-relaxed text-ink-soft">
-          Include your facility name, equipment list, quantities and delivery location. Our team will confirm the details and prepare a proforma for your review.
+        <h2 className="font-display wdth-n text-xl font-semibold">Need a proforma invoice?</h2>
+        <p className="mt-2 max-w-[62ch] text-base leading-relaxed text-ink-soft">
+          Send your organization name, equipment list, quantities and delivery location. We’ll confirm the details before preparing the document.
         </p>
         <Link href="/quote" className="btn-primary mt-5 min-h-11">Request a quotation</Link>
       </aside>

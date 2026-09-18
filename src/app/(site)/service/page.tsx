@@ -7,16 +7,16 @@ import { site } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Service & Support",
   description:
-    "How STEM MEDICA supports equipment after delivery: site survey, installation, commissioning, user training, spares and warranty.",
+    "How STEM MEDICA helps you choose, install and use medical equipment, with warranty and ongoing support.",
 };
 
 const stages = [
-  { n: "01", icon: Search, title: "Site requirements", body: "Share the installation location, available space and utilities so we can discuss the equipment’s requirements." },
-  { n: "02", icon: FileText, title: "Quotation & proforma", body: "Request a written quotation with equipment details, quantities, pricing and terms for your procurement review." },
-  { n: "03", icon: Truck, title: "Delivery & installation", body: "Confirm the delivery schedule and installation scope with our team before placing your order." },
-  { n: "04", icon: GraduationCap, title: "User training", body: "Discuss training needs for your clinical and technical teams as part of the supply agreement." },
-  { n: "05", icon: ShieldCheck, title: "Warranty & spares", body: "Ask about the warranty terms, consumables and spare parts available for your selected equipment." },
-  { n: "06", icon: Headset, title: "Ongoing support", body: "For a support enquiry, send the equipment model, serial number and a description of the issue." },
+  { n: "01", icon: Search, title: "Tell us about the site", body: "Share where the equipment will be used and what space, power, water or other services are available." },
+  { n: "02", icon: FileText, title: "Review the quote", body: "We’ll list the equipment, quantity, price and terms in writing. We can also provide a proforma invoice if needed." },
+  { n: "03", icon: Truck, title: "Plan delivery and installation", body: "We’ll agree on delivery dates and who will handle installation before you order." },
+  { n: "04", icon: GraduationCap, title: "Train your team", body: "Tell us who will use and maintain the equipment so the right training can be included." },
+  { n: "05", icon: ShieldCheck, title: "Confirm warranty and parts", body: "We’ll explain the warranty and confirm which supplies and spare parts are available." },
+  { n: "06", icon: Headset, title: "Get support", body: "Send the model, serial number and what went wrong. This helps us respond faster." },
 ];
 
 export default function ServicePage() {
@@ -24,23 +24,18 @@ export default function ServicePage() {
     <>
       <Section
         headingLevel="h1"
-        index="01"
-        label="Service & support"
-        meta="06 stages"
-        title="What happens after the purchase order"
-        lede="Plan the support your facility needs, from equipment selection to use. Services and timelines are confirmed for each order."
+        title="Support from selection to daily use"
+        lede="We can help you choose, install and use your equipment. The exact service and timing are agreed for each order."
       >
-        <ol className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="mt-12 border-t border-hair">
           {stages.map(({ n, icon: Icon, title, body }) => (
-            <li key={n} className="plate plate-hover lift relative p-6">
-              <span className="stamp absolute right-5 top-5 text-3xl text-navy/10">
-                {n}
-              </span>
-              <span className="flex h-11 w-11 items-center justify-center border border-hair bg-paper text-navy">
-                <Icon size={21} aria-hidden="true" />
-              </span>
-              <h2 className="font-display wdth-n mt-5 text-lg font-semibold">{title}</h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{body}</p>
+            <li key={n} className="grid gap-4 border-b border-hair py-6 sm:grid-cols-[64px_minmax(180px,.7fr)_1fr] sm:items-start sm:gap-6 sm:py-7">
+              <div className="flex items-center gap-3 text-navy sm:flex-col sm:items-start sm:gap-2">
+                <span className="stamp text-2xl tabular-nums">{n}</span>
+                <Icon size={20} strokeWidth={1.7} aria-hidden="true" />
+              </div>
+              <h2 className="font-display wdth-n text-xl font-semibold leading-snug text-navy">{title}</h2>
+              <p className="max-w-[62ch] text-base leading-relaxed text-ink-soft">{body}</p>
             </li>
           ))}
         </ol>
@@ -48,10 +43,8 @@ export default function ServicePage() {
 
       <Section
         tone="dark"
-        index="02"
-        label="For manufacturers"
-        title="Looking for Ethiopian distribution?"
-        lede="Introduce your equipment range and share your distribution requirements with the STEM MEDICA team."
+        title="Want to sell your equipment in Ethiopia?"
+        lede="Tell us about your products and the kind of local partner you need."
       >
         <div className="mt-9 flex flex-wrap gap-3">
           <Button href={`mailto:${site.email}`}>Email {site.email}</Button>

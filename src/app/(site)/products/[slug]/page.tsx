@@ -92,7 +92,7 @@ export default async function ProductPage({
       <div className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
         <div className={`grid gap-12 ${hasDetails ? "lg:grid-cols-[1fr_340px]" : "max-w-2xl"}`}>
           {hasDetails ? <div>
-            {product.specs.length ? <><SectionHead index="01" label="Specification" />
+            {product.specs.length ? <><SectionHead title="Specifications" />
             <div className="mt-6 overflow-x-auto">
               <table className="w-full table-fixed border-collapse text-left">
                 <caption className="sr-only">{product.name} specifications</caption>
@@ -110,7 +110,7 @@ export default async function ProductPage({
             </div></> : null}
 
             {product.services.length ? <div className="mt-14">
-              <SectionHead index="02" label="Included with supply" />
+              <SectionHead title="What’s included" />
               <ul className="mt-6 grid gap-px border border-hair bg-hair sm:grid-cols-2">
                 {product.services.map((s) => (
                   <li key={s} className="bg-white px-4 py-4 text-sm font-medium">{s}</li>
@@ -121,12 +121,11 @@ export default async function ProductPage({
 
           <aside className="lg:sticky lg:top-6 lg:self-start">
             <div className="plate ticks p-6">
-              <div className="label text-steel">Enquiry</div>
-              <h2 className="font-display wdth-n mt-2.5 text-xl font-semibold">
-                Request a quotation
+              <h2 className="font-display wdth-n text-xl font-semibold">
+                Ask about this equipment
               </h2>
-              <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
-                Contact us for current availability, specifications and a quotation tailored to your facility.
+              <p className="mt-2 text-base leading-relaxed text-ink-soft">
+                We’ll confirm the model, price, delivery time and any support you need.
               </p>
               <div className="mt-6 flex flex-col gap-2.5">
                 <Button href={`/quote?item=${encodeURIComponent(product.name)}`} className="w-full">
@@ -143,9 +142,7 @@ export default async function ProductPage({
         {related.length > 0 ? (
           <div className="mt-20">
             <SectionHead
-              index="03"
-              label="Other equipment"
-              meta={`${String(related.length).padStart(2, "0")} systems`}
+              title="Other equipment"
             />
             <div className="mt-8"><MobileCardRail label="Related equipment">
               {related.map((p, i) => (
