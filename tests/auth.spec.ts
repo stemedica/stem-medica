@@ -15,6 +15,11 @@ test("email and password protect every admin surface", async ({ page, request })
 
   await page.getByLabel("Email", { exact: true }).fill("admin@example.test");
   await page.getByLabel("Password", { exact: true }).fill("Test12345!");
+  await expect(page.getByLabel("Password", { exact: true })).toHaveAttribute("type", "password");
+  await page.getByRole("button", { name: "Show password" }).click();
+  await expect(page.getByLabel("Password", { exact: true })).toHaveAttribute("type", "text");
+  await page.getByRole("button", { name: "Hide password" }).click();
+  await expect(page.getByLabel("Password", { exact: true })).toHaveAttribute("type", "password");
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
   await expect(page).toHaveURL(/\/admin$/);
   expect((await page.request.get("/admin/api/posts")).status()).toBe(200);

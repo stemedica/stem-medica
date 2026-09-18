@@ -1,12 +1,13 @@
 "use client";
 /* eslint-disable @next/next/no-location-assign-relative-destination -- Full navigation clears the old authenticated router state. */
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { UserFacingError, userError } from "@/lib/form-errors";
-const input = "mt-2 block w-full min-w-0 rounded-lg border border-hair px-3 py-3 focus-visible:outline-2 focus-visible:outline-navy";
+const input = "block w-full min-w-0 rounded-lg border border-hair px-3 py-3 focus-visible:outline-2 focus-visible:outline-navy";
 export function LoginForm() {
   const [email, setEmail] = useState(""); const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [busy, setBusy] = useState(false); const [error, setError] = useState("");
   return <>
     <h1 className="font-display text-3xl font-semibold">Admin sign-in</h1>
@@ -20,8 +21,13 @@ export function LoginForm() {
       } catch (failure) { setError(userError(failure, "We couldn’t connect to sign you in. Please try again.")); }
       finally { setBusy(false); }
     }}><fieldset disabled={busy} className="space-y-5 disabled:opacity-70">
-      <label className="block text-sm">Email<input className={input} type="email" autoComplete="username" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} /></label>
-      <label className="block text-sm">Password<input className={input} type="password" autoComplete="current-password" required maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} /></label>
+      <label className="block text-sm">Email<input className={`mt-2 ${input}`} type="email" autoComplete="username" required maxLength={254} value={email} onChange={(event) => setEmail(event.target.value)} /></label>
+      <label className="block text-sm">Password<span className="relative mt-2 block">
+        <input className={`${input} pr-12`} type={showPassword ? "text" : "password"} autoComplete="current-password" required maxLength={128} value={password} onChange={(event) => setPassword(event.target.value)} />
+        <button className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-steel transition-colors hover:text-navy focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-navy" type="button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)}>
+          {showPassword ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+        </button>
+      </span></label>
       <button className="btn-primary w-full" type="submit">{busy ? "Checking…" : "Sign in"}</button>
       <p className="text-xs text-steel">Forgot your password? Ask the site owner to run the private password-reset command.</p>
     </fieldset></form>
