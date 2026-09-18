@@ -1,4 +1,4 @@
-# STEM MEDICA, website (MVP demo)
+# STEM MEDICA website
 
 **Live:** https://stem-medica.vercel.app · **Repo:** private, `natinael96/stem-medica`
 
@@ -15,7 +15,7 @@ npm run build   # production build
 
 Admin sign-in: [http://localhost:3000/auth/login](http://localhost:3000/auth/login). Development uses the isolated Neon branch configured in `.env.neon-test`; provision its account privately as described in [admin setup](docs/AUTH.md).
 
-## What's in the MVP
+## What is included
 
 | Route | Notes |
 | --- | --- |
@@ -25,22 +25,20 @@ Admin sign-in: [http://localhost:3000/auth/login](http://localhost:3000/auth/log
 | `/blog` · `/blog/[slug]` | CMS posts, arrival notices and image galleries |
 | `/service` | The six-stage support sequence + manufacturer front door |
 | `/about` · `/contact` | Company, channels |
-| `/admin` | Protected CMS and manual proformas |
+| `/admin` | Protected CMS, quotation-request inbox and proformas |
 
 See [application routes](docs/ROUTES.md) for auth, media and scheduled-job paths. Admin routes require sign-in.
 
 ## Content
 
-The product/category CMS and seven-day proforma drafts are now implemented.
+The catalogue, posts, quotation requests and seven-day proforma drafts use Neon in production.
 See [CMS setup](docs/CMS.md) for private Blob configuration and
 [email setup](docs/EMAIL.md) for `info@stemedicaet.com` on Porkbun.
 - **Products, categories and posts** are managed through the CMS. Local preview uses the configured Neon test branch.
-- **Test data** is labelled illustrative content. See [scale preview](docs/SCALE-PREVIEW.md) for the repeatable 100-product / 10-category / 60-post dataset.
+- **Production starts empty.** Preview fixtures stay confined to the test branch and cleanup tooling.
 - **Site config**, `src/lib/site.ts` (phone, email, WhatsApp, nav).
 
-> Product specs, availability and lead times are **placeholders**. Device names and
-> departments are drawn from STEM MEDICA's public posts; everything else needs the
-> real product list before this goes live.
+Only approved products and posts should be added through the production admin.
 
 ## Design system
 
@@ -52,7 +50,6 @@ Typography is one variable family (Archivo) used across its width axis:
 `.wdth-xw` / `.wdth-w` / `.wdth-n`. IBM Plex Mono carries every number, model code
 and label. Noto Sans Ethiopic is wired up for Amharic.
 
-## Further plans
+## Operations
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the original architecture proposal;
-[CMS](docs/CMS.md) and [auth](docs/AUTH.md) describe the implemented workflows.
+[Architecture](docs/ARCHITECTURE.md), [CMS](docs/CMS.md), [authentication](docs/AUTH.md) and [operations](docs/OPERATIONS.md) describe the production workflows.

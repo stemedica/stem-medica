@@ -1,8 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { parseEnv } from "node:util";
-import { createHash } from "node:crypto";
 import { catalogueSchema } from "../src/lib/cms-schema";
-import { readJson, writeJson, readObject, writeObject, ConflictError } from "../src/lib/storage";
+import { readJson, writeJson, readObject, writeObject } from "../src/lib/storage";
 import { contentDatabase } from "../src/lib/content-database";
 
 async function main() {
@@ -37,8 +36,6 @@ async function main() {
       }
     }
     if (changed) {
-      const historyKey = `catalogue-history/0-${createHash("sha256").update(saved.etag).digest("hex")}.json`;
-      try { await writeJson(historyKey, saved.data); } catch (error) { if (!(error instanceof ConflictError)) throw error; }
       await writeJson("catalogue/current.json", catalogueSchema.parse(catalogue), saved.etag);
     }
     const verified = catalogueSchema.parse((await readJson("catalogue/current.json"))?.data);

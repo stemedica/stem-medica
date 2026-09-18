@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
-import { Phone, MessageCircle, Mail, Link2 } from "lucide-react";
+import { Phone, MessageCircle, ClipboardList, Link2 } from "lucide-react";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Call ${site.phone} or email ${site.email}. STEM MEDICA, Addis Ababa.`,
+  description: `Call ${site.phone}, send a quotation request or contact STEM MEDICA on WhatsApp in Addis Ababa.`,
 };
 
 const channels = [
   { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment or support." },
   { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
-  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send your equipment list and any documents we should review." },
+  { icon: ClipboardList, label: "Quotation request", value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
   { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];
 

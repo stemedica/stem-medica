@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "design-engineer/SKILL.md",
       "computedHash": "28eeb81573892c4e8582e0da8470dfe51057de212c33a3512fd8d4dad05a0ff0"
+    },
+    "neon-postgres": {
+      "source": "neondatabase/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/neon-postgres/SKILL.md",
+      "computedHash": "64150370145c18f563fbc652c8d8bf273c4943d2a9f2039ddd51af9fd08d96f3"
     }
   }
 }

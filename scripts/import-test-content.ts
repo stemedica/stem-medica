@@ -21,7 +21,7 @@ async function main() {
   process.env.CMS_DATABASE_URL = env.DATABASE_URL;
   process.env.CONTENT_STORAGE_DRIVER = "postgres";
   const entries: { key: string; data: unknown }[] = [];
-  for (const prefix of ["catalogue", "posts", "catalogue-history", "drafts"]) {
+  for (const prefix of ["catalogue", "posts", "drafts"]) {
     const files = await readdir(`.local-storage/${prefix}`).catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return []; throw error; });
     for (const file of files) {
       if (!file.endsWith(".json")) throw new Error("Unexpected local file; stop saves before importing.");
@@ -51,12 +51,12 @@ async function main() {
       if (!isDeepStrictEqual((await readJson(entry.key))?.data, entry.data)) throw new Error("Read-back verification failed.");
     }
     // Verify actual storage behavior on disposable records, never user documents.
-    const key = `catalogue-history/qa-${randomUUID()}.json`;
+    const key = `drafts/qa-storage-${randomUUID()}.json`;
     try {
       const revision = await writeJson(key, { version: 1 });
       const writes = await Promise.allSettled([writeJson(key, { version: 2 }, revision), writeJson(key, { version: 3 }, revision)]);
       if (writes.filter(r => r.status === "fulfilled").length !== 1 || !writes.some(r => r.status === "rejected" && r.reason instanceof ConflictError)) throw new Error("Concurrent-write protection failed.");
-      if (!(await listObjects("catalogue-history/")).some(r => r.pathname === key)) throw new Error("Listing failed.");
+      if (!(await listObjects("drafts/")).some(r => r.pathname === key)) throw new Error("Listing failed.");
       let rejected = false;
       try { await deleteObject(key, revision); } catch (error) { if (error instanceof ConflictError) rejected = true; else throw error; }
       if (!rejected) throw new Error("Stale deletion was not blocked.");

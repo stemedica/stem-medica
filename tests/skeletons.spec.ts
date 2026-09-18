@@ -11,7 +11,7 @@ function renderSkeleton(variant: string) {
   `], { encoding: "utf8" });
 }
 
-test.use({ baseURL: "http://127.0.0.1:3000" });
+test.use({ baseURL: process.env.QA_AUTH_E2E ? "http://127.0.0.1:3001" : "http://127.0.0.1:3000" });
 
 test("skeleton layouts are accessible, responsive and reduced-motion safe", async ({ page }) => {
   await page.goto("/");

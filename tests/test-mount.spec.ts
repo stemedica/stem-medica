@@ -8,12 +8,12 @@ test("the full website is mounted at root", async ({ page, request }) => {
     const response = await page.goto("/");
     expect(response?.ok()).toBeTruthy();
     await expect(page.getByRole("heading", { name: /Equipment for/ })).toBeVisible();
-    await expect(page.getByRole("link", { name: "View full catalogue", exact: true })).toHaveAttribute("href", "/products");
+    await expect(page.getByRole("link", { name: "Browse all equipment", exact: true }).first()).toHaveAttribute("href", "/products");
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   }
 
   expect((await request.get("/test")).status()).toBe(404);
-  await page.getByRole("link", { name: "View full catalogue", exact: true }).click();
+  await page.getByRole("link", { name: "Browse all equipment", exact: true }).first().click();
   await expect(page).toHaveURL(/\/products$/);
   await expect(page.getByRole("search")).toHaveAttribute("action", "/products");
   await page.goto("/blog");
@@ -23,6 +23,7 @@ test("the full website is mounted at root", async ({ page, request }) => {
     for (const api of ["catalogue", "posts", "drafts", "media"]) {
       expect((await request.get(`/admin/api/${api}`)).status()).toBe(401);
     }
+    expect((await request.get("/admin/enquiries", { maxRedirects: 0 })).status()).toBe(307);
     expect((await request.get("/admin/api/history")).status()).toBe(404);
     await page.goto("/admin");
     await expect(page).toHaveURL(/\/auth\/login$/);

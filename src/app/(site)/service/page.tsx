@@ -47,7 +47,7 @@ export default function ServicePage() {
         lede="Tell us about your products and the kind of local partner you need."
       >
         <div className="mt-9 flex flex-wrap gap-3">
-          <Button href={`mailto:${site.email}`}>Email {site.email}</Button>
+          <Button href="/quote">Send partnership details</Button>
           <Button href={site.linkedin} variant="onDark">LinkedIn</Button>
         </div>
       </Section>

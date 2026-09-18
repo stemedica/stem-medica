@@ -41,7 +41,7 @@ test("admin actions remain usable from narrow phones through desktop", async ({ 
   test.skip(!process.env.QA_STORAGE_STATE, "Run against the isolated authenticated browser suite.");
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
-    for (const route of ["/admin", "/admin/catalogue", "/admin/posts", "/admin/proformas"]) {
+    for (const route of ["/admin", "/admin/catalogue", "/admin/posts", "/admin/enquiries", "/admin/proformas"]) {
       await expectResponsiveControls(page, route);
     }
   }

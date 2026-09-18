@@ -23,7 +23,7 @@ export default function AboutPage() {
         <h2 className="text-lg font-semibold text-navy">Get in touch</h2>
         <p className="mt-3 text-sm text-ink-soft">{site.city}</p>
         <a href={`tel:${site.phoneIntl}`} className="mt-3 flex min-h-11 items-center text-navy underline">{site.phone}</a>
-        <a href={`mailto:${site.email}`} className="flex min-h-11 items-center text-navy underline">{site.email}</a>
+        <Link href="/quote" className="flex min-h-11 items-center text-navy underline">Request a quote</Link>
         <Link href="/service" className="mt-3 inline-flex min-h-11 items-center text-sm text-navy underline">Service &amp; support</Link>
       </aside>
     </div>

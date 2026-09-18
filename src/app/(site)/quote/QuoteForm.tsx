@@ -4,13 +4,6 @@ import { useState } from "react";
 import { Send, Phone } from "lucide-react";
 import { site } from "@/lib/site";
 
-/**
- * Composes a mailto: so the form works today with no backend.
- *
- * When the Telegram enquiry route lands (docs/ARCHITECTURE.md §1) this submits
- * to it instead: store the enquiry, then notify the sales group. Keep the field
- * names, they are the message shape.
- */
 type Field = {
   name: string;
   label: string;
@@ -27,37 +20,37 @@ const FIELDS: Field[] = [
   { name: "email", label: "Email (optional)", placeholder: "name@example.com", type: "email", autoComplete: "email" },
 ];
 
-export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
-  const [sent, setSent] = useState(false);
+type FormState = { kind: "idle" | "busy" | "success" | "error"; message: string };
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+export function QuoteForm({ presetItem = "", initialMessage = "" }: { presetItem?: string; initialMessage?: string }) {
+  const [state, setState] = useState<FormState>(initialMessage
+    ? { kind: initialMessage.startsWith("Thanks") ? "success" : "error", message: initialMessage }
+    : { kind: "idle", message: "" });
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    const get = (k: string) => String(f.get(k) ?? "").trim();
-
-    const body = [
-      `Facility:  ${get("facility")}`,
-      `Contact:   ${get("contact")}`,
-      `Phone:     ${get("phone")}`,
-      `Email:     ${get("email") || "-"}`,
-      "",
-      `Equipment: ${get("equipment")}`,
-      `Quantity:  ${get("quantity") || "-"}`,
-      "",
-      "Notes:",
-      get("notes") || "-",
-    ].join("\n");
-
-    window.location.href =
-      `mailto:${site.email}` +
-      `?subject=${encodeURIComponent(`Quotation request: ${get("equipment") || "equipment"}`)}` +
-      `&body=${encodeURIComponent(body)}`;
-    setSent(true);
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form).entries());
+    setState({ kind: "busy", message: "Sending your request…" });
+    try {
+      const response = await fetch("/api/enquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json() as { message?: string };
+      if (!response.ok) throw new Error(result.message || "We couldn’t save your request. Please call or try again.");
+      form.reset();
+      setState({ kind: "success", message: "Thanks — your request is saved. Our team will contact you using the details you provided." });
+    } catch (error) {
+      setState({ kind: "error", message: error instanceof Error ? error.message : "We couldn’t save your request. Please call or try again." });
+    }
   }
 
   return (
-    <form onSubmit={onSubmit} onChange={() => setSent(false)} className="mt-8 grid gap-5 sm:grid-cols-2">
-      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. Your email app will open with these details filled in, ready for you to review and send.</p>
+    <form action="/api/enquiries" method="post" onSubmit={onSubmit} onChange={() => state.kind !== "busy" && setState({ kind: "idle", message: "" })} className="mt-8 grid gap-5 sm:grid-cols-2">
+      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. We’ll save your request securely and contact you using the phone number or email you provide.</p>
+      <label className="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
       {FIELDS.map((f) => (
         <label key={f.name} className="block">
           <span className="text-sm font-medium text-ink">
@@ -126,9 +119,10 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
         <div className="action-stack items-center">
           <button
             type="submit"
+            disabled={state.kind === "busy"}
             className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
-            <Send size={14} aria-hidden="true" /> Open request in email
+            <Send size={14} aria-hidden="true" /> {state.kind === "busy" ? "Sending request…" : "Send quotation request"}
           </button>
           <a
             href={`tel:${site.phoneIntl}`}
@@ -138,11 +132,8 @@ export function QuoteForm({ presetItem = "" }: { presetItem?: string }) {
           </a>
         </div>
 
-        <p aria-live="polite" className="mt-4 text-sm text-ink-soft">
-          {sent
-            ? "Your email app should have opened with the request ready to send. If it didn't, call " +
-              site.phone + " and we'll take the details over the phone."
-            : "This opens your email app with the request filled in. Nothing is stored on this site."}
+        <p aria-live="polite" role={state.kind === "error" ? "alert" : "status"} className={`mt-4 text-sm ${state.kind === "error" ? "font-medium text-vital" : state.kind === "success" ? "font-medium text-navy" : "text-ink-soft"}`}>
+          {state.message || `We usually follow up by phone. You can also call ${site.phone} if your request is urgent.`}
         </p>
       </div>
     </form>

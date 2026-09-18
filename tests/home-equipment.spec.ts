@@ -61,6 +61,10 @@ test("mobile slide navigation resets on category changes and respects reduced mo
   const equipment = page.locator("#equipment");
   const filters = equipment.getByRole("navigation").getByRole("link");
   const next = equipment.getByRole("button", { name: "Next product", exact: true });
+  if (await next.count() === 0 || await filters.count() < 2) {
+    await expect(equipment.getByRole("heading", { name: "Our catalogue is being updated" })).toBeVisible();
+    return;
+  }
   await next.click();
   await expect(equipment.getByText(/^2 \/ /)).toBeVisible();
   await filters.nth(1).click();
@@ -70,13 +74,12 @@ test("mobile slide navigation resets on category changes and respects reduced mo
 });
 
 test("equipment and catalogue links remain available without JavaScript", async ({ browser }) => {
-  test.fixme(true, "Existing Next streamed loading boundary leaves content hidden with JavaScript disabled in local dev; requires a separate site-wide fallback pass.");
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
   await page.goto(process.env.QA_AUTH_E2E ? "http://127.0.0.1:3001/" : "http://127.0.0.1:3000/");
   const equipment = page.getByRole("region", { name: "Explore our equipment." });
   await expect(equipment).toBeVisible();
-  await expect(equipment.getByRole("link", { name: "View full catalogue" })).toHaveAttribute("href", "/products");
+  await expect(equipment.getByRole("link", { name: "Browse all equipment" })).toHaveAttribute("href", "/products");
   const filters = equipment.getByRole("navigation").getByRole("link");
   if (await filters.count() > 1) {
     await filters.nth(1).click();

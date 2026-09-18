@@ -1,5 +1,4 @@
 import { PostKindBadge } from "@/components/PostKindBadge";
-import { Suspense } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { V2Button, V2Photo, V2Head } from "@/components/V2";
@@ -11,19 +10,11 @@ import { HomeEquipment } from "@/components/HomeEquipment";
 import { homeEquipment } from "@/lib/home-equipment";
 import { MobileCardRail } from "@/components/MobileCardRail";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
-import { HomeEquipmentSkeleton, HomeUpdatesSkeleton } from "@/components/HomeSkeleton";
-export const dynamic = "force-dynamic";
-
-type CataloguePromise = ReturnType<typeof getCatalogue>;
-type PostsPromise = ReturnType<typeof getAllPosts>;
-
-async function EquipmentSection({ catalogue }: { catalogue: CataloguePromise }) {
-  const { products, categories } = await catalogue;
+function EquipmentSection({ products, categories }: Awaited<ReturnType<typeof getCatalogue>>) {
   return <HomeEquipment groups={homeEquipment({ products, categories })} />;
 }
 
-async function UpdatesSection({ posts: postsPromise }: { posts: PostsPromise }) {
-  const allPosts = await postsPromise;
+function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getAllPosts>> }) {
   const posts = allPosts.slice(0, 6);
 
   if (posts.length === 0) return null;
@@ -60,18 +51,16 @@ async function UpdatesSection({ posts: postsPromise }: { posts: PostsPromise }) 
   </section>;
 }
 
-export default function Home() {
-  // Start independent reads together; each section streams as soon as its data is ready.
-  const catalogue = getCatalogue();
-  const posts = getAllPosts();
+export const revalidate = 300;
+
+export default async function Home() {
+  const [catalogue, allPosts] = await Promise.all([getCatalogue(), getAllPosts()]);
 
   return (
     <>
       <HomeHero />
 
-      <Suspense fallback={<HomeEquipmentSkeleton />}>
-        <EquipmentSection catalogue={catalogue} />
-      </Suspense>
+      <EquipmentSection {...catalogue} />
 
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 border-b border-hair px-5 py-6">
         <p className="flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-navy"><span>01 · Supply</span><span>02 · Installation</span><span>03 · Support</span></p>
@@ -95,9 +84,7 @@ export default function Home() {
       </section>
 
       {/* Insights */}
-      <Suspense fallback={<HomeUpdatesSkeleton />}>
-        <UpdatesSection posts={posts} />
-      </Suspense>
+      <UpdatesSection allPosts={allPosts} />
 
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">

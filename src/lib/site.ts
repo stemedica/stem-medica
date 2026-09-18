@@ -10,7 +10,7 @@ export const site = {
   email: "info@stemedicaet.com",
   whatsapp: "https://wa.me/251921136180",
   linkedin: "https://www.linkedin.com/company/stem-medica",
-  url: "https://stemedicaet.com",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://stem-medica.vercel.app",
 } as const;
 
 export const nav = [

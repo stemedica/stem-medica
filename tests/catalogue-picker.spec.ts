@@ -16,12 +16,12 @@ test("catalogue picker recovers, searches and preserves manual items", async ({ 
   await page.route("**/admin/api/catalogue?*", (route) => route.fulfill({ status: 503, json: { error: "Unavailable" } }));
   await page.getByRole("button", { name: "Browse catalogue" }).click();
   await expect(page.getByRole("alert").filter({ hasText: "Catalogue unavailable" })).toContainText("enter an item manually");
-  await page.unroute("**/admin/api/catalogue");
+  await page.unroute("**/admin/api/catalogue?*");
   const response = await page.request.get("/admin/api/catalogue");
   const saved = await response.json();
   const product = saved.catalogue.products.find((entry: { published: boolean }) => entry.published);
   expect(product).toBeTruthy();
-  await page.getByRole("button", { name: "Browse catalogue" }).click();
+  await page.getByRole("button", { name: "Refresh catalogue" }).click();
   await page.getByLabel("Search catalogue").fill("no-matching-equipment-123456789");
   await expect(page.getByText("No published products match.", { exact: false })).toBeVisible();
   await page.getByLabel("Search catalogue").fill(product.name);

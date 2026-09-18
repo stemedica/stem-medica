@@ -7,7 +7,7 @@ export class ConflictError extends Error {}
 export class StorageUnavailable extends Error {}
 const local = () => process.env.STORAGE_DRIVER === "local" && !process.env.VERCEL;
 const postgres = () => process.env.CONTENT_STORAGE_DRIVER === "postgres";
-const contentKey = (key: string) => /^(catalogue\/|posts\/|drafts\/|catalogue-history\/)/.test(key);
+const contentKey = (key: string) => /^(catalogue\/|posts\/|drafts\/)/.test(key);
 export function contentStorageIdentity() {
   if (!postgres()) return process.env.STORAGE_DRIVER ?? "blob";
   const url = process.env.CMS_DATABASE_URL || process.env.DATABASE_URL || "";

@@ -13,7 +13,7 @@ import { V2Photo } from "@/components/V2";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
 import { publicMediaUrl } from "@/lib/preview-paths";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const post = await getPost((await params).slug);

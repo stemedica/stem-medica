@@ -25,6 +25,7 @@ async function main() {
         try { await pool.query("SELECT 1"); break; } catch { if (i > 20) throw new Error("Test database did not start"); await new Promise((r) => setTimeout(r, 500)); }
       }
       await migrate(drizzle(pool), { migrationsFolder: "drizzle" });
+      await migrate(drizzle(pool), { migrationsFolder: "drizzle-content", migrationsSchema: "content_migrations" });
       await insertAdmin(pool, "admin@example.test", "Test12345!", "Test admin");
     } finally { await pool.end(); }
     const env = { ...process.env, NODE_ENV: "development" as const, VERCEL: "", DATABASE_URL: dbURL, DATABASE_URL_UNPOOLED: dbURL,
@@ -44,7 +45,7 @@ async function main() {
     await run(["tests/auth.spec.ts"]);
     await chmod(env.QA_STORAGE_STATE, 0o600);
     const requested = process.argv.slice(2);
-    await run(requested.length ? requested : ["tests/admin-dashboard.spec.ts", "tests/cms.spec.ts", "tests/posts.spec.ts", "tests/catalogue-picker.spec.ts", "tests/modals.spec.ts", "tests/history-navigation.spec.ts", "tests/save-actions.spec.ts", "tests/validation.spec.ts", "tests/duplicates.spec.ts", "tests/publication.spec.ts", "tests/public-ux.spec.ts"]);
+    await run(requested.length ? requested : ["tests/admin-dashboard.spec.ts", "tests/enquiry.spec.ts", "tests/cms.spec.ts", "tests/posts.spec.ts", "tests/catalogue-picker.spec.ts", "tests/modals.spec.ts", "tests/history-navigation.spec.ts", "tests/save-actions.spec.ts", "tests/validation.spec.ts", "tests/duplicates.spec.ts", "tests/publication.spec.ts", "tests/public-ux.spec.ts"]);
   } finally {
     if (server?.pid && server.exitCode === null) { try { process.kill(-server.pid, "SIGTERM"); } catch { /* already exited */ } }
     if (created) execFileSync("docker", ["stop", container], { stdio: "pipe" });

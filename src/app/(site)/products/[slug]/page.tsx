@@ -11,7 +11,7 @@ import { getCatalogue } from "@/lib/catalogue";
 import { site } from "@/lib/site";
 import { MobileCardRail } from "@/components/MobileCardRail";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,

@@ -11,7 +11,7 @@ import { paginate } from "@/lib/pagination";
 import { V2Photo } from "@/components/V2";
 import { MobileCardRail } from "@/components/MobileCardRail";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: "Updates & blog",
