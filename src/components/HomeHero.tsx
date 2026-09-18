@@ -15,7 +15,7 @@ export function HomeHero() {
         <p className="mt-4 max-w-[35ch] text-base leading-relaxed text-white/85 sm:text-lg">For the teams who care for us.<br />Supplied, installed and supported across Ethiopia.</p>
         <div className="pointer-events-auto mt-5 flex w-full flex-col gap-3 sm:w-fit sm:flex-row sm:flex-wrap">
           <a href="#equipment" className="inline-flex min-h-14 items-center justify-between gap-6 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-navy transition-colors hover:bg-blue-50">Browse equipment<span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white"><ArrowDown size={19} aria-hidden="true" /></span></a>
-          <Link href="/quote" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/50 bg-navy-deep/30 px-6 text-sm font-medium text-white transition-colors hover:bg-white/15">Request a quote<ArrowUpRight size={17} aria-hidden="true" /></Link>
+          <Link prefetch={false} href="/quote" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/50 bg-navy-deep/30 px-6 text-sm font-medium text-white transition-colors hover:bg-white/15">Request a quote<ArrowUpRight size={17} aria-hidden="true" /></Link>
         </div>
       </div>
       <a href="#equipment" aria-label="Scroll down to explore equipment" className="absolute bottom-4 left-1/2 z-10 flex size-11 -translate-x-1/2 items-center justify-center rounded-full border border-white/35 text-white hover:bg-white/10 sm:hidden">

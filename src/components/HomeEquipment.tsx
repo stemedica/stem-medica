@@ -26,7 +26,7 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
           <h2 id="equipment-heading" className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
           <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-soft">Browse by category. When you find an item, ask us to confirm the model, price and delivery time.</p>
         </div>
-        <Link href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">Browse all equipment <ArrowUpRight size={18} aria-hidden="true" /></Link>
+        <Link prefetch={false} href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">Browse all equipment <ArrowUpRight size={18} aria-hidden="true" /></Link>
       </header>
       <nav aria-label="Equipment categories" className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 py-2 sm:mt-8 lg:flex-wrap">
         {groups.map(group => <a key={group.slug} href={group.slug ? `/products?cat=${encodeURIComponent(group.slug)}` : "/products"}
@@ -55,7 +55,7 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
               Math.min(current.products.length - 1, Math.round(el.scrollLeft / (second.offsetLeft - first.offsetLeft))));
           }}
           className="flex snap-x snap-mandatory scroll-px-1 gap-3 overflow-x-auto overscroll-x-contain p-1 pb-3 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-3">
-          {current.products.map(product => <Link key={product.slug} href={`/products/${product.slug}`} className={`group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy ${current.products.length > 1 ? "w-[86%]" : "w-full"} sm:w-auto`}>
+          {current.products.map(product => <Link prefetch={false} key={product.slug} href={`/products/${product.slug}`} className={`group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy ${current.products.length > 1 ? "w-[86%]" : "w-full"} sm:w-auto`}>
             <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-hair bg-navy-tint/60 p-3 sm:p-6">
               {product.image ? /* eslint-disable-next-line @next/next/no-img-element */
                 <img src={publicMediaUrl(product.image)} alt={`${product.name}: product photo`} loading="lazy" decoding="async" className="h-full w-full object-contain" /> :
@@ -76,7 +76,7 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
       </div>
       {current.count ? <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-hair pt-5">
         <p className="max-w-md text-sm leading-relaxed text-ink-soft">We’ll confirm the model, price and delivery time when you contact us.</p>
-        <Link href={catalogueUrl} className="inline-flex min-h-12 items-center justify-center gap-4 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white hover:bg-navy-deep">{current.slug ? "View category" : "Browse all equipment"}<ArrowRight size={17} aria-hidden="true" /></Link>
+        <Link prefetch={false} href={catalogueUrl} className="inline-flex min-h-12 items-center justify-center gap-4 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white hover:bg-navy-deep">{current.slug ? "View category" : "Browse all equipment"}<ArrowRight size={17} aria-hidden="true" /></Link>
       </div> : null}
     </div>
   </section>;

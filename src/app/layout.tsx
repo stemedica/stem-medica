@@ -15,6 +15,9 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500", "600"],
   variable: "--font-plex-mono",
   display: "swap",
+  // Labels are supporting UI, not primary content. Let the browser request only
+  // the weights a page actually uses instead of preloading all three up front.
+  preload: false,
 });
 const ethiopic = Noto_Sans_Ethiopic({
   subsets: ["ethiopic"],
