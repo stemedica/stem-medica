@@ -3,8 +3,6 @@ Derive clean PNG assets from the supplied logo, public/stem-medica.jpg.
 
 Outputs:
   src/app/icon.png    emblem only, square, transparent    (favicon)
-  public/emblem-white.png  emblem only, square, white ground (spare)
-  public/emblem.png   emblem only, square, transparent    (spare)
   public/logo.png     full lockup, tight crop, transparent (header/footer)
 
 The supplied logo is a tight lockup: the "M" of STEM overlaps the emblem's
@@ -17,9 +15,7 @@ from collections import deque
 from PIL import Image
 
 SRC = "public/stem-medica.jpg"
-EMBLEM_OUTS = [("src/app/icon.png", 180, None),
-               ("public/emblem.png", 512, None),
-               ("public/emblem-white.png", 512, "white")]
+EMBLEM_OUTS = [("src/app/icon.png", 180, None)]
 LOCKUP_OUT = ("public/logo.png", 3)   # 3x the source crop
 WHITE = 232          # background threshold
 MIN_AREA = 40        # ignore JPEG speckle
