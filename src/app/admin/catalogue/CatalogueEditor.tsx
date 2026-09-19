@@ -17,7 +17,6 @@ import { X } from "lucide-react";
 const input = "mt-1 min-w-0 w-full rounded-lg border border-hair bg-white px-3 py-2 text-base";
 const button = "min-h-11 min-w-11 rounded-lg border border-hair px-4 py-2 text-sm font-medium hover:border-navy disabled:cursor-not-allowed disabled:opacity-50";
 const blankProduct = (category: string): CmsProduct => ({ slug: "", name: "", brand: "", origin: "", category, image: "", summary: "", availability: "On request", leadTime: "Confirm on enquiry", specs: [], services: [], featured: false, published: false });
-const blankCategory = (): CmsCategory => ({ slug: "", name: "", short: "", blurb: "", image: "" });
 
 export function CatalogueEditor() {
   const [attempted, setAttempted] = useState(false);
@@ -91,16 +90,16 @@ export function CatalogueEditor() {
     if (!data) return;
     const emptyIndex = data[mode].findIndex((item) => !item.name.trim() && ("brand" in item ? !item.brand.trim() && !item.origin.trim() && !item.summary.trim() : !item.short.trim() && !item.blurb.trim()));
     if (emptyIndex >= 0) { setSelected(emptyIndex); setMessage("You already have an empty item. Fill it in before adding another."); return; }
-    if (data[mode].length >= (mode === "products" ? 500 : 100)) { setMessage("This list has reached its limit. Remove an unused item before adding another.", "warning"); return; }
+    if (data[mode].length >= (mode === "products" ? 300 : 40)) { setMessage("This list has reached its limit. Remove an unused item before adding another.", "warning"); return; }
     const copy = structuredClone(data);
     if (mode === "products") {
       const product = { ...blankProduct(""), slug: categorySlug("New product", copy.products.map((p) => p.slug)) };
       newProducts.current.add(product.slug); copy.products.push(product);
     }
-    else {
-      const category = { ...blankCategory(), slug: categorySlug("New category", copy.categories.map((c) => c.slug)) };
-      newCategories.current.add(category.slug); copy.categories.push(category);
-    }
+    // Categories are the agreed supply list and are not created here. Adding
+    // one would put a heading on the public site that nobody approved, and the
+    // set is small enough that changes belong in scripts/seed-catalogue.ts.
+    else return;
     resetFields(); setAttempted(false);
     setStatus("all"); setSelected(copy[mode].length - 1); setData(copy); setDirty(true);
   }
@@ -163,7 +162,7 @@ export function CatalogueEditor() {
         <aside className="min-w-0">
           <div className="mb-4 flex gap-2">{(["products", "categories"] as const).map((tab) => <button key={tab} className={`${button} ${mode === tab ? "bg-navy text-white hover:bg-navy-deep" : "bg-white"}`} aria-pressed={mode === tab} onClick={() => { setMode(tab); setSelected(0); }}>{tab === "products" ? "Products" : "Categories"}</button>)}</div>
           {mode === "products" ? <PublicationFilter value={status} onChange={setStatus} /> : null}
-          <button className={`${button} my-3 w-full`} onClick={add}>Add {mode === "products" ? "product" : "category"}</button>
+          {mode === "products" ? <button className={`${button} my-3 w-full`} onClick={add}>Add product</button> : <p className="my-3 rounded-lg border border-hair bg-paper px-3 py-2.5 text-xs leading-relaxed text-ink-soft">The supply categories are fixed. Edit the wording here; adding or removing one is a change to the agreed list.</p>}
           {mode === "products" && !data.products.some((item) => matchesPublication(item.published, status)) ? <p className="mb-3 text-sm text-steel">{status === "all" ? "No products yet. Add your first product." : `No ${status === "draft" ? "draft" : "published"} products. Choose All to see the other products.`}</p> : null}
           <div className="max-h-[65vh] overflow-y-auto rounded-xl border border-hair bg-white">{data[mode].map((item, i) => mode === "products" && !matchesPublication((item as CmsProduct).published, status) ? null : <button key={i} className={`block w-full border-b border-hair px-4 py-3 text-left text-sm last:border-0 ${i === selected ? "bg-navy-tint font-semibold" : "hover:bg-paper"}`} onClick={() => setSelected(i)}>{item.name || "Untitled"}{"published" in item ? <span className="ml-2 text-xs text-steel">{item.published ? "Published" : "Draft"}</span> : null}</button>)}</div>
         </aside>

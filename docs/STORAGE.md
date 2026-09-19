@@ -10,8 +10,9 @@ content_document
   updated_at timestamptz
 ```
 
-Enquiries are the exception: one row per submission in `enquiry`, because they
-arrive from the public and need rate limiting and per-record status.
+`content_document` is now the only application table; the rest are `auth_*`.
+The `enquiry` and `enquiry_throttle` tables were dropped along with the
+submission API while the delivery method is settled with the client.
 
 Images live in Vercel Blob, served through `/media/[id]`. Auth uses the
 `auth_*` tables.
@@ -118,3 +119,29 @@ worth it for 10 MB photographs that compress to a few hundred KB in the browser.
 
 `/media/[id]` serves with `max-age=31536000, immutable`, which is safe because
 filenames are UUIDs and content never changes under one.
+
+
+## Local development uses a different database
+
+`npm run dev` runs `scripts/dev-neon.ts`, which reads `.env.neon-test` and
+refuses to start against anything but the `test/cms-preview` Neon branch. Local
+editing therefore never touches live content, which is the point.
+
+The consequence is that **seeding production does not change what you see on
+localhost**. To bring the dev branch in line, run the same scripts with
+`.env.neon-test` loaded:
+
+```bash
+set -a; . ./.env.neon-test; set +a
+CONTENT_MIGRATION_CONFIRM=apply npx tsx scripts/content-migrate.ts
+CATALOGUE_SEED_CONFIRM=replace npx tsx scripts/seed-catalogue.ts
+```
+
+Do not point local development at the production connection string. Every save
+in the admin would write straight to the live site.
+
+## Categories are fixed
+
+The ten supply categories are an agreed list. The admin can edit their wording
+but cannot add or remove one, because a new category puts an unapproved heading
+on the public site. Changes belong in `scripts/seed-catalogue.ts`.

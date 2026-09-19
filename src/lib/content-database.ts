@@ -1,10 +1,9 @@
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { attachDatabasePool } from "@vercel/functions";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { randomUUID } from "node:crypto";
-import { contentDocuments as documents, enquiries, enquiryThrottle } from "./content-schema";
-import type { EnquiryInput } from "./enquiry";
+import { contentDocuments as documents } from "./content-schema";
 
 let connection: ReturnType<typeof connect> | undefined;
 function connect() {
@@ -61,49 +60,4 @@ export async function deleteDocument(key: string, revision: string) {
   const rows = await contentDatabase().db.delete(documents)
     .where(and(eq(documents.key, key), eq(documents.revision, revision))).returning({ key: documents.key });
   return rows.length > 0;
-}
-
-export async function createEnquiry(input: EnquiryInput, clientKey: string, userAgent: string | null) {
-  const db = contentDatabase().db;
-  const allowed = await db.transaction(async (tx) => {
-    const [row] = await tx.insert(enquiryThrottle).values({
-      key: clientKey,
-      count: 1,
-      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
-    }).onConflictDoUpdate({
-      target: enquiryThrottle.key,
-      set: {
-        count: sql`CASE WHEN ${enquiryThrottle.expiresAt} <= NOW() THEN 1 ELSE ${enquiryThrottle.count} + 1 END`,
-        expiresAt: sql`CASE WHEN ${enquiryThrottle.expiresAt} <= NOW() THEN NOW() + INTERVAL '1 hour' ELSE ${enquiryThrottle.expiresAt} END`,
-      },
-    }).returning({ count: enquiryThrottle.count });
-    if (!row || row.count > 5) return false;
-    await tx.insert(enquiries).values({
-      id: randomUUID(),
-      ...input,
-      email: input.email || null,
-      quantity: input.quantity ?? null,
-      notes: input.notes || null,
-      clientKey,
-      userAgent: userAgent?.slice(0, 500) || null,
-    });
-    return true;
-  });
-  return allowed;
-}
-
-export async function listEnquiries(limit = 100) {
-  return retryRead(() => contentDatabase().db.select({
-    id: enquiries.id,
-    kind: enquiries.kind,
-    facility: enquiries.facility,
-    contact: enquiries.contact,
-    phone: enquiries.phone,
-    email: enquiries.email,
-    equipment: enquiries.equipment,
-    quantity: enquiries.quantity,
-    notes: enquiries.notes,
-    status: enquiries.status,
-    createdAt: enquiries.createdAt,
-  }).from(enquiries).orderBy(desc(enquiries.createdAt)).limit(Math.min(Math.max(limit, 1), 100)));
 }
