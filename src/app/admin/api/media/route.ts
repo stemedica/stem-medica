@@ -1,18 +1,31 @@
 import { adminGuard, apiError, json, requestBytes } from "@/lib/admin-api";
 import { readObject, writeObject } from "@/lib/storage";
+import { processImage } from "@/lib/image-processing";
+
+// sharp is a native module; keep this route off the edge runtime.
+export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const denied = await adminGuard(request); if (denied) return denied;
   try {
-    const bytes = await requestBytes(request, 3_000_000);
-    let ext = "";
-    if (bytes.subarray(0, 3).equals(Buffer.from([255, 216, 255]))) ext = "jpg";
-    else if (bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) ext = "png";
-    else if (bytes.toString("ascii", 0, 4) === "RIFF" && bytes.toString("ascii", 8, 12) === "WEBP") ext = "webp";
-    if (!ext) return json({ error: "Upload a JPEG, PNG or WebP image, up to 3 MB." }, 400);
-    const id = `${crypto.randomUUID()}.${ext}`;
-    await writeObject(`media/${id}`, bytes, ext === "jpg" ? "image/jpeg" : `image/${ext}`);
-    return json({ image: `/media/${id}` });
+    // The magic-byte sniff stays as a cheap gate before handing bytes to a
+    // native decoder; processImage then re-encodes and is the real validation.
+    const upload = await requestBytes(request, 8_000_000);
+    const isJpeg = upload.subarray(0, 3).equals(Buffer.from([255, 216, 255]));
+    const isPng = upload.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+    const isWebp = upload.toString("ascii", 0, 4) === "RIFF" && upload.toString("ascii", 8, 12) === "WEBP";
+    if (!isJpeg && !isPng && !isWebp) return json({ error: "Upload a JPEG, PNG or WebP image, up to 8 MB." }, 400);
+
+    const image = await processImage(upload);
+    const id = `${crypto.randomUUID()}.${image.ext}`;
+    await writeObject(`media/${id}`, image.bytes, image.contentType);
+    return json({
+      image: `/media/${id}`,
+      width: image.width,
+      height: image.height,
+      bytes: image.bytes.byteLength,
+      originalBytes: image.originalBytes,
+    });
   } catch (e) { return apiError(e); }
 }
 export async function GET(request: Request) {
