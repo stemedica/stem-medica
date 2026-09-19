@@ -82,7 +82,7 @@ test("posts draft, preview, publish, filter, unpublish and delete", async ({ pag
   await expect(page.getByRole("region", { name: "Article gallery" })).toContainText("Second equipment view");
   await expect(page.getByRole("article")).toContainText('<script>alert("unsafe")</script>');
   await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
-  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://stem-medica.vercel.app/blog/${slug}`);
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", `https://www.stemedicaet.com/blog/${slug}`);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: "test-results/blog-article-mobile.png", fullPage: true });
   await page.goto("/blog?kind=Upcoming%20arrival");
