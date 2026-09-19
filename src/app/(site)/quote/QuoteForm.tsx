@@ -1,12 +1,9 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useSyncExternalStore } from "react";
 import { Send, Phone } from "lucide-react";
 import { site } from "@/lib/site";
-import { quoteResultMessage } from "./quote-result";
 import { copy, type FormCopy } from "./form-copy";
-
-type FormState = { kind: "idle" | "busy" | "success" | "error"; message: string };
 
 function subscribeToLocation(onChange: () => void) {
   window.addEventListener("popstate", onChange);
@@ -15,42 +12,19 @@ function subscribeToLocation(onChange: () => void) {
 
 export function QuoteFormFromUrl({ variant = copy.quotation }: { variant?: FormCopy }) {
   const search = useSyncExternalStore(subscribeToLocation, () => window.location.search, () => "");
-  const searchParams = new URLSearchParams(search);
-  const presetItem = (searchParams.get("item") ?? "").slice(0, 500);
-  const initialMessage = searchParams.get("sent") === "1"
-    ? quoteResultMessage("sent")
-    : quoteResultMessage(searchParams.get("error"));
-  return <QuoteForm key={`${presetItem}-${initialMessage}`} presetItem={presetItem} initialMessage={initialMessage} variant={variant} />;
+  const presetItem = (new URLSearchParams(search).get("item") ?? "").slice(0, 500);
+  return <QuoteForm key={presetItem} presetItem={presetItem} variant={variant} />;
 }
 
-export function QuoteForm({ presetItem = "", initialMessage = "", variant = copy.quotation }: { presetItem?: string; initialMessage?: string; variant?: FormCopy }) {
-  const [state, setState] = useState<FormState>(initialMessage
-    ? { kind: initialMessage.startsWith("Thanks") ? "success" : "error", message: initialMessage }
-    : { kind: "idle", message: "" });
-
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
-    setState({ kind: "busy", message: "Sending your request…" });
-    try {
-      const response = await fetch("/api/enquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json() as { message?: string };
-      if (!response.ok) throw new Error(result.message || "We couldn’t save your request. Please call or try again.");
-      form.reset();
-      setState({ kind: "success", message: "Thanks — your request is saved. Our team will contact you using the details you provided." });
-    } catch (error) {
-      setState({ kind: "error", message: error instanceof Error ? error.message : "We couldn’t save your request. Please call or try again." });
-    }
-  }
+export function QuoteForm({ presetItem = "", variant = copy.quotation }: { presetItem?: string; variant?: FormCopy }) {
+  // Submission is intentionally inert. The API was removed while the delivery
+  // method is settled with the client, so this prevents the default navigation
+  // and does nothing else.
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
 
   return (
-    <form action="/api/enquiries" method="post" onSubmit={onSubmit} onChange={() => state.kind !== "busy" && setState({ kind: "idle", message: "" })} className="mt-8 grid gap-5 sm:grid-cols-2">
-      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. We’ll save your request securely and contact you using the phone number or email you provide.</p>
+    <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
+      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. Fill these in and we’ll gather them into one message you can send us.</p>
       <label className="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
       <input type="hidden" name="kind" value={variant.kind} />
       {variant.fields.map((f) => (
@@ -121,10 +95,9 @@ export function QuoteForm({ presetItem = "", initialMessage = "", variant = copy
         <div className="action-stack items-center">
           <button
             type="submit"
-            disabled={state.kind === "busy"}
             className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
-            <Send size={14} aria-hidden="true" /> {state.kind === "busy" ? variant.busy : variant.submit}
+            <Send size={14} aria-hidden="true" /> {variant.submit}
           </button>
           <a
             href={`tel:${site.phoneIntl}`}
@@ -134,8 +107,8 @@ export function QuoteForm({ presetItem = "", initialMessage = "", variant = copy
           </a>
         </div>
 
-        <p aria-live="polite" role={state.kind === "error" ? "alert" : "status"} className={`mt-4 text-sm ${state.kind === "error" ? "font-medium text-vital" : state.kind === "success" ? "font-medium text-navy" : "text-ink-soft"}`}>
-          {state.message || `We usually follow up by phone. You can also call ${site.phone} if your request is urgent.`}
+        <p className="mt-4 text-sm text-ink-soft">
+          We usually follow up by phone. You can also call {site.phone} if your request is urgent.
         </p>
       </div>
     </form>
