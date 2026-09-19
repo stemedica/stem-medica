@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { QuoteFormFromUrl, copy } from "../quote/QuoteForm";
+import { QuoteFormFromUrl } from "../quote/QuoteForm";
+import { copy } from "../quote/form-copy";
 import { PartnershipFrame } from "./PartnershipFrame";
 
 export const metadata: Metadata = {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { QuoteForm, copy } from "../../quote/QuoteForm";
+import { QuoteForm } from "../../quote/QuoteForm";
+import { copy } from "../../quote/form-copy";
 import { PartnershipFrame } from "../PartnershipFrame";
 import { quoteResultMessage, quoteResults } from "../../quote/quote-result";
 

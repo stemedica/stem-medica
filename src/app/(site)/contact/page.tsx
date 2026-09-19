@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Phone, ClipboardList, Mail, MapPin, Link2 } from "lucide-react";
+import { Phone, ClipboardList, Mail, MapPin, Link2, Handshake } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
@@ -17,6 +17,7 @@ const channels = [
   { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send product lists, partnership details or support questions." },
   { icon: WhatsAppIcon, label: "WhatsApp", brand: "#25D366", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
   { icon: ClipboardList, label: "Quotation request", accent: true, value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
+  { icon: Handshake, label: "Distribution partnership", value: "Manufacturers & exporters", href: "/partnership", note: "Selling medical equipment? Tell us what you make and the partner you need." },
   { icon: MapPin, label: "Office", value: "Kal Building, Room 213", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`, note: "In front of Nyala Motors, Bole to Megenagna, Addis Ababa." },
   { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];

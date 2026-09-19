@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { enquirySchema, enquiryKinds } from "../src/lib/enquiry";
-import { copy } from "../src/app/(site)/quote/QuoteForm";
+import { copy } from "../src/app/(site)/quote/form-copy";
 
 const base = {
   facility: "Acme Medical Devices",
