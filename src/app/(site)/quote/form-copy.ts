@@ -39,7 +39,7 @@ export const copy = {
     showQuantity: true,
     notesLabel: "Anything else? (optional)",
     notesPlaceholder: "Department, delivery deadline, site details or questions",
-    submit: "Prepare my request",
+    submit: "Send quotation request",
   },
   partnership: {
     kind: "partnership",
@@ -53,7 +53,7 @@ export const copy = {
     showQuantity: false,
     notesLabel: "Certifications, territory and terms (optional)",
     notesPlaceholder: "CE/ISO certification, countries you already cover, distributor terms, lead times",
-    submit: "Prepare my details",
+    submit: "Send partnership details",
   },
 } as const;
 

@@ -24,7 +24,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
 
   return (
     <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
-      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. Fill these in and we’ll gather them into one message you can send us.</p>
+      <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. We’ll contact you using the phone number or email you provide.</p>
       <label className="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
       <input type="hidden" name="kind" value={variant.kind} />
       {variant.fields.map((f) => (
