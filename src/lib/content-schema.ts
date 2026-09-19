@@ -10,6 +10,9 @@ export const contentDocuments = pgTable("content_document", {
 
 export const enquiries = pgTable("enquiry", {
   id: text("id").primaryKey(),
+  // "quotation" (hospital buying) or "partnership" (manufacturer offering to
+  // distribute). Same pipeline, different intent, so the team can triage.
+  kind: text("kind").notNull().default("quotation"),
   facility: text("facility").notNull(),
   contact: text("contact").notNull(),
   phone: text("phone").notNull(),

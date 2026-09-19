@@ -95,6 +95,7 @@ export async function createEnquiry(input: EnquiryInput, clientKey: string, user
 export async function listEnquiries(limit = 100) {
   return retryRead(() => contentDatabase().db.select({
     id: enquiries.id,
+    kind: enquiries.kind,
     facility: enquiries.facility,
     contact: enquiries.contact,
     phone: enquiries.phone,

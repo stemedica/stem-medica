@@ -4,7 +4,11 @@ const requiredText = (label: string, maximum: number) => z.string().trim()
   .min(1, `${label} is required.`)
   .max(maximum, `${label} is too long.`);
 
+export const enquiryKinds = ["quotation", "partnership"] as const;
+export type EnquiryKind = (typeof enquiryKinds)[number];
+
 export const enquirySchema = z.object({
+  kind: z.enum(enquiryKinds).default("quotation"),
   facility: requiredText("Hospital or organization", 200),
   contact: requiredText("Your name", 200),
   phone: requiredText("Phone number", 80),

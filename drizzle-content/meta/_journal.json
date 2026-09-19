@@ -15,6 +15,13 @@
       "when": 1789740909143,
       "tag": "0001_pale_stature",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789820446720,
+      "tag": "0002_fixed_slapstick",
+      "breakpoints": true
     }
   ]
 }

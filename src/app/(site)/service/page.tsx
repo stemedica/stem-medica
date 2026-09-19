@@ -45,14 +45,11 @@ export default function ServicePage() {
         title="Want to sell your equipment in Ethiopia?"
         lede="Tell us about your products and the kind of local partner you need."
       >
-        {/* Manufacturers go to email, not /quote: that form asks for facility,
-            equipment needed and quantity, which is a hospital buying, not a
-            supplier offering to distribute. The subject pre-labels the enquiry
-            so it is triaged without a separate inbox. */}
+        {/* Manufacturers get /partnership, not /quote: the quote form asks for
+            facility, equipment needed and quantity, which is a hospital buying,
+            not a supplier offering to distribute. Same pipeline, kind=partnership. */}
         <div className="mt-9 flex flex-wrap gap-3">
-          <Button href={`mailto:${site.email}?subject=${encodeURIComponent("Distribution partnership enquiry")}`}>
-            Email partnership details
-          </Button>
+          <Button href="/partnership">Send partnership details</Button>
           <Button href={site.linkedin} variant="onDark">LinkedIn</Button>
         </div>
         <p className="mt-4 text-sm text-white/60">

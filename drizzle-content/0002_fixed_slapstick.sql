@@ -1,0 +1,1 @@
+ALTER TABLE "enquiry" ADD COLUMN "kind" text DEFAULT 'quotation' NOT NULL;

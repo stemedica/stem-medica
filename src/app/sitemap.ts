@@ -5,7 +5,7 @@ import { getAllPosts } from "@/lib/post-store";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [catalogue, posts] = await Promise.all([getCatalogue(), getAllPosts()]);
-  const staticRoutes = ["", "/products", "/service", "/blog", "/about", "/contact", "/quote"];
+  const staticRoutes = ["", "/products", "/service", "/blog", "/about", "/contact", "/quote", "/partnership"];
   return [
     ...staticRoutes.map((pathname) => ({ url: `${site.url}${pathname}`, changeFrequency: "weekly" as const, priority: pathname === "" ? 1 : 0.7 })),
     ...catalogue.products.map((product) => ({ url: `${site.url}/products/${product.slug}`, changeFrequency: "weekly" as const, priority: 0.6 })),

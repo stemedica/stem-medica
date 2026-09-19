@@ -20,25 +20,33 @@ function wantsHtml(request: Request) {
     || request.headers.get("content-type")?.includes("multipart/form-data");
 }
 
-function quoteRedirect(result: "sent" | "details" | "limit" | "unavailable") {
-  return new Response(null, { status: 303, headers: { ...responseHeaders, Location: `/quote/${result}` } });
+type Result = "sent" | "details" | "limit" | "unavailable";
+
+/** Partnership submissions return to /partnership/*, quotations to /quote/*. */
+function resultRedirect(result: Result, kind: string) {
+  const base = kind === "partnership" ? "/partnership" : "/quote";
+  return new Response(null, { status: 303, headers: { ...responseHeaders, Location: `${base}/${result}` } });
 }
 
 export async function POST(request: Request) {
   const html = wantsHtml(request);
+  let kind = "quotation";
   try {
     const raw = html
       ? Object.fromEntries((await request.formData()).entries())
       : JSON.parse((await requestBytes(request, 10_000)).toString("utf8"));
+    kind = typeof (raw as { kind?: unknown }).kind === "string" ? (raw as { kind: string }).kind : "quotation";
     const parsed = enquirySchema.safeParse(raw);
     if (!parsed.success) {
-      if (html) return quoteRedirect("details");
+      if (html) return resultRedirect("details", kind);
       return Response.json({ message: parsed.error.issues[0]?.message || "Check the highlighted details and try again." }, { status: 400, headers: responseHeaders });
     }
     if (parsed.data.website) return html
-      ? quoteRedirect("sent")
+      ? resultRedirect("sent", kind)
       : Response.json({ submitted: true }, { status: 201, headers: responseHeaders });
+    kind = parsed.data.kind;
     const input = {
+      kind: parsed.data.kind,
       facility: parsed.data.facility,
       contact: parsed.data.contact,
       phone: parsed.data.phone,
@@ -49,14 +57,14 @@ export async function POST(request: Request) {
     };
     const allowed = await createEnquiry(input, clientKey(request), request.headers.get("user-agent"));
     if (!allowed) {
-      if (html) return quoteRedirect("limit");
+      if (html) return resultRedirect("limit", kind);
       return Response.json({ message: "Too many requests were sent from this connection. Please call or try again in one hour." }, { status: 429, headers: responseHeaders });
     }
     return html
-      ? quoteRedirect("sent")
+      ? resultRedirect("sent", kind)
       : Response.json({ submitted: true }, { status: 201, headers: responseHeaders });
   } catch {
-    if (html) return quoteRedirect("unavailable");
+    if (html) return resultRedirect("unavailable", kind);
     return Response.json({ message: "We couldn’t save your request. Please call or try again." }, { status: 503, headers: responseHeaders });
   }
 }
