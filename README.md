@@ -1,6 +1,6 @@
 # STEM MEDICA website
 
-**Live:** https://stem-medica.vercel.app · **Repo:** private, `natinael96/stem-medica`
+**Live:** https://www.stemedicaet.com · **Repo:** private, `natinael96/stem-medica`
 
 Pushes to `main` deploy to production automatically via the Vercel Git integration.
 
@@ -9,6 +9,7 @@ Next.js 16 (App Router) · React 19 · Tailwind CSS 4 · TypeScript.
 Brand direction and rationale: **[docs/brand-direction.html](docs/brand-direction.html)**, open it in a browser.
 
 ```bash
+npm ci          # install the locked dependencies
 npm run dev     # Neon development branch · http://127.0.0.1:3000/
 npm run build   # production build
 ```
@@ -23,7 +24,7 @@ Admin sign-in: [http://localhost:3000/auth/login](http://localhost:3000/auth/log
 | `/products` | CMS catalogue, search and category filter via `?cat=`; 10 results per page |
 | `/products/[slug]` | Spec table, included services, enquiry rail |
 | `/blog` · `/blog/[slug]` | CMS posts, arrival notices and image galleries |
-| `/service` | The six-stage support sequence + manufacturer front door |
+| `/service` | Installation, training, spare parts and technical support |
 | `/about` · `/contact` | Company, channels |
 | `/admin` | Protected CMS, quotation-request inbox and proformas |
 

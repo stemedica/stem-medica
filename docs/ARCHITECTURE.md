@@ -41,4 +41,4 @@ The builder stores optional drafts for seven days and exports from the browser. 
 - Security headers are defined in `next.config.ts`.
 - `robots.ts` excludes admin, auth and API routes; `sitemap.ts` includes current published content.
 
-The public canonical URL is `https://stem-medica.vercel.app` until the company domain has working DNS and is connected to Vercel. See [operations](OPERATIONS.md) for launch and recovery checks.
+The public canonical URL is `https://www.stemedicaet.com`. See [operations](OPERATIONS.md) for launch and recovery checks.
