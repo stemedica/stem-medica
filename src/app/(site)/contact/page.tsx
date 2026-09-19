@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Phone, MessageCircle, ClipboardList, Mail, MapPin, Link2 } from "lucide-react";
+import { Phone, ClipboardList, Mail, MapPin, Link2 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
 import Link from "next/link";
@@ -13,8 +14,8 @@ const channels = [
   { icon: Phone, label: "Primary phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment, quotations or support." },
   { icon: Phone, label: "Second phone", value: site.secondaryPhone, href: `tel:${site.secondaryPhoneIntl}`, note: "An additional direct line to the STEM MEDICA team." },
   { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send product lists, partnership details or support questions." },
-  { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
-  { icon: ClipboardList, label: "Quotation request", value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
+  { icon: WhatsAppIcon, label: "WhatsApp", brand: "#25D366", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
+  { icon: ClipboardList, label: "Quotation request", accent: true, value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
   { icon: MapPin, label: "Office", value: "Kal Building, Room 213", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`, note: "In front of Nyala Motors, Bole to Megenagna, Addis Ababa." },
   { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];
@@ -27,7 +28,7 @@ export default function ContactPage() {
       lede="Contact our team for medical equipment, quotations, installation, training or technical support."
     >
       <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">
-        {channels.map(({ icon: Icon, label, value, href, note }) => (
+        {channels.map(({ icon: Icon, label, value, href, note, brand, accent }) => (
           <a
             key={label}
             href={href}
@@ -37,9 +38,13 @@ export default function ContactPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="label text-steel">{label}</div>
-              <Icon size={17} className="shrink-0 text-navy" aria-hidden="true" />
+              <span style={brand ? { color: brand } : undefined} className={`shrink-0 ${brand ? "" : accent ? "text-scarlet" : "text-navy"}`}>
+                <Icon size={17} aria-hidden="true" />
+              </span>
             </div>
-            <div className="font-display wdth-n mt-3 text-lg font-semibold break-words transition-colors group-hover:text-navy">
+            <div className={`font-display wdth-n mt-3 break-words text-lg font-semibold transition-colors ${
+              accent ? "text-scarlet" : "text-ink group-hover:text-navy"
+            } ${href.startsWith("tel:") ? "font-mono tabular-nums" : ""}`}>
               {value}
             </div>
             <p className="mt-1.5 text-sm text-ink-soft">{note}</p>
