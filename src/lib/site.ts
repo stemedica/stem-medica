@@ -13,6 +13,12 @@ export const site = {
   address: "Kal Building, Room 213, in front of Nyala Motors, Bole to Megenagna, Addis Ababa",
   whatsapp: "https://wa.me/251921136180",
   linkedin: "https://www.linkedin.com/company/stem-medica",
+  // Used for LocalBusiness structured data. Coordinates come from the Google
+  // Maps place embed below.
+  geo: { lat: 9.0097216, lng: 38.8039660 },
+  streetAddress: "Kal Building, Room 213, in front of Nyala Motors, Bole to Megenagna",
+  addressLocality: "Addis Ababa",
+  addressCountry: "ET",
   map: {
     // Google Maps place embed. Note the CSP in next.config.ts must allow
     // frame-src https://www.google.com or this renders as a blank box.

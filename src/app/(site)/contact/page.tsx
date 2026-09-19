@@ -6,6 +6,7 @@ import { site } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/contact" },
   title: "Contact",
   description: `Call ${site.phone} or ${site.secondaryPhone}, email ${site.email}, or visit STEM MEDICA in Addis Ababa.`,
 };

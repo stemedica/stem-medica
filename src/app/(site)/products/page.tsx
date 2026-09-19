@@ -8,6 +8,7 @@ import { MobileCardRail } from "@/components/MobileCardRail";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/products" },
   title: "Products",
   description: "Medical equipment, supplies and devices for hospitals, clinics and laboratories across Ethiopia.",
 };

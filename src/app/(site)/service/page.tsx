@@ -5,6 +5,7 @@ import { Button } from "@/components/Button";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/service" },
   title: "Service & Support",
   description:
     "How STEM MEDICA helps you choose, install and use medical equipment, with warranty and ongoing support.",
@@ -44,10 +45,20 @@ export default function ServicePage() {
         title="Want to sell your equipment in Ethiopia?"
         lede="Tell us about your products and the kind of local partner you need."
       >
+        {/* Manufacturers go to email, not /quote: that form asks for facility,
+            equipment needed and quantity, which is a hospital buying, not a
+            supplier offering to distribute. The subject pre-labels the enquiry
+            so it is triaged without a separate inbox. */}
         <div className="mt-9 flex flex-wrap gap-3">
-          <Button href="/quote">Send partnership details</Button>
+          <Button href={`mailto:${site.email}?subject=${encodeURIComponent("Distribution partnership enquiry")}`}>
+            Email partnership details
+          </Button>
           <Button href={site.linkedin} variant="onDark">LinkedIn</Button>
         </div>
+        <p className="mt-4 text-sm text-white/60">
+          Include your product range, certifications and the territory you are
+          looking to cover.
+        </p>
       </Section>
     </>
   );

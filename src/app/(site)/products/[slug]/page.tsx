@@ -9,6 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { getCatalogue } from "@/lib/catalogue";
 import { site } from "@/lib/site";
+import { ProductSchema, BreadcrumbSchema } from "@/components/StructuredData";
 import { MobileCardRail } from "@/components/MobileCardRail";
 
 export const revalidate = 300;
@@ -19,7 +20,18 @@ export async function generateMetadata({
   const { slug } = await params;
   const product = (await getCatalogue()).products.find((p) => p.slug === slug);
   if (!product) return {};
-  return { title: product.name, description: product.summary };
+  return {
+    title: product.name,
+    description: product.summary,
+    alternates: { canonical: `/products/${product.slug}` },
+    openGraph: {
+      type: "website",
+      title: product.name,
+      description: product.summary,
+      url: `${site.url}/products/${product.slug}`,
+      images: product.image ? [{ url: `${site.url}${product.image}`, alt: product.name }] : undefined,
+    },
+  };
 }
 
 export default async function ProductPage({
@@ -35,6 +47,22 @@ export default async function ProductPage({
   const hasDetails = product.specs.length > 0 || product.services.length > 0;
 
   return (
+    <>
+      <ProductSchema
+        name={product.name}
+        description={product.summary}
+        image={product.image || undefined}
+        brand={product.brand || undefined}
+        slug={product.slug}
+      />
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "" },
+          { name: "Products", path: "/products" },
+          ...(category ? [{ name: category.name, path: `/products?cat=${category.slug}` }] : []),
+          { name: product.name, path: `/products/${product.slug}` },
+        ]}
+      />
     <>
       <div className="relative overflow-hidden bg-navy-deep text-on-navy">
         <WaveField />
@@ -152,6 +180,7 @@ export default async function ProductPage({
           </div>
         ) : null}
       </div>
+    </>
     </>
   );
 }

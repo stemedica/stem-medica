@@ -4,6 +4,7 @@ import { Section } from "@/components/Section";
 import { LocationMap } from "@/components/LocationMap";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/about" },
   title: "About",
   description: "Learn how STEM MEDICA is improving access to quality, affordable medical equipment across Ethiopia.",
 };
