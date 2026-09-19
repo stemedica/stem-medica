@@ -27,7 +27,7 @@ function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getA
     <div className="mt-9"><MobileCardRail label="Latest updates">
       {posts.map((post) => (
         <Link prefetch={false} key={post.slug} href={`/blog/${post.slug}`} className={`v2-card group flex flex-col p-5 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
-          <V2Photo src={post.image || undefined} label={post.image ? post.title : `Cover image · ${post.title}`} className="mb-4 aspect-video w-full" />
+          {post.image ? <V2Photo src={post.image} label={post.title} className="mb-4 aspect-video w-full" /> : null}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <PostKindBadge post={post} />
             <span className="label text-steel tabular-nums">{formatDate(post.date)}</span>

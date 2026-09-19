@@ -4,6 +4,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { postSlug, readingMinutes } from "../src/lib/post-slug";
 import { PostBody } from "../src/components/PostBody";
+import { V2Photo } from "../src/components/V2";
 
 test("post URLs normalize titles and resolve collisions", () => {
   assert.equal(postSlug(" New Équipment & News! ", []), "new-equipment-news");
@@ -20,4 +21,19 @@ test("article text renders headings and lists without executing HTML", () => {
   assert.match(html, /<li>First<\/li>/);
   assert.match(html, /&lt;script&gt;/);
   assert.ok(!html.includes("<script>"));
+});
+
+test("post covers are omitted entirely when a post has no image", () => {
+  // A post without a cover must render no image block: no <img>, and no
+  // placeholder standing in for one. Cards that do have a cover still show it.
+  const withImage = renderToStaticMarkup(
+    createElement(V2Photo, { src: "/media/abc.jpg", label: "A post" }),
+  );
+  assert.match(withImage, /<img/, "a post with a cover should render an image");
+
+  const placeholder = renderToStaticMarkup(
+    createElement(V2Photo, { label: "A post" }),
+  );
+  assert.doesNotMatch(placeholder, /<img/);
+  assert.match(placeholder, /role="img"/, "V2Photo without src is a placeholder, so callers must guard on post.image");
 });
