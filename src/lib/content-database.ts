@@ -13,7 +13,7 @@ function connect() {
     connectionString,
     max: 3,
     idleTimeoutMillis: 30_000,
-    connectionTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 15_000,
     query_timeout: 15_000,
     statement_timeout: 15_000,
     keepAlive: true,
@@ -29,14 +29,28 @@ function transientReadFailure(error: unknown) {
     || /connection terminated|timeout|socket closed/i.test(failure.message || "");
 }
 
+/**
+ * Neon suspends an idle compute, and waking it can take a few seconds. A single
+ * 150ms retry lands while it is still starting, so the first visitor after a
+ * quiet spell saw the page fail. The delays below span a cold start; healthy
+ * requests never wait, because the first attempt succeeds.
+ */
+const READ_RETRY_DELAYS = [150, 1_200, 3_000];
+
 async function retryRead<T>(operation: () => Promise<T>) {
-  try {
-    return await operation();
-  } catch (error) {
-    if (!transientReadFailure(error)) throw error;
-    await new Promise((resolve) => setTimeout(resolve, 150));
-    return operation();
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= READ_RETRY_DELAYS.length; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (!transientReadFailure(error)) throw error;
+      lastError = error;
+      const delay = READ_RETRY_DELAYS[attempt];
+      if (delay === undefined) break;
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
   }
+  throw lastError;
 }
 
 export async function readDocument(key: string) {
