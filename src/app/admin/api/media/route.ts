@@ -1,36 +1,24 @@
 import { adminGuard, apiError, json, requestBytes } from "@/lib/admin-api";
 import { readObject, writeObject } from "@/lib/storage";
-import { processImage } from "@/lib/image-processing";
+import { imageKind } from "@/lib/image-signature";
 import { UPLOAD_BODY_LIMIT } from "@/lib/client-image";
-import { looksLikeImage } from "@/lib/image-signature";
-
-// sharp is a native module; keep this route off the edge runtime.
-export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   const denied = await adminGuard(request); if (denied) return denied;
   try {
-    // The magic-byte sniff stays as a cheap gate before handing bytes to a
-    // native decoder; processImage then re-encodes and is the real validation.
-    // Vercel rejects bodies over ~4.5 MB with FUNCTION_PAYLOAD_TOO_LARGE before this
-    // handler runs, so accepting more here would be a promise the platform breaks.
-    // The browser downscales first (lib/client-image.ts), so this only ever sees
+    // Vercel rejects bodies over ~4.5 MB with FUNCTION_PAYLOAD_TOO_LARGE before
+    // this handler runs. The browser downscales first, so this only ever sees
     // already-shrunk bytes.
     const upload = await requestBytes(request, UPLOAD_BODY_LIMIT);
-    if (!looksLikeImage(upload)) {
-      return json({ error: "Upload a JPEG, PNG, WebP, HEIC or TIFF image, up to 10 MB." }, 400);
-    }
 
-    const image = await processImage(upload);
-    const id = `${crypto.randomUUID()}.${image.ext}`;
-    await writeObject(`media/${id}`, image.bytes, image.contentType);
-    return json({
-      image: `/media/${id}`,
-      width: image.width,
-      height: image.height,
-      bytes: image.bytes.byteLength,
-      originalBytes: image.originalBytes,
-    });
+    // Header inspection only. The bytes are never decoded here: image parsers
+    // are a recurring source of memory-safety bugs and this is untrusted input.
+    const kind = imageKind(upload);
+    if (!kind) return json({ error: "Upload a JPEG, PNG or WebP image." }, 400);
+
+    const id = `${crypto.randomUUID()}.${kind.ext}`;
+    await writeObject(`media/${id}`, upload, kind.contentType);
+    return json({ image: `/media/${id}`, bytes: upload.byteLength });
   } catch (e) { return apiError(e); }
 }
 export async function GET(request: Request) {

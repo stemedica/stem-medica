@@ -6,8 +6,9 @@
  * Shrinking here is what makes a 10 MB pick work at all. It also saves the
  * editor's upload bandwidth, the scarce resource on mobile data.
  *
- * The server still re-encodes with sharp. This is a transport fix, not the
- * validation: a client can always send whatever it likes.
+ * This is also the ONLY place images are resized. The server never decodes
+ * uploaded bytes, so anything the browser cannot read cannot be normalised by
+ * anyone, which is why only JPEG, PNG and WebP are accepted.
  */
 import { UserFacingError } from "./form-errors";
 

@@ -190,7 +190,7 @@ export function CatalogueEditor() {
               <Field label="Short name" path={`${mode}.${selected}.short`} problems={problems} value={(current as CmsCategory).short} onChange={(short) => update({ short })} />
               <label className="text-sm sm:col-span-2">Description<textarea aria-label="Description" {...fieldProblemProps(problems, `${mode}.${selected}.blurb`)} rows={4} className={input} value={(current as CmsCategory).blurb} onChange={(e) => update({ blurb: e.target.value })} /><FieldProblem problems={problems} path={`${mode}.${selected}.blurb`} /></label>
             </>}
-            <div className="sm:col-span-2"><label className="text-sm">Photo (JPEG, PNG, WebP, HEIC or TIFF; up to 10 MB, resized automatically)<input className={input} type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/tiff" disabled={!configured} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
+            <div className="sm:col-span-2"><label className="text-sm">Photo (JPEG, PNG or WebP; up to 10 MB, resized automatically)<input className={input} type="file" accept="image/jpeg,image/png,image/webp" disabled={!configured} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
               {current.image ? <div className="mt-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img alt={current.name} src={`/admin/api/media?id=${encodeURIComponent(current.image.split("/").pop()!)}`} className="h-40 w-full rounded-lg object-contain" />

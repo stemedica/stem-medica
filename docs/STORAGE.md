@@ -74,31 +74,37 @@ route, five seed scripts and the end-to-end suite.
 Images for products, categories, posts and post galleries all share one store:
 `media/<uuid>.webp` in Vercel Blob. Only the JSON documents live in Postgres.
 
-Uploads are shrunk twice, for different reasons:
+Resizing happens **only in the browser** (`lib/client-image.ts`), before
+anything is sent:
 
-1. **In the browser** (`lib/client-image.ts`), before anything is sent. Vercel
-   rejects request bodies over ~4.5 MB with `FUNCTION_PAYLOAD_TOO_LARGE` before
-   the function runs, so a 10 MB photo can only work if it is downscaled first.
-   This also saves the editor's upload bandwidth, which matters on mobile data.
+- Vercel rejects request bodies over ~4.5 MB with `FUNCTION_PAYLOAD_TOO_LARGE`
+  before the function runs, so a 10 MB photo can only work if it is downscaled
+  first. It also saves the editor's upload bandwidth, the scarce resource on
+  mobile data.
+- Three decode paths are tried in order, because each fails differently:
+  `createImageBitmap` capped during decode (so a 48 MP photo never materialises
+  at full size, which is what saves a cheap Android phone), then
+  `createImageBitmap` with no options, then an `<img>` via an object URL. If the
+  result is still too big it steps down through 1280, 1024 and 800px.
 
-   Three decode paths are tried in order, because each fails differently:
-   `createImageBitmap` capped during decode (so a 48 MP photo never
-   materialises at full size, which is what saves a cheap Android phone),
-   then `createImageBitmap` with no options, then an `<img>` via an object URL
-   for engines that lack it entirely. If the result is still too big it steps
-   down through 1280, 1024 and 800px before giving up with a message naming
-   what to do.
+**The server never decodes uploaded bytes.** `lib/image-signature.ts` inspects
+the header, and the bytes are stored exactly as received. Image parsers
+(libvips, libheif, libpng) are a recurring source of memory-safety CVEs, and
+running one over a file a stranger uploaded would be the highest-risk operation
+in the app.
 
-   If every path fails and the file cannot physically reach the server, the
-   editor is told to save it as a JPEG rather than being shown a platform error.
-2. **On the server** (`lib/image-processing.ts`), with sharp. This is the actual
-   validation, since a client can send anything: 1600px long edge, WebP q78,
-   EXIF stripped, and a 40 MP decode ceiling so a small but highly compressed
-   file cannot exhaust function memory.
+Two consequences follow directly from that, and they are not independent choices:
 
-The admin may choose a file up to 10 MB. What crosses the wire is whatever the
-browser produced, capped at `UPLOAD_BODY_LIMIT` (4 MB) to stay under the
-platform limit.
+- **Only formats the browser can decode are accepted**: JPEG, PNG and WebP.
+  HEIC and TIFF are refused, because nothing in the system could resize or
+  convert them, and browsers cannot display them either. iOS normally converts
+  HEIC to JPEG when a photo is chosen through a file input.
+- **SVG is refused permanently.** It is markup that can carry script, an XSS
+  vector rather than a photograph.
+
+EXIF is not stripped server-side any more. The browser re-encode drops it for
+any image it resizes, but a file small enough to skip resizing keeps its
+metadata, including GPS tags a phone may have attached.
 
 ### If images ever outgrow this
 

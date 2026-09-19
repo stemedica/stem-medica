@@ -1,6 +1,5 @@
 import { ZodError } from "zod";
 import { ConflictError, StorageUnavailable, ContentTooLarge } from "./storage";
-import { UnsupportedImage } from "./image-processing";
 import { readSession } from "./auth";
 import { hasAdminAccess } from "./auth/policy";
 import { formProblems } from "./form-errors";
@@ -38,7 +37,6 @@ export function apiError(error: unknown) {
   if (error instanceof ConflictError) return json({ error: error.message }, 409);
   // 413: the editor can act on this (remove or shorten entries), so it must not
   // fall through to the generic 503 "retry" message, which would be a lie.
-  if (error instanceof UnsupportedImage) return json({ error: error.message }, 400);
   if (error instanceof ContentTooLarge) return json({ error: error.message }, 413);
   if (error instanceof StorageUnavailable) return json({ error: "Saving is unavailable right now. Keep this page open and try again, or contact the site owner." }, 503);
   if (error instanceof SyntaxError || (error instanceof Error && ["Empty request", "Request is too large"].includes(error.message))) return json({ error: "We couldn’t read the submitted details, or they are too large. Check your entries and try again." }, 400);
