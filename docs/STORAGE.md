@@ -137,8 +137,23 @@ CONTENT_MIGRATION_CONFIRM=apply npx tsx scripts/content-migrate.ts
 CATALOGUE_SEED_CONFIRM=replace npx tsx scripts/seed-catalogue.ts
 ```
 
-Do not point local development at the production connection string. Every save
-in the admin would write straight to the live site.
+### Running locally against production
+
+When you genuinely need to see live content locally:
+
+```bash
+npm run env:prod     # pulls .env.production.local (gitignored)
+npm run dev:prod     # asks you to type "live" before starting
+```
+
+`dev:prod` refuses to start unless the pulled connection matches the known
+production host, and prompts for confirmation unless `DEV_PROD_CONFIRM=live` is
+set. It also passes the production blob credentials, so images resolve rather
+than 404ing against local disk.
+
+**Everything you do in the admin there is live.** Saving the catalogue, editing
+a post, uploading or deleting an image all change the public site immediately.
+There is no staging copy and no undo. `npm run dev` remains the safe default.
 
 ## Categories are fixed
 

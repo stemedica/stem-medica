@@ -15,7 +15,9 @@
     "content:migrate": "tsx scripts/content-migrate.ts",
     "content:import-test": "tsx scripts/import-test-content.ts",
     "auth:create-admin": "tsx scripts/auth-create-admin.ts",
-    "auth:reset-password": "tsx scripts/auth-reset-password.ts"
+    "auth:reset-password": "tsx scripts/auth-reset-password.ts",
+    "dev:prod": "tsx scripts/dev-prod.ts",
+    "env:prod": "vercel env pull --environment=production .env.production.local"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.0",
@@ -48,5 +50,5 @@
       "esbuild": "^0.25.0"
     }
   },
-  "description": "STEM MEDICA — medical equipment distribution, Ethiopia. MVP demo."
+  "description": "STEM MEDICA \u2014 medical equipment distribution, Ethiopia. MVP demo."
 }
