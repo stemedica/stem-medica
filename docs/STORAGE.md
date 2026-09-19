@@ -80,6 +80,17 @@ Uploads are shrunk twice, for different reasons:
    rejects request bodies over ~4.5 MB with `FUNCTION_PAYLOAD_TOO_LARGE` before
    the function runs, so a 10 MB photo can only work if it is downscaled first.
    This also saves the editor's upload bandwidth, which matters on mobile data.
+
+   Three decode paths are tried in order, because each fails differently:
+   `createImageBitmap` capped during decode (so a 48 MP photo never
+   materialises at full size, which is what saves a cheap Android phone),
+   then `createImageBitmap` with no options, then an `<img>` via an object URL
+   for engines that lack it entirely. If the result is still too big it steps
+   down through 1280, 1024 and 800px before giving up with a message naming
+   what to do.
+
+   If every path fails and the file cannot physically reach the server, the
+   editor is told to save it as a JPEG rather than being shown a platform error.
 2. **On the server** (`lib/image-processing.ts`), with sharp. This is the actual
    validation, since a client can send anything: 1600px long edge, WebP q78,
    EXIF stripped, and a 40 MP decode ceiling so a small but highly compressed
@@ -88,6 +99,16 @@ Uploads are shrunk twice, for different reasons:
 The admin may choose a file up to 10 MB. What crosses the wire is whatever the
 browser produced, capped at `UPLOAD_BODY_LIMIT` (4 MB) to stay under the
 platform limit.
+
+### If images ever outgrow this
+
+The escape hatch is Vercel Blob **client uploads**: the browser uploads straight
+to Blob with a signed token, bypassing the function body limit entirely, and the
+server processes the result on a completion callback. That is the right answer
+for large files such as video, and the wrong answer here: it costs a token
+route, a publicly reachable completion webhook (awkward on localhost), and
+leaves the untouched original in Blob to be re-processed and cleaned up. Not
+worth it for 10 MB photographs that compress to a few hundred KB in the browser.
 
 `/media/[id]` serves with `max-age=31536000, immutable`, which is safe because
 filenames are UUIDs and content never changes under one.

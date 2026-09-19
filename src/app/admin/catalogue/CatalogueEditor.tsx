@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { downscaleForUpload, UPLOAD_BODY_LIMIT } from "@/lib/client-image";
+import { downscaleForUpload } from "@/lib/client-image";
 import type { Catalogue, CmsProduct, CmsCategory } from "@/lib/cms-schema";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
 import { PublicationFilter, matchesPublication, type PublicationStatus } from "@/components/PublicationFilter";
@@ -134,7 +134,6 @@ export function CatalogueEditor() {
     setBusy(true); setMessage("Uploading image…");
     try {
       const body = await downscaleForUpload(file);
-      if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
       const response = await fetch("/admin/api/media", { method: "POST", body });
       const result = await response.json();
       if (!response.ok) throw new UserFacingError(result.error);

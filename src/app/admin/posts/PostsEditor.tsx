@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { downscaleForUpload, UPLOAD_BODY_LIMIT } from "@/lib/client-image";
+import { downscaleForUpload } from "@/lib/client-image";
 import { PublicationFilter, matchesPublication, type PublicationStatus } from "@/components/PublicationFilter";
 import { postSlug, postSummary } from "@/lib/post-slug";
 import { PostBody } from "@/components/PostBody";
@@ -106,7 +106,6 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
     setBusy(true); setMessage("Uploading image…");
     try {
       const body = await downscaleForUpload(file);
-      if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
       const response = await fetch("/admin/api/media", { method: "POST", body });
       const result = await response.json(); if (!response.ok) throw new UserFacingError(result.error);
       patch({ image: result.image }); setMessage("Image uploaded. Save posts to keep this change.");
@@ -125,7 +124,6 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
       for (const file of unique) {
         setMessage(`Uploading gallery image ${added + 1} of ${unique.length}…`);
         const body = await downscaleForUpload(file);
-        if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
         const response = await fetch("/admin/api/media", { method: "POST", body });
         const result = await response.json(); if (!response.ok) throw new UserFacingError(result.error);
         gallery.push({ src: result.image, alt: "", caption: "" }); added++;
