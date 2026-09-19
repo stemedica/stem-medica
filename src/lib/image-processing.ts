@@ -25,6 +25,8 @@ export const QUALITY = 78;
  */
 export const MAX_PIXELS = 40_000_000;
 
+export const ACCEPTED_FORMATS = ["jpeg", "png", "webp", "heif", "tiff", "gif"];
+
 export class UnsupportedImage extends Error {}
 
 export type ProcessedImage = {
@@ -52,8 +54,13 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
   if (meta.width * meta.height > MAX_PIXELS) {
     throw new UnsupportedImage("That image is too many megapixels to process. Resize it and try again.");
   }
-  if (!["jpeg", "png", "webp"].includes(meta.format ?? "")) {
-    throw new UnsupportedImage("Upload a JPEG, PNG or WebP image.");
+  // Everything is re-encoded to WebP, so accepting more input formats costs
+  // nothing downstream. HEIC matters because iPhones shoot it by default, and
+  // TIFF because manufacturers send product shots and scanned datasheets that
+  // way. SVG is deliberately absent: it is markup, can carry script, and is an
+  // XSS vector rather than a photograph.
+  if (!ACCEPTED_FORMATS.includes(meta.format ?? "")) {
+    throw new UnsupportedImage("Upload a JPEG, PNG, WebP, HEIC or TIFF image.");
   }
 
   const bytes = await pipeline

@@ -60,3 +60,23 @@ test("absurd pixel dimensions are refused before they can exhaust memory", async
   assert.ok(bomb.byteLength < 500_000, `bomb should be small on disk, was ${bomb.byteLength}B`);
   await assert.rejects(() => processImage(bomb), UnsupportedImage);
 });
+
+test("HEIC, TIFF and GIF are accepted and normalised to WebP", async () => {
+  const base = sharp(await photo(2400, 1800));
+  for (const format of ["tiff", "gif", "heif"] as const) {
+    let encoded: Buffer;
+    try {
+      encoded = await base.clone().toFormat(format).toBuffer();
+    } catch {
+      continue; // this build cannot encode it; decoding is what matters
+    }
+    const out = await processImage(encoded);
+    assert.equal(out.ext, "webp", `${format} should normalise to WebP`);
+    assert.equal(Math.max(out.width, out.height), MAX_EDGE, `${format} should be resized`);
+  }
+});
+
+test("SVG is refused: it is markup that can carry script, not a photograph", async () => {
+  const svg = Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><script>alert(1)</script><rect width="100" height="100"/></svg>');
+  await assert.rejects(() => processImage(svg), UnsupportedImage);
+});
