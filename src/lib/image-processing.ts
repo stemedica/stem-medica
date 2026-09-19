@@ -14,6 +14,17 @@ import sharp, { type Sharp, type Metadata } from "sharp";
 export const MAX_EDGE = 1600;
 export const QUALITY = 78;
 
+/**
+ * Decode ceiling, ~40 megapixels.
+ *
+ * A few hundred KB of compressed data can expand to hundreds of megapixels, and
+ * decoding that allocates width x height x channels bytes before any resize
+ * happens. On a 1 GB serverless function that is an out-of-memory crash from a
+ * small upload. 40 MP covers any real camera while keeping the peak allocation
+ * near 120 MB.
+ */
+export const MAX_PIXELS = 40_000_000;
+
 export class UnsupportedImage extends Error {}
 
 export type ProcessedImage = {
@@ -31,13 +42,16 @@ export async function processImage(input: Buffer): Promise<ProcessedImage> {
   try {
     // `failOn: "error"` rejects truncated or malformed files rather than
     // silently storing something browsers cannot decode.
-    pipeline = sharp(input, { failOn: "error" });
+    pipeline = sharp(input, { failOn: "error", limitInputPixels: MAX_PIXELS });
     meta = await pipeline.metadata();
   } catch {
     throw new UnsupportedImage("That file isn’t a readable JPEG, PNG or WebP image.");
   }
 
   if (!meta.width || !meta.height) throw new UnsupportedImage("That image has no readable dimensions.");
+  if (meta.width * meta.height > MAX_PIXELS) {
+    throw new UnsupportedImage("That image is too many megapixels to process. Resize it and try again.");
+  }
   if (!["jpeg", "png", "webp"].includes(meta.format ?? "")) {
     throw new UnsupportedImage("Upload a JPEG, PNG or WebP image.");
   }

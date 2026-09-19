@@ -49,3 +49,14 @@ test("unreadable files are rejected rather than stored", async () => {
   const truncated = (await photo(200, 200)).subarray(0, 50);
   await assert.rejects(() => processImage(truncated), UnsupportedImage);
 });
+
+test("absurd pixel dimensions are refused before they can exhaust memory", async () => {
+  // A highly compressible image that decodes far larger than its byte size:
+  // the classic way a small upload becomes an out-of-memory crash.
+  const bomb = await sharp({
+    create: { width: 9000, height: 9000, channels: 3, background: { r: 255, g: 255, b: 255 } },
+  }).png({ compressionLevel: 9 }).toBuffer();
+
+  assert.ok(bomb.byteLength < 500_000, `bomb should be small on disk, was ${bomb.byteLength}B`);
+  await assert.rejects(() => processImage(bomb), UnsupportedImage);
+});

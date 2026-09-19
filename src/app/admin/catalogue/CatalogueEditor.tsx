@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { downscaleForUpload, UPLOAD_BODY_LIMIT } from "@/lib/client-image";
 import type { Catalogue, CmsProduct, CmsCategory } from "@/lib/cms-schema";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
 import { PublicationFilter, matchesPublication, type PublicationStatus } from "@/components/PublicationFilter";
@@ -129,10 +130,12 @@ export function CatalogueEditor() {
   }
   async function upload(file?: File) {
     if (!file) return;
-    if (file.size > 8_000_000) { setMessage("Choose an image smaller than 8 MB.", "error"); return; }
+    if (file.size > 10_000_000) { setMessage("Choose an image smaller than 10 MB.", "error"); return; }
     setBusy(true); setMessage("Uploading image…");
     try {
-      const response = await fetch("/admin/api/media", { method: "POST", body: file });
+      const body = await downscaleForUpload(file);
+      if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
+      const response = await fetch("/admin/api/media", { method: "POST", body });
       const result = await response.json();
       if (!response.ok) throw new UserFacingError(result.error);
       update({ image: result.image }); setMessage("Image uploaded. Save the catalogue to use it.");
@@ -188,7 +191,7 @@ export function CatalogueEditor() {
               <Field label="Short name" path={`${mode}.${selected}.short`} problems={problems} value={(current as CmsCategory).short} onChange={(short) => update({ short })} />
               <label className="text-sm sm:col-span-2">Description<textarea aria-label="Description" {...fieldProblemProps(problems, `${mode}.${selected}.blurb`)} rows={4} className={input} value={(current as CmsCategory).blurb} onChange={(e) => update({ blurb: e.target.value })} /><FieldProblem problems={problems} path={`${mode}.${selected}.blurb`} /></label>
             </>}
-            <div className="sm:col-span-2"><label className="text-sm">Photo (JPEG, PNG or WebP; up to 8 MB, resized automatically)<input className={input} type="file" accept="image/jpeg,image/png,image/webp" disabled={!configured} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
+            <div className="sm:col-span-2"><label className="text-sm">Photo (JPEG, PNG or WebP; up to 10 MB, resized automatically)<input className={input} type="file" accept="image/jpeg,image/png,image/webp" disabled={!configured} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
               {current.image ? <div className="mt-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img alt={current.name} src={`/admin/api/media?id=${encodeURIComponent(current.image.split("/").pop()!)}`} className="h-40 w-full rounded-lg object-contain" />

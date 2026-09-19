@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { downscaleForUpload, UPLOAD_BODY_LIMIT } from "@/lib/client-image";
 import { PublicationFilter, matchesPublication, type PublicationStatus } from "@/components/PublicationFilter";
 import { postSlug, postSummary } from "@/lib/post-slug";
 import { PostBody } from "@/components/PostBody";
@@ -101,10 +102,12 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
   }
   async function upload(file?: File) {
     if (!file) return;
-    if (file.size > 8_000_000) { setMessage("Choose an image under 8 MB.", "error"); return; }
+    if (file.size > 10_000_000) { setMessage("Choose an image under 10 MB.", "error"); return; }
     setBusy(true); setMessage("Uploading image…");
     try {
-      const response = await fetch("/admin/api/media", { method: "POST", body: file });
+      const body = await downscaleForUpload(file);
+      if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
+      const response = await fetch("/admin/api/media", { method: "POST", body });
       const result = await response.json(); if (!response.ok) throw new UserFacingError(result.error);
       patch({ image: result.image }); setMessage("Image uploaded. Save posts to keep this change.");
     } catch (error) { setMessage(userError(error, "Upload failed."), "error"); }
@@ -114,14 +117,16 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
     if (!current || busy || !files.length) return;
     const gallery = [...(current.gallery ?? [])];
     if (gallery.length + files.length > 8) { setMessage("You can add up to 8 gallery images. Choose fewer files.", "error"); return; }
-    if (files.some(file => file.size > 8_000_000 || !["image/jpeg", "image/png", "image/webp"].includes(file.type))) { setMessage("Choose JPEG, PNG or WebP images under 8 MB each.", "error"); return; }
+    if (files.some(file => file.size > 10_000_000 || !["image/jpeg", "image/png", "image/webp"].includes(file.type))) { setMessage("Choose JPEG, PNG or WebP images under 10 MB each.", "error"); return; }
     const unique = files.filter((file, i) => files.findIndex(other => other.name === file.name && other.size === file.size && other.lastModified === file.lastModified) === i);
     setBusy(true);
     let added = 0;
     try {
       for (const file of unique) {
         setMessage(`Uploading gallery image ${added + 1} of ${unique.length}…`);
-        const response = await fetch("/admin/api/media", { method: "POST", body: file });
+        const body = await downscaleForUpload(file);
+        if (body.size > UPLOAD_BODY_LIMIT) throw new UserFacingError("That image is too large to upload. Try a smaller photo.");
+        const response = await fetch("/admin/api/media", { method: "POST", body });
         const result = await response.json(); if (!response.ok) throw new UserFacingError(result.error);
         gallery.push({ src: result.image, alt: "", caption: "" }); added++;
         patch({ gallery: [...gallery] });
@@ -176,7 +181,7 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
             <p className="text-xs leading-relaxed text-ink-soft">After expiry, the post stays published as an “Arrival update” without the animated notice. Use “New arrival” only when equipment has arrived; “Upcoming arrival” means it is still expected.</p>
           </section> : null}
           <label className="block text-sm">Custom summary (optional)<span className="mt-1 block text-xs text-steel">Leave blank to use a short introduction from the article.</span><textarea aria-label="Summary" {...fieldProblemProps(problems, fieldPath("excerpt"))} className={input} rows={3} maxLength={500} value={current.excerpt} onChange={(event) => patch({ excerpt: event.target.value })} /><FieldProblem problems={problems} path={fieldPath("excerpt")} /></label>
-          <label className="block text-sm">Cover image (JPEG, PNG or WebP, up to 8 MB, resized automatically)<input key={current.id} className={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} /></label>
+          <label className="block text-sm">Cover image (JPEG, PNG or WebP, up to 10 MB, resized automatically)<input key={current.id} className={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} /></label>
           {current.image ? <div><ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} className="max-h-64" /><button type="button" className="btn-ghost mt-2" onClick={() => patch({ image: "" })}>Remove image</button></div> : null}
           <section aria-label="Gallery images" className="space-y-4 border-t border-hair pt-5">
             <h2 className="font-display text-xl font-semibold text-navy">Article gallery</h2>

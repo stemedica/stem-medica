@@ -68,3 +68,26 @@ good at, and the collection is bounded by what a distributor actually stocks.
 Moving either one means posts or products become Postgres-only; the `local` and
 `blob` drivers cannot serve rows. Budget for `post-store.ts`, the admin API
 route, five seed scripts and the end-to-end suite.
+
+## Image uploads
+
+Images for products, categories, posts and post galleries all share one store:
+`media/<uuid>.webp` in Vercel Blob. Only the JSON documents live in Postgres.
+
+Uploads are shrunk twice, for different reasons:
+
+1. **In the browser** (`lib/client-image.ts`), before anything is sent. Vercel
+   rejects request bodies over ~4.5 MB with `FUNCTION_PAYLOAD_TOO_LARGE` before
+   the function runs, so a 10 MB photo can only work if it is downscaled first.
+   This also saves the editor's upload bandwidth, which matters on mobile data.
+2. **On the server** (`lib/image-processing.ts`), with sharp. This is the actual
+   validation, since a client can send anything: 1600px long edge, WebP q78,
+   EXIF stripped, and a 40 MP decode ceiling so a small but highly compressed
+   file cannot exhaust function memory.
+
+The admin may choose a file up to 10 MB. What crosses the wire is whatever the
+browser produced, capped at `UPLOAD_BODY_LIMIT` (4 MB) to stay under the
+platform limit.
+
+`/media/[id]` serves with `max-age=31536000, immutable`, which is safe because
+filenames are UUIDs and content never changes under one.
