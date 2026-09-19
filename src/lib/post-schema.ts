@@ -6,7 +6,7 @@ export const postSchema = z.object({
   excerpt: z.string().trim().max(500).default(""), author: z.string().trim().max(100).default("STEM MEDICA").transform((author) => author || "STEM MEDICA"),
   arrivalNoticeUntil: z.union([z.literal(""), z.iso.date()]).optional(),
   arrivalNoticeEnabled: z.boolean().optional(),
-  body: z.string().trim().max(10000), image: z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/), published: z.boolean(),
+  body: z.string().trim().max(8000), image: z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/), published: z.boolean(),
   gallery: z.array(z.object({
     src: z.string().regex(/^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/),
     alt: z.string().trim().max(200).default(""),
@@ -23,7 +23,7 @@ export const postSchema = z.object({
     seen.add(image.src);
   }
 });
-export const postsSchema = z.array(postSchema).max(100).superRefine((posts, ctx) => {
+export const postsSchema = z.array(postSchema).max(60).superRefine((posts, ctx) => {
   for (const key of ["id", "slug"] as const) {
     const seen = new Set<string>();
     posts.forEach((post, index) => { if (seen.has(post[key])) ctx.addIssue({ code: "custom", path: [index, key], message: `Duplicate post ${key}` }); seen.add(post[key]); });

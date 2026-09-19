@@ -3,18 +3,18 @@ import { z } from "zod";
 const short = z.string().trim().min(1).max(200);
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100);
 const image = z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/);
-export const categorySchema = z.object({ slug, name: short, short: z.string().trim().max(200).default(""), blurb: z.string().max(2000).default(""), image: image.default("") })
+export const categorySchema = z.object({ slug, name: short, short: z.string().trim().max(200).default(""), blurb: z.string().max(800).default(""), image: image.default("") })
   .transform((category) => ({ ...category, short: category.short || category.name }));
 export const productSchema = z.object({
   slug, name: short, brand: short, origin: z.string().trim().max(200).default(""), category: z.union([slug, z.literal("")]).default(""), image: image.default(""),
-  summary: z.string().trim().max(5000).default(""),
+  summary: z.string().trim().max(1500).default(""),
   availability: z.enum(["In stock, Addis Ababa", "Indent order", "On request"]),
   leadTime: z.string().trim().max(200).default(""), featured: z.boolean(), published: z.boolean(),
-  specs: z.array(z.object({ label: short, value: z.string().trim().min(1).max(1000) })).max(50),
-  services: z.array(z.string().trim().min(1).max(1000)).max(30),
+  specs: z.array(z.object({ label: short, value: z.string().trim().min(1).max(400) })).max(30),
+  services: z.array(z.string().trim().min(1).max(300)).max(20),
 });
 export const catalogueSchema = z.object({
-  categories: z.array(categorySchema).max(100), products: z.array(productSchema).max(500),
+  categories: z.array(categorySchema).max(40), products: z.array(productSchema).max(300),
 }).superRefine((data, ctx) => {
   for (const key of ["categories", "products"] as const) {
     const seen = new Set<string>();

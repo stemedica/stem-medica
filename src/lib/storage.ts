@@ -77,8 +77,28 @@ export async function readJson<T>(key: string) {
   const result = await readObject(key);
   return result ? { data: JSON.parse(result.bytes.toString("utf8")) as T, etag: result.etag } : null;
 }
-export const writeJson = (key: string, data: unknown, expected: string | null = null) =>
-  writeObject(key, Buffer.from(JSON.stringify(data)), "application/json", expected);
+/**
+ * Whole-collection documents are read and rewritten in full, so their size is
+ * the real limit on this storage model, not any per-field cap. Field limits
+ * alone multiply out to something this pattern cannot carry, so the invariant
+ * is enforced here, at the one write path, in bytes.
+ *
+ * Raising this is a decision to move that collection to per-row storage, not a
+ * number to nudge. See docs/STORAGE.md.
+ */
+export const CONTENT_DOCUMENT_MAX_BYTES = 1_000_000;
+
+export class ContentTooLarge extends Error {}
+
+export const writeJson = (key: string, data: unknown, expected: string | null = null) => {
+  const bytes = Buffer.from(JSON.stringify(data));
+  if (contentKey(key) && bytes.byteLength > CONTENT_DOCUMENT_MAX_BYTES) {
+    throw new ContentTooLarge(
+      `This collection is ${Math.round(bytes.byteLength / 1024)} KB, over the ${Math.round(CONTENT_DOCUMENT_MAX_BYTES / 1024)} KB limit. Remove or shorten entries, or move this collection to per-row storage.`,
+    );
+  }
+  return writeObject(key, bytes, "application/json", expected);
+};
 
 export async function listObjects(prefix: string) {
   checkKey(prefix);
