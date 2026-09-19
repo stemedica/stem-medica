@@ -73,8 +73,8 @@ export default async function Home() {
         <div className="max-w-3xl">
           <div>
             <V2Head
-              title="Medical equipment, with support"
-              lede="We help hospitals choose equipment, arrange delivery and installation, and get support afterward."
+              title="Advancing healthcare across Ethiopia"
+              lede="We believe in collaboration and innovation. By importing and distributing quality medical products, we help health facilities access the equipment and support they need."
             />
             <div className="mt-7">
               <V2Button href="/about" badge>Read our story</V2Button>
@@ -92,8 +92,8 @@ export default async function Home() {
           <V2Head
             align="center"
             tone="dark"
-            title="Tell us what your facility needs"
-            lede="Tell us what you need. We’ll help you choose the right equipment and prepare a quote."
+            title="Let’s improve healthcare together"
+            lede="Tell us what your facility needs. We’ll help you choose the right equipment and prepare a quote."
           />
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <V2Button href="/quote" badge>Request a quote</V2Button>

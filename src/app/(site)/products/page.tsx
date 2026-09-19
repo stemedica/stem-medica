@@ -9,8 +9,21 @@ import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 
 export const metadata: Metadata = {
   title: "Products",
-  description: "Medical equipment catalogue. Systems supplied, installed and supported across Ethiopia.",
+  description: "Medical equipment, supplies and devices for hospitals, clinics and laboratories across Ethiopia.",
 };
+
+const productFamilies = [
+  "Monitoring equipment",
+  "Emergency equipment",
+  "Diagnostic equipment",
+  "Surgical equipment",
+  "Medical furniture",
+  "Orthopedic products",
+  "Dental equipment",
+  "Medical imaging",
+  "Laboratory equipment",
+  "Wound care products",
+];
 
 export default async function ProductsPage({ searchParams }: {
   searchParams: Promise<{ cat?: string | string[]; q?: string | string[]; page?: string | string[] }>;
@@ -34,10 +47,19 @@ export default async function ProductsPage({ searchParams }: {
     <header className={`grid items-center gap-5 ${category?.image ? "sm:grid-cols-[1fr_240px]" : "max-w-3xl"}`}>
       <div>
       <h1 className="font-display max-w-[22ch] text-3xl font-semibold leading-tight tracking-[-0.025em] text-balance text-navy sm:text-5xl">{category?.name ?? (missingCategory ? "Category unavailable" : "All equipment")}</h1>
-      <p className="mt-4 max-w-[65ch] text-base leading-relaxed text-ink-soft">{category?.blurb || "Browse by category or search by name. Contact us to confirm the model, price and delivery time."}</p>
+      <p className="mt-4 max-w-[65ch] text-base leading-relaxed text-ink-soft">{category?.blurb || "Browse quality medical supplies, devices and equipment for health facilities across Ethiopia. Contact us to confirm the model, price and delivery time."}</p>
       </div>
       {category?.image ? <ImagePlaceholder src={category.image} label={category.name} ratio="4/3" className="max-h-48 rounded-2xl border border-hair bg-white" /> : null}
     </header>
+    {!requestedCategory && !query ? <section aria-labelledby="product-families" className="mt-8 border-y border-hair py-6">
+      <h2 id="product-families" className="label text-steel">What we supply</h2>
+      <ul className="mt-4 grid gap-x-8 gap-y-3 text-sm font-medium text-navy sm:grid-cols-2 lg:grid-cols-3">
+        {productFamilies.map((family, index) => <li key={family} className="flex items-baseline gap-3">
+          <span className="font-mono text-xs tabular-nums text-scarlet">{String(index + 1).padStart(2, "0")}</span>
+          {family}
+        </li>)}
+      </ul>
+    </section> : null}
     <form action="/products" role="search" aria-label="Find equipment" className="mt-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(160px,240px)_auto]">
       <label className="col-span-2 min-w-0 sm:col-span-1"><span className="sr-only">Search equipment</span>
         <input key={query} type="search" name="q" defaultValue={query} maxLength={200} placeholder="Search equipment" className="h-11 w-full rounded-xl border border-hair bg-white px-3 py-2" />

@@ -31,9 +31,11 @@ export function SiteFooter() {
             <div className="label text-on-navy/65">Contact</div>
             <ul className="mt-1 flex flex-wrap gap-x-5 font-mono text-sm text-on-navy/80">
               <li><a href={`tel:${site.phoneIntl}`} className="hover:text-white">{site.phone}</a></li>
+              <li><a href={`tel:${site.secondaryPhoneIntl}`} className="hover:text-white">{site.secondaryPhone}</a></li>
+              <li><a href={`mailto:${site.email}`} className="hover:text-white">{site.email}</a></li>
               <li><Link href="/quote" className="hover:text-white">Request a quote</Link></li>
               <li><a href={site.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a></li>
-              <li className="flex min-h-11 items-center text-on-navy/60">{site.city}</li>
+              <li className="flex min-h-11 items-center text-on-navy/60">{site.address}</li>
             </ul>
           </div>
         </div>

@@ -11,8 +11,8 @@ export function HomeHero() {
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(8,24,48,.9),transparent_45%)]" />
       <div className="relative z-10 flex min-h-[calc(100svh-132px)] flex-col justify-center px-6 pb-24 pt-7 sm:min-h-[540px] sm:px-10 sm:pb-20 lg:min-h-[560px] lg:px-16">
         <p className="flex items-center gap-2 text-xs font-medium tracking-wide text-white/80"><MapPin size={14} aria-hidden="true" />{site.city}</p>
-        <h1 id="hero-title" className="font-display mt-6 max-w-[13ch] text-[clamp(2.6rem,6.5vw,5.8rem)] font-semibold leading-[1.02] tracking-[-.038em] text-balance">Equipment for<br />the <span className="text-[#b9deec]">front line.</span></h1>
-        <p className="mt-4 max-w-[35ch] text-base leading-relaxed text-white/85 sm:text-lg">For the teams who care for us.<br />Supplied, installed and supported across Ethiopia.</p>
+        <h1 id="hero-title" className="font-display mt-6 max-w-[13ch] text-[clamp(2.6rem,6.5vw,5.8rem)] font-semibold leading-[1.02] tracking-[-.038em] text-balance">Quality equipment.<br /><span className="text-[#b9deec]">Better care.</span></h1>
+        <p className="mt-4 max-w-[39ch] text-base leading-relaxed text-white/85 sm:text-lg">Medical supplies, devices and equipment—distributed and supported across Ethiopia.</p>
         <div className="pointer-events-auto mt-5 flex w-full flex-col gap-3 sm:w-fit sm:flex-row sm:flex-wrap">
           <a href="#equipment" className="inline-flex min-h-14 items-center justify-between gap-6 rounded-full bg-white py-2 pl-6 pr-2 text-sm font-semibold text-navy transition-colors hover:bg-blue-50">Browse equipment<span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white"><ArrowDown size={19} aria-hidden="true" /></span></a>
           <Link prefetch={false} href="/quote" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/50 bg-navy-deep/30 px-6 text-sm font-medium text-white transition-colors hover:bg-white/15">Request a quote<ArrowUpRight size={17} aria-hidden="true" /></Link>

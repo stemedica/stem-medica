@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Search, FileText, Truck, GraduationCap, ShieldCheck, Headset } from "lucide-react";
+import { Wrench, GraduationCap, PackageSearch, Headset } from "lucide-react";
 import { Section } from "@/components/Section";
 import { Button } from "@/components/Button";
 import { site } from "@/lib/site";
@@ -11,12 +11,10 @@ export const metadata: Metadata = {
 };
 
 const stages = [
-  { n: "01", icon: Search, title: "Tell us about the site", body: "Share where the equipment will be used and what space, power, water or other services are available." },
-  { n: "02", icon: FileText, title: "Review the quote", body: "We’ll list the equipment, quantity, price and terms in writing. We can also provide a proforma invoice if needed." },
-  { n: "03", icon: Truck, title: "Plan delivery and installation", body: "We’ll agree on delivery dates and who will handle installation before you order." },
-  { n: "04", icon: GraduationCap, title: "Train your team", body: "Tell us who will use and maintain the equipment so the right training can be included." },
-  { n: "05", icon: ShieldCheck, title: "Confirm warranty and parts", body: "We’ll explain the warranty and confirm which supplies and spare parts are available." },
-  { n: "06", icon: Headset, title: "Get support", body: "Send the model, serial number and what went wrong. This helps us respond faster." },
+  { n: "01", icon: Wrench, title: "Installation", body: "Complete medical equipment installation, coordinated with delivery and shipping services for your facility." },
+  { n: "02", icon: GraduationCap, title: "Training", body: "Practical product training for health professionals and biomedical engineers who use and maintain the equipment." },
+  { n: "03", icon: PackageSearch, title: "Spare parts", body: "Supply of spare parts, consumables and accessories used across the medical device industry." },
+  { n: "04", icon: Headset, title: "Technical support", body: "Ongoing technical assistance to help your team use our products effectively and respond to equipment issues." },
 ];
 
 export default function ServicePage() {
@@ -24,8 +22,8 @@ export default function ServicePage() {
     <>
       <Section
         headingLevel="h1"
-        title="Support from selection to daily use"
-        lede="We can help you choose, install and use your equipment. The exact service and timing are agreed for each order."
+        title="Service beyond delivery"
+        lede="We install equipment, train teams and provide the parts and technical support needed for dependable daily use."
       >
         <ol className="mt-12 border-t border-hair">
           {stages.map(({ n, icon: Icon, title, body }) => (

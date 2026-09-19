@@ -1,18 +1,21 @@
 import type { Metadata } from "next";
-import { Phone, MessageCircle, ClipboardList, Link2 } from "lucide-react";
+import { Phone, MessageCircle, ClipboardList, Mail, MapPin, Link2 } from "lucide-react";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
 import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: `Call ${site.phone}, send a quotation request or contact STEM MEDICA on WhatsApp in Addis Ababa.`,
+  description: `Call ${site.phone} or ${site.secondaryPhone}, email ${site.email}, or visit STEM MEDICA in Addis Ababa.`,
 };
 
 const channels = [
-  { icon: Phone, label: "Phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment or support." },
+  { icon: Phone, label: "Primary phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment, quotations or support." },
+  { icon: Phone, label: "Second phone", value: site.secondaryPhone, href: `tel:${site.secondaryPhoneIntl}`, note: "An additional direct line to the STEM MEDICA team." },
+  { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send product lists, partnership details or support questions." },
   { icon: MessageCircle, label: "WhatsApp", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
   { icon: ClipboardList, label: "Quotation request", value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
+  { icon: MapPin, label: "Office", value: "Kal Building, Room 213", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`, note: "In front of Nyala Motors, Bole to Megenagna, Addis Ababa." },
   { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];
 
@@ -20,8 +23,8 @@ export default function ContactPage() {
   return (
     <Section
       headingLevel="h1"
-      title="How can we help?"
-      lede={`Contact our team in ${site.city} for equipment, quotes or support.`}
+      title="Let’s advance healthcare together"
+      lede="Contact our team for medical equipment, quotations, installation, training or technical support."
     >
       <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">
         {channels.map(({ icon: Icon, label, value, href, note }) => (
