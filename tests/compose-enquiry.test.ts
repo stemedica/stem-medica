@@ -19,7 +19,7 @@ test("the draft carries every answer, aligned and readable", () => {
   for (const value of ["Tikur Anbessa", "Dr Almaz Bekele", "+251 911 234 567", "almaz@example.com", "Multiparameter", "4"]) {
     assert.ok(body.includes(value), `body should contain ${value}`);
   }
-  assert.match(body, /Notes:\n.*12-bed ICU wing/s);
+  assert.match(body, /Notes:\n[\s\S]*12-bed ICU wing/);
   // Labels are padded to one column so the mail reads as a table in plain text.
   const labelWidths = body.split("\n").filter((l) => l.includes(" : ")).map((l) => l.indexOf(" : "));
   assert.equal(new Set(labelWidths).size, 1, "label column should be aligned");
