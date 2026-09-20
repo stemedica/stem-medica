@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { control, TextField, TextareaField, SelectField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
 import { downscaleForUpload } from "@/lib/client-image";
 import { PublicationFilter, matchesPublication, type PublicationStatus } from "@/components/PublicationFilter";
 import { postSlug, postSummary } from "@/lib/post-slug";
@@ -9,7 +10,7 @@ import { useFieldValidation } from "@/components/useFieldValidation";
 import { useAdminFeedback } from "@/components/useAdminFeedback";
 import { AdminSaveBar } from "@/components/AdminSaveBar";
 import { formProblems, type FormProblem, UserFacingError, userError } from "@/lib/form-errors";
-import { FormProblems, FieldProblem, fieldProblemProps, focusProblem } from "@/components/FormProblems";
+import { FormProblems, focusProblem } from "@/components/FormProblems";
 import { postKinds, postsSchema, type CmsPost } from "@/lib/post-schema";
 import { PostGallery } from "@/components/PostGallery";
 import { arrivalNoticeEnd, hasArrivalNotice } from "@/lib/arrival-notice";
@@ -17,7 +18,6 @@ import { LinkedInSharePanel } from "@/components/LinkedInSharePanel";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
 
-const input = "mt-1 block w-full min-w-0 rounded-lg border border-hair bg-white px-3 py-2 text-base focus-visible:outline-2 focus-visible:outline-navy";
 type Snapshot = { posts: CmsPost[]; etag: string | null };
 async function fetchPosts(): Promise<Snapshot> {
   const response = await fetch("/admin/api/posts", { cache: "no-store" });
@@ -45,6 +45,9 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
   const [preview, setPreview] = useState(false);
   const serializedPosts = useMemo(() => JSON.stringify(posts), [posts]);
   const dirty = saved !== serializedPosts;
+  const matching = posts.filter((post) =>
+    matchesPublication(post.published, status)
+    && `${post.title} ${post.kind}`.toLowerCase().includes(query.toLowerCase()));
   const current = posts.find((post) => post.id === selected);
   const validation = useMemo(() => postsSchema.safeParse(publishTarget ? posts.map((p) => p.id === publishTarget ? { ...p, published: true } : p) : posts), [posts, publishTarget]);
   const allProblems = validation && !validation.success ? formProblems(validation.error.issues, "posts") : [];
@@ -147,59 +150,137 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
     <p className="mt-3 text-sm text-steel">Saving keeps each post’s current publication status. These actions save all pending post edits.</p>
     <FormProblems problems={attempted ? allProblems : []} onSelect={selectProblem} />
     <fieldset disabled={busy || !loaded} className="mt-6 grid min-w-0 gap-8 disabled:opacity-60 md:grid-cols-[260px_minmax(0,1fr)]">
-      <div className="min-w-0 space-y-4">
-        <button className="btn-outline" type="button" disabled={posts.length >= 100} onClick={add}>Add post</button>
-        <PublicationFilter value={status} onChange={setStatus} />
-        <label className="block text-sm">Search posts<input className={input} type="search" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
-        <div className="max-h-[60vh] space-y-2 overflow-y-auto">
-          {posts.filter((post) => matchesPublication(post.published, status) && `${post.title} ${post.kind}`.toLowerCase().includes(query.toLowerCase())).map((post) => <button type="button" key={post.id} aria-pressed={selected === post.id} onClick={() => { setSelected(post.id); setPreview(false); setPublishTarget(null); }} className="block w-full rounded-lg border border-hair p-3 text-left text-sm break-words aria-pressed:border-navy aria-pressed:bg-navy-tint"><span className="block font-medium">{post.title}</span><span className="mt-1 block text-xs text-steel">{post.kind} · {post.published ? "Published" : "Draft"}</span></button>)}
+      <div className="min-w-0">
+        <button className={`${"btn-outline"} min-h-11 w-full`} type="button" disabled={posts.length >= 60} onClick={add}>Add post</button>
+
+        <label className="mt-3 block">
+          <span className="sr-only">Search posts</span>
+          <input className={control} type="search" placeholder="Search posts…" value={query} onChange={(event) => setQuery(event.target.value)} />
+        </label>
+
+        <div className="mt-3"><PublicationFilter value={status} onChange={setStatus} /></div>
+
+        <div className="mt-3 max-h-[60vh] min-w-0 overflow-y-auto overscroll-contain rounded-xl border border-hair bg-white">
+          {matching.length ? matching.map((post) => (
+            <button type="button" key={post.id} aria-current={selected === post.id ? "true" : undefined}
+              onClick={() => { setSelected(post.id); setPreview(false); setPublishTarget(null); }}
+              className={`block w-full border-b border-hair px-4 py-3 text-left last:border-0 transition-colors ${selected === post.id ? "bg-navy-tint" : "hover:bg-paper"}`}>
+              <span className={`block truncate text-sm ${selected === post.id ? "font-semibold text-navy" : "text-ink"}`}>{post.title || "Untitled"}</span>
+              <span className="mt-1 flex flex-wrap items-center gap-2">
+                <StatusPill published={post.published} />
+                <span className="truncate text-xs text-steel">{post.kind} · {post.date}</span>
+              </span>
+            </button>
+          )) : (
+            <p className="px-4 py-8 text-center text-sm text-steel">
+              {posts.length ? "No posts match. Clear the search or choose All." : "No posts yet."}
+            </p>
+          )}
         </div>
-        {!posts.length ? <p className="text-sm text-steel">No posts yet. Add your first announcement or article.</p> : null}
-        {posts.length > 0 && !posts.some((post) => matchesPublication(post.published, status) && `${post.title} ${post.kind}`.toLowerCase().includes(query.toLowerCase())) ? <p className="text-sm text-steel">No posts match. Choose All or clear your search to see more posts.</p> : null}
       </div>
       {current ? <div className="min-w-0 space-y-5">
         <p className="text-sm font-medium">{current.published ? "Published · visible on the website" : "Draft · only visible to admins"}</p>
         <LinkedInSharePanel key={`${current.id}-${dirty}-${current.published}`} post={current} dirty={dirty} previewMode={previewMode} />
         <div className="flex flex-wrap gap-3"><button type="button" className="btn-outline" onClick={() => setPreview(!preview)}>{preview ? "Edit post" : "Preview post"}</button><button type="button" className="btn-ghost" onClick={async () => { if (await confirm({ title: "Remove this post?", message: `Remove “${current.title}”? Save posts to apply the deletion.`, action: "Remove post" })) { resetFields(); setAttempted(false); setPosts((items) => items.filter((post) => post.id !== selected)); setSelected(""); } }}>Remove post</button></div>
         {preview ? <article className="space-y-5 break-words"><p className="text-sm text-steel">Preview · {current.kind} · {current.date}</p><h2 className="font-display text-3xl">{current.title}</h2>{current.image ? <ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} /> : null}<p className="text-lg">{postSummary(current)}</p><PostBody body={current.body} /><PostGallery images={current.gallery} title={current.title} preview /></article> : <>
-          <label className="block text-sm">Title <span className="text-xs text-steel">Required</span><input aria-required="true" aria-label="Title" {...fieldProblemProps(problems, fieldPath("title"))} className={input} maxLength={200} value={current.title} onChange={(event) => patch({ title: event.target.value })} /><FieldProblem problems={problems} path={fieldPath("title")} /></label>
-          <div className="rounded-lg bg-navy-tint p-3 text-sm"><span className="font-medium">Website address</span><p className="mt-1 break-all text-ink-soft">/blog/{current.slug}</p><p className="mt-2 text-xs text-steel">Generated from the title. Once saved, this address stays the same so shared links keep working.</p></div>
-          <label className="block text-sm">Body <span className="text-xs text-steel">Required before publishing</span><textarea aria-required={current.published || publishTarget === current.id} aria-label="Body" {...fieldProblemProps(problems, fieldPath("body"))} className={input} rows={12} maxLength={10000} value={current.body} onChange={(event) => patch({ body: event.target.value })} /><span className="mt-1 block text-xs text-steel">Leave a blank line between paragraphs. Use ## Heading for a section, ### Heading for a subsection, and - for each bullet. Separate sections with blank lines. HTML is never executed.</span><FieldProblem problems={problems} path={fieldPath("body")} /></label>
-          <details key={current.id}><summary className="min-h-11 cursor-pointer py-3 font-medium">Additional details (optional)</summary><div className="space-y-5 pt-3">
-          <div className="grid gap-4 sm:grid-cols-2"><label className="block text-sm">Post type<select aria-label="Post type" {...fieldProblemProps(problems, fieldPath("kind"))} className={input} value={current.kind} onChange={(event) => patch({ kind: event.target.value as CmsPost["kind"] })}>{postKinds.map((kind) => <option key={kind}>{kind}</option>)}</select><FieldProblem problems={problems} path={fieldPath("kind")} /></label><label className="block text-sm">Display date<input aria-label="Display date" {...fieldProblemProps(problems, fieldPath("date"))} className={input} type="date" value={current.date} onChange={(event) => patch({ date: event.target.value })} /><FieldProblem problems={problems} path={fieldPath("date")} /></label></div>
-          <label className="block text-sm">Author<input aria-label="Author" {...fieldProblemProps(problems, fieldPath("author"))} className={input} maxLength={100} value={current.author} onChange={(event) => patch({ author: event.target.value })} /><FieldProblem problems={problems} path={fieldPath("author")} /></label>
-          {current.kind !== "Blog" ? <section aria-label="Arrival notice" className="space-y-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
-            <h3 className="font-semibold text-navy">Arrival notice</h3>
-            <label className="flex min-h-11 items-center gap-3 text-sm"><input type="checkbox" checked={current.arrivalNoticeEnabled !== false} onChange={event => patch({ arrivalNoticeEnabled: event.target.checked })} />Highlight this arrival on the website</label>
-            {current.arrivalNoticeEnabled !== false ? <>
-              <label className="block text-sm">Highlight until (optional)<input aria-label="Highlight until" type="date" min={current.date} value={current.arrivalNoticeUntil ?? ""} {...fieldProblemProps(problems, fieldPath("arrivalNoticeUntil"))} onChange={event => patch({ arrivalNoticeUntil: event.target.value })} className={input} /><FieldProblem problems={problems} path={fieldPath("arrivalNoticeUntil")} /></label>
-              <p className="text-sm text-ink-soft">Leave blank for 90 days from the display date. Highlight ends after {arrivalNoticeEnd(current) || "a valid display date"} (Addis Ababa time).</p>
-              <p className="text-sm font-medium text-navy">{hasArrivalNotice(current) ? "Highlight active for this date range." : "Highlight is outside its date range."} Draft posts remain private.</p>
-            </> : null}
-            <p className="text-xs leading-relaxed text-ink-soft">After expiry, the post stays published as an “Arrival update” without the animated notice. Use “New arrival” only when equipment has arrived; “Upcoming arrival” means it is still expected.</p>
-          </section> : null}
-          <label className="block text-sm">Custom summary (optional)<span className="mt-1 block text-xs text-steel">Leave blank to use a short introduction from the article.</span><textarea aria-label="Summary" {...fieldProblemProps(problems, fieldPath("excerpt"))} className={input} rows={3} maxLength={500} value={current.excerpt} onChange={(event) => patch({ excerpt: event.target.value })} /><FieldProblem problems={problems} path={fieldPath("excerpt")} /></label>
-          <label className="block text-sm">Cover image (JPEG, PNG or WebP, up to 10 MB, resized automatically)<input key={current.id} className={input} type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => { void upload(event.target.files?.[0]); event.target.value = ""; }} /></label>
-          {current.image ? <div><ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} className="max-h-64" /><button type="button" className="btn-ghost mt-2" onClick={() => patch({ image: "" })}>Remove image</button></div> : null}
-          <section aria-label="Gallery images" className="space-y-4 border-t border-hair pt-5">
-            <h2 className="font-display text-xl font-semibold text-navy">Article gallery</h2>
-            <p className="text-sm text-ink-soft">Extra pictures appear inside the article. The cover above stays on the homepage and blog cards. Up to 8 images, 3 MB each.</p>
-            <label className="block text-sm">Add gallery images<input className={input} type="file" multiple accept="image/jpeg,image/png,image/webp" disabled={(current.gallery?.length ?? 0) >= 8} onChange={event => { void uploadGallery(Array.from(event.target.files ?? [])); event.target.value = ""; }} /></label>
-            {(current.gallery ?? []).map((image, index) => <div key={image.src} className="space-y-3 rounded-xl border border-hair p-4">
-              <p className="text-sm font-medium">Image {index + 1}</p>
-              <ImagePlaceholder src={`/admin/api/media?id=${image.src.split("/").pop()}`} label={image.alt || `Gallery image ${index + 1}`} className="max-h-48" />
-              <label className="block text-sm">Image description {index + 1}<input className={input} maxLength={200} value={image.alt} onChange={event => patch({ gallery: current.gallery?.map((item, i) => i === index ? { ...item, alt: event.target.value } : item) })} /><span className="text-xs text-steel">Describe the picture for people using screen readers.</span></label>
-              <label className="block text-sm">Caption {index + 1}<input className={input} maxLength={300} value={image.caption} onChange={event => patch({ gallery: current.gallery?.map((item, i) => i === index ? { ...item, caption: event.target.value } : item) })} /></label>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" className="btn-outline min-h-11" disabled={index === 0} aria-label={`Move image ${index + 1} earlier`} onClick={() => { const gallery = [...(current.gallery ?? [])]; [gallery[index - 1], gallery[index]] = [gallery[index], gallery[index - 1]]; patch({ gallery }); }}>Move earlier</button>
-                <button type="button" className="btn-ghost min-h-11" aria-label={`Remove gallery image ${index + 1}`} onClick={() => patch({ gallery: current.gallery?.filter((_, i) => i !== index) })}>Remove</button>
+          <Panel title="Article" description={<>Website address: <span className="break-all font-medium text-ink">/blog/{current.slug}</span>. Generated from the title; once saved it never changes, so shared links keep working.</>}>
+            <div className="space-y-4">
+              <TextField required label="Title" path={fieldPath("title")} problems={problems} maxLength={200}
+                value={current.title} onChange={(title) => patch({ title })} />
+              <TextareaField label="Body" required path={fieldPath("body")} problems={problems} rows={14} maxLength={10000}
+                value={current.body} onChange={(body) => patch({ body })}
+                hint="Required before publishing"
+                note={<>Leave a blank line between paragraphs. <code className="rounded bg-paper-2 px-1 py-0.5 font-mono text-[11px]">## Heading</code> for a section, <code className="rounded bg-paper-2 px-1 py-0.5 font-mono text-[11px]">###</code> for a subsection, <code className="rounded bg-paper-2 px-1 py-0.5 font-mono text-[11px]">-</code> for each bullet. HTML is never executed.</>} />
+            </div>
+          </Panel>
+
+          <Panel title="Publishing" description="How the post is labelled and dated on the website.">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <SelectField label="Post type" path={fieldPath("kind")} problems={problems}
+                value={current.kind} onChange={(kind) => patch({ kind: kind as CmsPost["kind"] })}>
+                {postKinds.map((kind) => <option key={kind}>{kind}</option>)}
+              </SelectField>
+              <TextField label="Display date" type="date" path={fieldPath("date")} problems={problems}
+                value={current.date} onChange={(date) => patch({ date })}
+                hint="Not a schedule" />
+              <TextField label="Author" path={fieldPath("author")} problems={problems} maxLength={100}
+                value={current.author} onChange={(author) => patch({ author })} className="sm:col-span-2" />
+            </div>
+          </Panel>
+
+          {current.kind !== "Blog" ? (
+            <Panel tone="accent" title="Arrival notice"
+              description={<>Use “New arrival” only once equipment has landed; “Upcoming arrival” means it is still expected. After expiry the post stays published as an “Arrival update” without the highlight.</>}>
+              <div className="space-y-4">
+                <CheckboxField label="Highlight this arrival on the website"
+                  checked={current.arrivalNoticeEnabled !== false}
+                  onChange={(arrivalNoticeEnabled) => patch({ arrivalNoticeEnabled })} />
+                {current.arrivalNoticeEnabled !== false ? <>
+                  <TextField label="Highlight until" type="date" path={fieldPath("arrivalNoticeUntil")} problems={problems}
+                    value={current.arrivalNoticeUntil ?? ""} onChange={(arrivalNoticeUntil) => patch({ arrivalNoticeUntil })}
+                    hint="Optional — 90 days by default" />
+                  <p className="text-sm leading-relaxed text-ink-soft">
+                    Highlight ends after {arrivalNoticeEnd(current) || "a valid display date"} (Addis Ababa time).{" "}
+                    <span className="font-medium text-navy">{hasArrivalNotice(current) ? "Active now." : "Outside its date range."}</span>{" "}
+                    Draft posts stay private either way.
+                  </p>
+                </> : null}
               </div>
-            </div>)}
-          </section>
-          <p className="text-xs text-steel">The display date is not a publishing schedule. Choose Publish post when it is ready.</p>
-          </div></details>
+            </Panel>
+          ) : null}
+
+          <Panel title="Summary" description="Shown on cards and in search results. Leave blank to use the opening of the article.">
+            <TextareaField label="Custom summary" path={fieldPath("excerpt")} problems={problems} rows={3} maxLength={500}
+              value={current.excerpt} onChange={(excerpt) => patch({ excerpt })} />
+          </Panel>
+
+          <Panel title="Cover image" description="Appears on the homepage and blog cards. A post without one simply shows no image.">
+            <FileField label="Upload a cover" accept="image/jpeg,image/png,image/webp" inputKey={current.id}
+              onFiles={(files) => { void upload(files[0]); }} />
+            {current.image ? <div className="mt-4">
+              <ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} className="max-h-64" />
+              <button type="button" className="btn-ghost mt-3 min-h-11" onClick={() => patch({ image: "" })}>Remove cover</button>
+            </div> : null}
+          </Panel>
+
+          <Panel title="Article gallery"
+            description="Extra pictures shown inside the article. Up to 8."
+            actions={<span className="text-xs text-steel">{current.gallery?.length ?? 0} of 8</span>}>
+            <FileField label="Add gallery images" accept="image/jpeg,image/png,image/webp" multiple
+              disabled={(current.gallery?.length ?? 0) >= 8}
+              onFiles={(files) => { void uploadGallery(files); }} />
+            {(current.gallery ?? []).length ? <ul className="mt-4 space-y-3">
+              {(current.gallery ?? []).map((image, index) => (
+                <li key={image.src} className="rounded-xl border border-hair p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-medium text-ink">Image {index + 1}</p>
+                    <div className="flex gap-2">
+                      <button type="button" className="btn-outline min-h-11" disabled={index === 0} aria-label={`Move image ${index + 1} earlier`}
+                        onClick={() => { const gallery = [...(current.gallery ?? [])]; [gallery[index - 1], gallery[index]] = [gallery[index], gallery[index - 1]]; patch({ gallery }); }}>Move up</button>
+                      <button type="button" className="btn-ghost min-h-11" aria-label={`Remove gallery image ${index + 1}`}
+                        onClick={() => patch({ gallery: current.gallery?.filter((_, i) => i !== index) })}>Remove</button>
+                    </div>
+                  </div>
+                  <ImagePlaceholder src={`/admin/api/media?id=${image.src.split("/").pop()}`} label={image.alt || `Gallery image ${index + 1}`} className="mt-3 max-h-48" />
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    <TextField label={`Image description ${index + 1}`} maxLength={200} value={image.alt}
+                      hint="For screen readers"
+                      onChange={(alt) => patch({ gallery: current.gallery?.map((item, i) => i === index ? { ...item, alt } : item) })} />
+                    <TextField label={`Caption ${index + 1}`} maxLength={300} value={image.caption}
+                      onChange={(caption) => patch({ gallery: current.gallery?.map((item, i) => i === index ? { ...item, caption } : item) })} />
+                  </div>
+                </li>
+              ))}
+            </ul> : null}
+          </Panel>
         </>}
-      </div> : <p className="text-ink-soft">Choose a post or create a new one.</p>}
+      </div> : (
+        <EmptyState
+          title={posts.length ? "No post selected" : "No posts yet"}
+          message={posts.length ? "Choose a post from the list to edit it." : "Share an upcoming arrival, a new arrival, or an article."}
+          action={<button type="button" className="btn-outline min-h-11" onClick={add}>Add post</button>}
+        />
+      )}
     </fieldset>
   </main>;
 }

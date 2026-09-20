@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { control, TextField, TextareaField, SelectField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
 import { downscaleForUpload } from "@/lib/client-image";
 import type { Catalogue, CmsProduct, CmsCategory } from "@/lib/cms-schema";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
@@ -11,11 +12,11 @@ import { useAdminFeedback } from "@/components/useAdminFeedback";
 import { AdminSaveBar } from "@/components/AdminSaveBar";
 import { catalogueSchema } from "@/lib/cms-schema";
 import { formProblems, type FormProblem, UserFacingError, userError } from "@/lib/form-errors";
-import { FormProblems, FieldProblem, fieldProblemProps, focusProblem } from "@/components/FormProblems";
+import { FormProblems, focusProblem } from "@/components/FormProblems";
 import { X } from "lucide-react";
 
-const input = "mt-1 min-w-0 w-full rounded-lg border border-hair bg-white px-3 py-2 text-base";
 const button = "min-h-11 min-w-11 rounded-lg border border-hair px-4 py-2 text-sm font-medium hover:border-navy disabled:cursor-not-allowed disabled:opacity-50";
+const blankCategory = (): CmsCategory => ({ slug: "", name: "", short: "", blurb: "", image: "" });
 const blankProduct = (category: string): CmsProduct => ({ slug: "", name: "", brand: "", origin: "", category, image: "", summary: "", availability: "On request", leadTime: "Confirm on enquiry", specs: [], services: [], featured: false, published: false });
 
 export function CatalogueEditor() {
@@ -31,6 +32,7 @@ export function CatalogueEditor() {
   const [configured, setConfigured] = useState(false);
   const [mode, setMode] = useState<"products" | "categories">("products");
   const [selected, setSelected] = useState(0);
+  const [query, setQuery] = useState("");
   const [busy, setBusy] = useState(true);
   const [dirty, setDirty] = useState(false);
   const { message, tone, setMessage } = useAdminFeedback("");
@@ -96,10 +98,10 @@ export function CatalogueEditor() {
       const product = { ...blankProduct(""), slug: categorySlug("New product", copy.products.map((p) => p.slug)) };
       newProducts.current.add(product.slug); copy.products.push(product);
     }
-    // Categories are the agreed supply list and are not created here. Adding
-    // one would put a heading on the public site that nobody approved, and the
-    // set is small enough that changes belong in scripts/seed-catalogue.ts.
-    else return;
+    else {
+      const category = { ...blankCategory(), slug: categorySlug("New category", copy.categories.map((c) => c.slug)) };
+      newCategories.current.add(category.slug); copy.categories.push(category);
+    }
     resetFields(); setAttempted(false);
     setStatus("all"); setSelected(copy[mode].length - 1); setData(copy); setDirty(true);
   }
@@ -140,71 +142,168 @@ export function CatalogueEditor() {
     } catch (e) { setMessage(userError(e, "Upload failed"), "error"); }
     finally { setBusy(false); }
   }
+  // Index is kept alongside each item so selection still addresses the real
+  // array position after filtering.
+  const visible = (data?.[mode] ?? [])
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) =>
+      (mode !== "products" || matchesPublication((item as CmsProduct).published, status))
+      && (!query.trim() || (item.name || "").toLowerCase().includes(query.trim().toLowerCase())));
   const current = data?.[mode][selected];
   const product = mode === "products" ? current as CmsProduct | undefined : undefined;
   const duplicateIndex = product && product.name.trim() && product.brand.trim() ? data!.products.findIndex((p, i) => i !== selected && normalize(p.name) === normalize(product.name) && normalize(p.brand) === normalize(product.brand)) : -1;
   return (
-    <main onBlurCapture={onBlurCapture} className="mx-auto max-w-6xl px-5 py-10">
+    <main onBlurCapture={onBlurCapture} className="mx-auto max-w-6xl px-5 py-8 sm:py-10">
       {confirmationModal}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div><h1 className="text-3xl font-semibold">Catalogue</h1><p className="mt-2 text-ink-soft">Manage equipment, categories and product photos.</p></div>
+
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-navy sm:text-3xl">Catalogue</h1>
+          <p className="mt-1.5 text-sm text-ink-soft">Equipment, categories and product photos.</p>
+        </div>
         <button className={button} disabled={busy} onClick={async () => { if (!dirty || await confirm({ title: "Discard unsaved edits?", message: "Reload the saved catalogue? Your current unsaved edits will be lost.", action: "Discard and reload" })) { setBusy(true); void reload(); } }}>Reload</button>
       </div>
+
       <AdminSaveBar label={product ? product.published ? "Save changes" : "Save draft" : "Save catalogue"} onSave={() => save()} disabled={!configured || !dirty} busy={busy} dirty={dirty} tone={tone} message={message}>
         {product ? <button type="button" className="btn-outline min-h-11" disabled={busy || !configured} onClick={async () => {
           if (product.published && !await confirm({ title: "Unpublish this product?", message: "It will be hidden from the website, not deleted. Existing proformas are unchanged. This also saves your current catalogue edits.", action: "Unpublish product" })) return;
           await save(!product.published);
         }}>{product.published ? "Unpublish product" : "Publish product"}</button> : null}
       </AdminSaveBar>
-      <p className="mt-3 text-sm text-steel">Saving keeps each item’s current publication status. These actions save all pending catalogue edits.</p>
+
       <FormProblems problems={attempted ? allProblems : []} onSelect={selectProblem} />
-      {data ? <fieldset disabled={busy} className="mt-6 grid min-w-0 gap-6 md:grid-cols-[260px_minmax(0,1fr)] disabled:opacity-70">
+
+      {data ? <fieldset disabled={busy} className="mt-6 grid min-w-0 gap-6 lg:grid-cols-[288px_minmax(0,1fr)] disabled:opacity-70">
         <aside className="min-w-0">
-          <div className="mb-4 flex gap-2">{(["products", "categories"] as const).map((tab) => <button key={tab} className={`${button} ${mode === tab ? "bg-navy text-white hover:bg-navy-deep" : "bg-white"}`} aria-pressed={mode === tab} onClick={() => { setMode(tab); setSelected(0); }}>{tab === "products" ? "Products" : "Categories"}</button>)}</div>
-          {mode === "products" ? <PublicationFilter value={status} onChange={setStatus} /> : null}
-          {mode === "products" ? <button className={`${button} my-3 w-full`} onClick={add}>Add product</button> : <p className="my-3 rounded-lg border border-hair bg-paper px-3 py-2.5 text-xs leading-relaxed text-ink-soft">The supply categories are fixed. Edit the wording here; adding or removing one is a change to the agreed list.</p>}
-          {mode === "products" && !data.products.some((item) => matchesPublication(item.published, status)) ? <p className="mb-3 text-sm text-steel">{status === "all" ? "No products yet. Add your first product." : `No ${status === "draft" ? "draft" : "published"} products. Choose All to see the other products.`}</p> : null}
-          <div className="max-h-[65vh] overflow-y-auto rounded-xl border border-hair bg-white">{data[mode].map((item, i) => mode === "products" && !matchesPublication((item as CmsProduct).published, status) ? null : <button key={i} className={`block w-full border-b border-hair px-4 py-3 text-left text-sm last:border-0 ${i === selected ? "bg-navy-tint font-semibold" : "hover:bg-paper"}`} onClick={() => setSelected(i)}>{item.name || "Untitled"}{"published" in item ? <span className="ml-2 text-xs text-steel">{item.published ? "Published" : "Draft"}</span> : null}</button>)}</div>
-        </aside>
-        {current ? <div className="min-w-0 rounded-xl border border-hair bg-white p-5 sm:p-7">
-          <div className="mb-5 flex items-center justify-between gap-3"><h2 className="text-xl font-semibold">{current.name || "New item"}</h2><button className={button} onClick={remove}>Remove</button></div>
-          {product ? <p className="mb-4 text-sm font-medium">{product.published ? "Published · visible on the website" : "Draft · only visible to admins"}</p> : null}
-          {duplicateIndex >= 0 ? <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm"><p>Possible duplicate: another product has this name and brand. You can keep both if they are different models.</p><button type="button" className="min-h-11 underline" onClick={() => { setStatus("all"); setSelected(duplicateIndex); }}>Open existing product</button></div> : null}
-          <p className="mb-4 text-sm text-steel">Fields marked Required must be filled in. Everything else is optional.</p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field required label="Name" path={`${mode}.${selected}.name`} problems={problems} value={current.name} onChange={(name) => update({ name })} />
-            {product ? <Field required label="Brand" path={`${mode}.${selected}.brand`} problems={problems} value={product.brand} onChange={(brand) => update({ brand })} /> : null}
-            <p className="sm:col-span-2 break-all text-sm text-steel">Website address: {product ? "/products/" : "/products?cat="}{current.slug}. Generated automatically; saved addresses stay the same.</p>
-            <details key={`${mode}-${selected}`} className="sm:col-span-2"><summary className="min-h-11 cursor-pointer py-3 font-medium">Additional details (optional)</summary><div className="grid gap-4 pt-3 sm:grid-cols-2">
-            {product ? <>
-              <Field label="Origin" path={`${mode}.${selected}.origin`} problems={problems} value={product.origin} onChange={(origin) => update({ origin })} />
-              <label className="text-sm">Category<select aria-label="Category" {...fieldProblemProps(problems, `${mode}.${selected}.category`)} className={input} value={product.category} onChange={(e) => update({ category: e.target.value })}><option value="">No category — show in All products</option>{data.categories.map((c, i) => <option key={i} value={c.slug}>{c.name || "Untitled category"}</option>)}</select><FieldProblem problems={problems} path={`${mode}.${selected}.category`} /></label>
-              <label className="text-sm">Availability<select aria-label="Availability" {...fieldProblemProps(problems, `${mode}.${selected}.availability`)} className={input} value={product.availability} onChange={(e) => update({ availability: e.target.value as CmsProduct["availability"] })}>{["On request", "Indent order", "In stock, Addis Ababa"].map((s) => <option key={s}>{s}</option>)}</select><FieldProblem problems={problems} path={`${mode}.${selected}.availability`} /></label>
-              <Field label="Lead time" path={`${mode}.${selected}.leadTime`} problems={problems} value={product.leadTime} onChange={(leadTime) => update({ leadTime })} />
-              <div className="flex items-center gap-5"><label className="text-sm"><input type="checkbox" checked={product.featured} onChange={(e) => update({ featured: e.target.checked })} /> Featured</label></div>
-              <label className="text-sm sm:col-span-2">Description<textarea aria-label="Description" {...fieldProblemProps(problems, `${mode}.${selected}.summary`)} className={input} rows={4} value={product.summary} onChange={(e) => update({ summary: e.target.value })} /><FieldProblem problems={problems} path={`${mode}.${selected}.summary`} /></label>
-              <div className="sm:col-span-2"><h3 className="text-sm font-semibold">Specifications</h3>{product.specs.map((s, i) => <div key={i} className="mt-3 grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] items-start gap-2"><Field label={`Specification ${i + 1} label`} path={`${mode}.${selected}.specs.${i}.label`} problems={problems} value={s.label} onChange={(label) => update({ specs: product.specs.map((v, n) => n === i ? { ...v, label } : v) })} /><Field label={`Specification ${i + 1} value`} path={`${mode}.${selected}.specs.${i}.value`} problems={problems} value={s.value} onChange={(value) => update({ specs: product.specs.map((v, n) => n === i ? { ...v, value } : v) })} /><button aria-label={`Remove specification ${i + 1}`} className={`${button} px-2`} onClick={() => update({ specs: product.specs.filter((_, n) => n !== i) })}><X size={16} aria-hidden="true" /></button></div>)}<button className={`${button} mt-2`} onClick={() => update({ specs: [...product.specs, { label: "", value: "" }] })}>Add specification</button></div>
-              <label className="text-sm sm:col-span-2">Included services (one per line)<textarea aria-label="Included services (one per line)" {...fieldProblemProps(problems, `${mode}.${selected}.services`)} className={input} rows={4} value={product.services.join("\n")} onChange={(e) => update({ services: e.target.value.split("\n") })} /><FieldProblem problems={problems} path={`${mode}.${selected}.services`} /></label>
-            </> : <>
-              <Field label="Short name" path={`${mode}.${selected}.short`} problems={problems} value={(current as CmsCategory).short} onChange={(short) => update({ short })} />
-              <label className="text-sm sm:col-span-2">Description<textarea aria-label="Description" {...fieldProblemProps(problems, `${mode}.${selected}.blurb`)} rows={4} className={input} value={(current as CmsCategory).blurb} onChange={(e) => update({ blurb: e.target.value })} /><FieldProblem problems={problems} path={`${mode}.${selected}.blurb`} /></label>
-            </>}
-            <div className="sm:col-span-2"><label className="text-sm">Photo (JPEG, PNG or WebP; up to 10 MB, resized automatically)<input className={input} type="file" accept="image/jpeg,image/png,image/webp" disabled={!configured} onChange={(e) => { void upload(e.target.files?.[0]); e.target.value = ""; }} /></label>
-              {current.image ? <div className="mt-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img alt={current.name} src={`/admin/api/media?id=${encodeURIComponent(current.image.split("/").pop()!)}`} className="h-40 w-full rounded-lg object-contain" />
-                <button className={`${button} mt-2`} onClick={() => update({ image: "" })}>Remove photo</button>
-              </div> : null}
-            </div>
-          </div></details>
+          <div role="tablist" aria-label="Catalogue section" className="flex gap-1 rounded-lg bg-paper-2 p-1">
+            {(["products", "categories"] as const).map((tab) => (
+              <button key={tab} role="tab" aria-selected={mode === tab}
+                className={`min-h-9 flex-1 rounded-md px-3 text-sm font-medium transition-colors ${mode === tab ? "bg-white text-navy shadow-sm" : "text-ink-soft hover:text-ink"}`}
+                onClick={() => { setMode(tab); setSelected(0); setQuery(""); }}>
+                {tab === "products" ? "Products" : "Categories"}
+                <span className="ml-1.5 text-xs font-normal text-steel">{data[tab].length}</span>
+              </button>
+            ))}
           </div>
-        </div> : <p className="py-10 text-ink-soft">No {mode} yet. Add one to get started.</p>}
+
+          <label className="mt-3 block">
+            <span className="sr-only">Search {mode}</span>
+            <input type="search" value={query} onChange={(event) => setQuery(event.target.value)}
+              placeholder={`Search ${mode}…`} className={control} />
+          </label>
+
+          {mode === "products" ? <div className="mt-3"><PublicationFilter value={status} onChange={setStatus} /></div> : null}
+
+          <button className={`${button} mt-3 w-full`} onClick={add}>
+            Add {mode === "products" ? "product" : "category"}
+          </button>
+
+          <div className="mt-3 max-h-[60vh] min-w-0 overflow-y-auto overscroll-contain rounded-xl border border-hair bg-white">
+            {visible.length ? visible.map(({ item, index }) => (
+              <button key={index} aria-current={index === selected ? "true" : undefined}
+                className={`block w-full border-b border-hair px-4 py-3 text-left last:border-0 transition-colors ${index === selected ? "bg-navy-tint" : "hover:bg-paper"}`}
+                onClick={() => setSelected(index)}>
+                <span className={`block truncate text-sm ${index === selected ? "font-semibold text-navy" : "text-ink"}`}>{item.name || "Untitled"}</span>
+                <span className="mt-1 flex items-center gap-2">
+                  {"published" in item ? <StatusPill published={(item as CmsProduct).published} /> : null}
+                  {mode === "products" && (item as CmsProduct).category
+                    ? <span className="truncate text-xs text-steel">{data.categories.find((c) => c.slug === (item as CmsProduct).category)?.name}</span>
+                    : null}
+                </span>
+              </button>
+            )) : (
+              <p className="px-4 py-8 text-center text-sm text-steel">
+                {query ? "Nothing matches that search." : `No ${mode} yet.`}
+              </p>
+            )}
+          </div>
+        </aside>
+
+        {current ? <div className="min-w-0 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <h2 className="truncate text-xl font-semibold text-navy">{current.name || "New item"}</h2>
+              {product ? <StatusPill published={product.published} /> : null}
+            </div>
+            <button className={button} onClick={remove}>Remove</button>
+          </div>
+
+          {duplicateIndex >= 0 ? (
+            <div role="status" className="rounded-xl border border-hair bg-paper p-4 text-sm">
+              <p className="font-medium text-ink">Possible duplicate</p>
+              <p className="mt-1 text-ink-soft">Another product has this name and brand. Keep both if they are different models.</p>
+              <button type="button" className="mt-2 min-h-11 text-navy underline underline-offset-4" onClick={() => { setStatus("all"); setSelected(duplicateIndex); }}>Open the existing product</button>
+            </div>
+          ) : null}
+
+          <Panel title="Basics" description={<>Website address: <span className="break-all font-medium text-ink">{product ? "/products/" : "/products?cat="}{current.slug}</span>. Generated from the name; saved addresses never change.</>}>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <TextField required label="Name" path={`${mode}.${selected}.name`} problems={problems} value={current.name} onChange={(name) => update({ name })} />
+              {product ? <TextField required label="Brand" path={`${mode}.${selected}.brand`} problems={problems} value={product.brand} onChange={(brand) => update({ brand })} /> : null}
+              {product ? <>
+                <SelectField label="Category" path={`${mode}.${selected}.category`} problems={problems} value={product.category} onChange={(category) => update({ category })}>
+                  <option value="">No category — show in All products</option>
+                  {data.categories.map((c, i) => <option key={i} value={c.slug}>{c.name || "Untitled category"}</option>)}
+                </SelectField>
+                <SelectField label="Availability" path={`${mode}.${selected}.availability`} problems={problems} value={product.availability} onChange={(availability) => update({ availability: availability as CmsProduct["availability"] })}>
+                  {["On request", "Indent order", "In stock, Addis Ababa"].map((option) => <option key={option}>{option}</option>)}
+                </SelectField>
+                <TextField label="Origin" path={`${mode}.${selected}.origin`} problems={problems} value={product.origin} onChange={(origin) => update({ origin })} />
+                <TextField label="Lead time" path={`${mode}.${selected}.leadTime`} problems={problems} value={product.leadTime} onChange={(leadTime) => update({ leadTime })} />
+                <div className="sm:col-span-2">
+                  <CheckboxField label="Feature on the homepage" hint="Featured products appear in the selected equipment row." checked={product.featured} onChange={(featured) => update({ featured })} />
+                </div>
+              </> : (
+                <TextField label="Short name" hint="Used on compact cards" path={`${mode}.${selected}.short`} problems={problems} value={(current as CmsCategory).short} onChange={(short) => update({ short })} />
+              )}
+            </div>
+          </Panel>
+
+          <Panel title="Description" description={product ? "Shown on the product page and in search results." : "Shown at the top of the category page."}>
+            {product
+              ? <TextareaField label="Description" path={`${mode}.${selected}.summary`} problems={problems} rows={4} value={product.summary} onChange={(summary) => update({ summary })} />
+              : <TextareaField label="Description" path={`${mode}.${selected}.blurb`} problems={problems} rows={4} value={(current as CmsCategory).blurb} onChange={(blurb) => update({ blurb })} />}
+          </Panel>
+
+          {product ? <>
+            <Panel title="Specifications" description="Shown as a table on the product page." actions={
+              <button className={button} onClick={() => update({ specs: [...product.specs, { label: "", value: "" }] })}>Add row</button>
+            }>
+              {product.specs.length ? <div className="space-y-3">
+                {product.specs.map((spec, i) => (
+                  <div key={i} className="grid min-w-0 gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)_auto]">
+                    <TextField label={`Specification ${i + 1} label`} path={`${mode}.${selected}.specs.${i}.label`} problems={problems} value={spec.label} onChange={(label) => update({ specs: product.specs.map((v, n) => n === i ? { ...v, label } : v) })} />
+                    <TextField label={`Specification ${i + 1} value`} path={`${mode}.${selected}.specs.${i}.value`} problems={problems} value={spec.value} onChange={(value) => update({ specs: product.specs.map((v, n) => n === i ? { ...v, value } : v) })} />
+                    <button aria-label={`Remove specification ${i + 1}`} className={`${button} h-11 self-end px-2.5`} onClick={() => update({ specs: product.specs.filter((_, n) => n !== i) })}><X size={16} aria-hidden="true" /></button>
+                  </div>
+                ))}
+              </div> : <p className="text-sm text-steel">No specifications yet. Add a row for each figure a buyer needs.</p>}
+            </Panel>
+
+            <Panel title="Included with supply" description="One per line. Listed under the specifications.">
+              <TextareaField label="Included services" path={`${mode}.${selected}.services`} problems={problems} rows={4} value={product.services.join("\n")} onChange={(value) => update({ services: value.split("\n") })} />
+            </Panel>
+          </> : null}
+
+          <Panel title="Photo" description="JPEG, PNG or WebP, up to 10 MB. Resized in your browser before upload.">
+            <FileField label="Upload a photo" accept="image/jpeg,image/png,image/webp" disabled={!configured}
+              onFiles={(files) => { void upload(files[0]); }} />
+            {current.image ? <div className="mt-4">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img alt={current.name} src={`/admin/api/media?id=${encodeURIComponent(current.image.split("/").pop()!)}`} className="aspect-video w-full rounded-lg border border-hair bg-paper object-contain" />
+              <button className={`${button} mt-3`} onClick={() => update({ image: "" })}>Remove photo</button>
+            </div> : null}
+          </Panel>
+        </div> : (
+          <EmptyState
+            title={`No ${mode} selected`}
+            message={data[mode].length ? `Choose one from the list to edit it.` : `Add your first ${mode === "products" ? "product" : "category"} to get started.`}
+            action={<button className={button} onClick={add}>Add {mode === "products" ? "product" : "category"}</button>}
+          />
+        )}
       </fieldset> : <button className={button} disabled={busy} onClick={reload}>Retry</button>}
     </main>
   );
-}
-function Field({ label, value, onChange, path = "", problems = [], required = false }: { label: string; value: string; onChange: (value: string) => void; path?: string; problems?: FormProblem[]; required?: boolean }) {
-  return <label className="text-sm">{label}{required ? <span className="ml-2 text-xs text-steel">Required</span> : null}<input aria-required={required || undefined} {...fieldProblemProps(problems, path)} aria-label={label} className={input} value={value} onChange={(e) => onChange(e.target.value)} /><FieldProblem problems={problems} path={path} /></label>;
 }
 function validateCatalogue(data: Catalogue) {
   return catalogueSchema.safeParse({ ...data, products: data.products.map((product) => ({ ...product, services: product.services.map((service) => service.trim()).filter(Boolean) })) });

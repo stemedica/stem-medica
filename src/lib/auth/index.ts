@@ -1,5 +1,5 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { authDatabase } from "./database";
+import { authDatabase, resilientQueryer } from "./database";
 import { hashPassword, verifyPassword } from "./password";
 
 export type AdminSession = {
@@ -26,7 +26,7 @@ export function sessionCookie(token: string, maxAge = SESSION_SECONDS) {
 
 export function clearSessionCookie() { return sessionCookie("", 0); }
 
-export async function readSession(headers: Headers, database: Queryer = authDatabase().pool): Promise<AdminSession | null> {
+export async function readSession(headers: Headers, database: Queryer = resilientQueryer(authDatabase().pool)): Promise<AdminSession | null> {
   const token = cookieValue(headers);
   if (!token) return null;
   const result = await database.query(`SELECT s.id AS "sessionId", s."expiresAt", s."mfaVerified", u.id AS "userId", u.email, u.name, COALESCE(u."twoFactorEnabled", false) AS "twoFactorEnabled"
