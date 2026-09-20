@@ -62,7 +62,13 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
                 <div className="flex flex-col items-center gap-3 text-center text-navy/70"><ImageIcon size={36} strokeWidth={1.2} aria-hidden="true" /><span className="text-xs">Product photo<br />coming soon</span></div>}
             </div>
             <div className="flex flex-1 flex-col p-3 sm:p-5">
-              <p className="mb-2 break-words text-xs font-medium text-navy-2">{product.brand}</p>
+              <p className="mb-2 flex flex-wrap items-baseline gap-x-1.5 break-words text-xs">
+                {product.categoryName ? <>
+                  <span className="font-medium text-navy-2">{product.categoryName}</span>
+                  <span aria-hidden="true" className="text-steel/40">/</span>
+                </> : null}
+                <span className="font-medium text-steel">{product.brand}</span>
+              </p>
               <h3 className="font-display break-words text-base font-semibold leading-snug text-navy sm:text-xl">{product.name}</h3>
               {product.summary ? <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink-soft sm:text-sm">{product.summary}</p> : null}
               <span className="mt-auto pt-5 text-xs font-semibold text-navy sm:text-sm"><span className="flex min-h-6 items-center justify-between gap-2">View equipment <ArrowUpRight size={17} className="shrink-0" aria-hidden="true" /></span></span>
