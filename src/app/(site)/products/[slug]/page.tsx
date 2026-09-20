@@ -174,7 +174,7 @@ export default async function ProductPage({
             />
             <div className="mt-8"><MobileCardRail label="Related equipment">
               {related.map((p, i) => (
-                <ProductCard key={p.slug} product={p} index={i} />
+                <ProductCard key={p.slug} product={p} index={i} categoryName={categories.find((c) => c.slug === p.category)?.name ?? ""} />
               ))}
             </MobileCardRail></div>
           </div>

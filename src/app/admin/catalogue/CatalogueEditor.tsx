@@ -33,6 +33,7 @@ export function CatalogueEditor() {
   const [mode, setMode] = useState<"products" | "categories">("products");
   const [selected, setSelected] = useState(0);
   const [query, setQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [busy, setBusy] = useState(true);
   const [dirty, setDirty] = useState(false);
   const { message, tone, setMessage } = useAdminFeedback("");
@@ -148,6 +149,10 @@ export function CatalogueEditor() {
     .map((item, index) => ({ item, index }))
     .filter(({ item }) =>
       (mode !== "products" || matchesPublication((item as CmsProduct).published, status))
+      && (mode !== "products" || !categoryFilter
+        || (categoryFilter === "none"
+          ? !(item as CmsProduct).category
+          : (item as CmsProduct).category === categoryFilter))
       && (!query.trim() || (item.name || "").toLowerCase().includes(query.trim().toLowerCase())));
   const current = data?.[mode][selected];
   const product = mode === "products" ? current as CmsProduct | undefined : undefined;
@@ -179,7 +184,7 @@ export function CatalogueEditor() {
             {(["products", "categories"] as const).map((tab) => (
               <button key={tab} role="tab" aria-selected={mode === tab}
                 className={`min-h-9 flex-1 rounded-md px-3 text-sm font-medium transition-colors ${mode === tab ? "bg-white text-navy shadow-sm" : "text-ink-soft hover:text-ink"}`}
-                onClick={() => { setMode(tab); setSelected(0); setQuery(""); }}>
+                onClick={() => { setMode(tab); setSelected(0); setQuery(""); setCategoryFilter(""); }}>
                 {tab === "products" ? "Products" : "Categories"}
                 <span className="ml-1.5 text-xs font-normal text-steel">{data[tab].length}</span>
               </button>
@@ -192,7 +197,27 @@ export function CatalogueEditor() {
               placeholder={`Search ${mode}…`} className={control} />
           </label>
 
-          {mode === "products" ? <div className="mt-3"><PublicationFilter value={status} onChange={setStatus} /></div> : null}
+          {mode === "products" ? <div className="mt-3 space-y-3">
+            <PublicationFilter value={status} onChange={setStatus} />
+            <label className="block">
+              <span className="sr-only">Filter by category</span>
+              <div className="relative">
+                <select value={categoryFilter} onChange={(event) => { setCategoryFilter(event.target.value); setSelected(0); }}
+                  aria-label="Filter by category" className={`${control} appearance-none pr-10`}>
+                  <option value="">All categories</option>
+                  <option value="none">No category</option>
+                  {data.categories.map((category) => (
+                    <option key={category.slug} value={category.slug}>
+                      {category.name || "Untitled category"} ({data.products.filter((product) => product.category === category.slug).length})
+                    </option>
+                  ))}
+                </select>
+                <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-steel">
+                  <path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+            </label>
+          </div> : null}
 
           <button className={`${button} mt-3 w-full`} onClick={add}>
             Add {mode === "products" ? "product" : "category"}
@@ -213,7 +238,9 @@ export function CatalogueEditor() {
               </button>
             )) : (
               <p className="px-4 py-8 text-center text-sm text-steel">
-                {query ? "Nothing matches that search." : `No ${mode} yet.`}
+                {query || categoryFilter || status !== "all"
+                  ? "Nothing matches these filters."
+                  : `No ${mode} yet.`}
               </p>
             )}
           </div>

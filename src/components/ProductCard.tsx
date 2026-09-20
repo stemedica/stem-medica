@@ -7,7 +7,12 @@ import { ImagePlaceholder } from "./ImagePlaceholder";
  * Catalogue entry styled as an equipment nameplate: squared, hairline-bordered,
  * with the index stamped in the corner and the data row set in mono.
  */
-export function ProductCard({ product, index }: { product: CmsProduct; index: number }) {
+export function ProductCard({ product, index, categoryName = "" }: {
+  product: CmsProduct;
+  index: number;
+  /** Resolved from the product's category slug by the caller. */
+  categoryName?: string;
+}) {
   const cls = "group flex min-w-0 flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy/50";
 
   const body = (
@@ -28,6 +33,10 @@ export function ProductCard({ product, index }: { product: CmsProduct; index: nu
         </p> : null}
 
         <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 border-t border-hair pt-3.5 font-mono text-[11px]">
+          {categoryName ? <div className="col-span-2">
+            <dt className="text-steel">Category</dt>
+            <dd className="mt-0.5 break-words font-medium text-navy">{categoryName}</dd>
+          </div> : null}
           <div>
             <dt className="text-steel">Brand</dt>
             <dd className="mt-0.5 break-words text-ink">{product.brand}</dd>
