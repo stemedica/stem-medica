@@ -40,6 +40,8 @@ export const copy = {
     notesLabel: "Anything else? (optional)",
     notesPlaceholder: "Department, delivery deadline, site details or questions",
     submit: "Send quotation request",
+    subject: "Quotation request",
+    heading: "Quotation request from the STEM MEDICA website.",
   },
   partnership: {
     kind: "partnership",
@@ -54,6 +56,8 @@ export const copy = {
     notesLabel: "Certifications, territory and terms (optional)",
     notesPlaceholder: "CE/ISO certification, countries you already cover, distributor terms, lead times",
     submit: "Send partnership details",
+    subject: "Distribution partnership enquiry",
+    heading: "Distribution partnership enquiry from the STEM MEDICA website.",
   },
 } as const;
 

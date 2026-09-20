@@ -1,9 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { Send, Phone } from "lucide-react";
+import { useCallback, useRef, useState, useSyncExternalStore } from "react";
+import { Mail, Phone } from "lucide-react";
 import { site } from "@/lib/site";
 import { copy, type FormCopy } from "./form-copy";
+import { composeMailto } from "./compose-enquiry";
+import { EnquiryFallbackModal } from "./EnquiryFallbackModal";
 
 function subscribeToLocation(onChange: () => void) {
   window.addEventListener("popstate", onChange);
@@ -17,12 +19,53 @@ export function QuoteFormFromUrl({ variant = copy.quotation }: { variant?: FormC
 }
 
 export function QuoteForm({ presetItem = "", variant = copy.quotation }: { presetItem?: string; variant?: FormCopy }) {
-  // Submission is intentionally inert. The API was removed while the delivery
-  // method is settled with the client, so this prevents the default navigation
-  // and does nothing else.
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => e.preventDefault();
+  const [draft, setDraft] = useState<{ subject: string; body: string } | null>(null);
+  const [status, setStatus] = useState("");
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const closeModal = useCallback(() => setDraft(null), []);
+
+  /**
+   * Hand the filled form to the visitor's own mail app.
+   *
+   * There is no event for "the mail client opened", so this infers it: if the
+   * page loses focus or is hidden, something took over and we leave the visitor
+   * alone. If it is still focused and visible shortly after, the click almost
+   * certainly did nothing, which is what happens on a phone with no mail
+   * account, and the fallback offers WhatsApp or a call instead.
+   */
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const fields = Object.fromEntries(
+      [...new FormData(event.currentTarget).entries()].map(([key, value]) => [key, String(value)]),
+    );
+    const composed = composeMailto(site.email, fields, variant);
+
+    let handedOver = false;
+    const tookOver = () => { handedOver = true; };
+    window.addEventListener("blur", tookOver, { once: true });
+    window.addEventListener("pagehide", tookOver, { once: true });
+    document.addEventListener("visibilitychange", tookOver, { once: true });
+
+    setStatus("Opening your email app…");
+    window.location.href = composed.href;
+
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => {
+      window.removeEventListener("blur", tookOver);
+      window.removeEventListener("pagehide", tookOver);
+      document.removeEventListener("visibilitychange", tookOver);
+      if (handedOver || document.hidden || !document.hasFocus()) {
+        setStatus("Your email app should be open with the details filled in. Press send there to finish.");
+        return;
+      }
+      setStatus("");
+      setDraft({ subject: composed.subject, body: composed.body });
+    }, 1800);
+  }
 
   return (
+    <>
     <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
       <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. We’ll contact you using the phone number or email you provide.</p>
       <label className="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
@@ -97,7 +140,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
             type="submit"
             className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
           >
-            <Send size={14} aria-hidden="true" /> {variant.submit}
+            <Mail size={14} aria-hidden="true" /> {variant.submit}
           </button>
           <a
             href={`tel:${site.phoneIntl}`}
@@ -107,10 +150,12 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           </a>
         </div>
 
-        <p className="mt-4 text-sm text-ink-soft">
-          We usually follow up by phone. You can also call {site.phone} if your request is urgent.
+        <p aria-live="polite" className="mt-4 text-sm text-ink-soft">
+          {status || `This opens an email on your device, already filled in. You can also call ${site.phone}.`}
         </p>
       </div>
     </form>
+    <EnquiryFallbackModal draft={draft} onClose={closeModal} />
+    </>
   );
 }
