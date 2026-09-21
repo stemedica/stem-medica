@@ -1,11 +1,11 @@
 "use client";
 
-import { useCallback, useRef, useState, useSyncExternalStore } from "react";
-import { Mail, Phone } from "lucide-react";
+import { useState, useSyncExternalStore, useTransition } from "react";
+import { Check, Phone, Send } from "lucide-react";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { site } from "@/lib/site";
 import { copy, type FormCopy } from "./form-copy";
-import { composeMailto } from "./compose-enquiry";
-import { EnquiryFallbackModal } from "./EnquiryFallbackModal";
+import { sendEnquiry } from "./actions";
 
 function subscribeToLocation(onChange: () => void) {
   window.addEventListener("popstate", onChange);
@@ -18,54 +18,54 @@ export function QuoteFormFromUrl({ variant = copy.quotation }: { variant?: FormC
   return <QuoteForm key={presetItem} presetItem={presetItem} variant={variant} />;
 }
 
-export function QuoteForm({ presetItem = "", variant = copy.quotation }: { presetItem?: string; variant?: FormCopy }) {
-  const [draft, setDraft] = useState<{ subject: string; body: string } | null>(null);
-  const [status, setStatus] = useState("");
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+const field = "mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy";
 
-  const closeModal = useCallback(() => setDraft(null), []);
+export function QuoteForm({ presetItem = "", variant = copy.quotation }: { presetItem?: string; variant?: FormCopy }) {
+  const [sent, setSent] = useState(false);
+  const [problem, setProblem] = useState("");
+  const [pending, startTransition] = useTransition();
 
   /**
-   * Hand the filled form to the visitor's own mail app.
-   *
-   * There is no event for "the mail client opened", so this infers it: if the
-   * page loses focus or is hidden, something took over and we leave the visitor
-   * alone. If it is still focused and visible shortly after, the click almost
-   * certainly did nothing, which is what happens on a phone with no mail
-   * account, and the fallback offers WhatsApp or a call instead.
+   * The enquiry is delivered server-side, so nothing depends on the visitor
+   * having a mail app: the form either confirms it was sent or says plainly
+   * that it was not, and offers the phone and WhatsApp numbers instead.
    */
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = Object.fromEntries(
       [...new FormData(event.currentTarget).entries()].map(([key, value]) => [key, String(value)]),
     );
-    const composed = composeMailto(site.email, fields, variant);
+    setProblem("");
+    startTransition(async () => {
+      const result = await sendEnquiry(fields);
+      if (result.ok) setSent(true);
+      else setProblem(result.message);
+    });
+  }
 
-    let handedOver = false;
-    const tookOver = () => { handedOver = true; };
-    window.addEventListener("blur", tookOver, { once: true });
-    window.addEventListener("pagehide", tookOver, { once: true });
-    document.addEventListener("visibilitychange", tookOver, { once: true });
-
-    setStatus("Opening your email app…");
-    window.location.href = composed.href;
-
-    if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(() => {
-      window.removeEventListener("blur", tookOver);
-      window.removeEventListener("pagehide", tookOver);
-      document.removeEventListener("visibilitychange", tookOver);
-      if (handedOver || document.hidden || !document.hasFocus()) {
-        setStatus("Your email app should be open with the details filled in. Press send there to finish.");
-        return;
-      }
-      setStatus("");
-      setDraft({ subject: composed.subject, body: composed.body });
-    }, 1800);
+  if (sent) {
+    return (
+      <div role="status" className="mt-8 rounded-[2px] border border-hair bg-paper p-6 sm:p-8">
+        <p className="flex items-center gap-2.5 font-display text-xl font-semibold text-navy">
+          <Check size={20} aria-hidden="true" className="text-vital" />
+          {variant.kind === "quotation" ? "Your request is with us" : "Your details are with us"}
+        </p>
+        <p className="mt-3 max-w-[60ch] text-base leading-relaxed text-ink-soft">
+          We’ll be in touch using the phone number or email you gave us. If it’s urgent, call {site.phone}.
+        </p>
+        <div className="action-stack mt-6 items-center">
+          <a href={`tel:${site.phoneIntl}`} className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] border border-ink px-6 py-3.5 font-semibold transition-colors duration-300 hover:bg-ink hover:text-paper">
+            <Phone size={14} aria-hidden="true" /> Call {site.phone}
+          </a>
+          <button type="button" onClick={() => setSent(false)} className="label min-h-11 font-semibold text-navy underline underline-offset-4">
+            Send another
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <>
     <form onSubmit={onSubmit} className="mt-8 grid gap-5 sm:grid-cols-2">
       <p className="max-w-[65ch] text-base leading-relaxed text-ink-soft sm:col-span-2">Required fields are marked *. We’ll contact you using the phone number or email you provide.</p>
       <label className="absolute -left-[9999px]" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
@@ -86,7 +86,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
             onInvalid={(event) => event.currentTarget.setCustomValidity(f.type === "email" ? "Enter a valid email address, or leave this optional field empty." : `Please enter ${f.label.toLowerCase()}.`)}
             onInput={(event) => event.currentTarget.setCustomValidity("")}
             placeholder={f.placeholder}
-            className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
+            className={field}
           />
         </label>
       ))}
@@ -104,7 +104,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           maxLength={500}
           defaultValue={presetItem}
           placeholder={variant.mainPlaceholder}
-          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
+          className={field}
         />
       </label>
 
@@ -119,7 +119,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           step={1}
           inputMode="numeric"
           placeholder="e.g. 2"
-          className="mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
+          className={field}
         />
       </label> : null}
 
@@ -130,17 +130,32 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           rows={4}
           maxLength={3000}
           placeholder={variant.notesPlaceholder}
-          className="mt-2 w-full resize-y rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy"
+          className={`${field} resize-y`}
         />
       </label>
 
       <div className="sm:col-span-2">
+        {problem ? (
+          <div role="alert" className="mb-5 rounded-[2px] border border-scarlet/35 bg-scarlet/5 p-4">
+            <p className="text-sm leading-relaxed text-ink">{problem}</p>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+              <a href={site.whatsapp} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy underline underline-offset-4">
+                <WhatsAppIcon size={15} /> Message on WhatsApp
+              </a>
+              <a href={`tel:${site.phoneIntl}`} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy underline underline-offset-4">
+                <Phone size={15} aria-hidden="true" /> Call {site.phone}
+              </a>
+            </div>
+          </div>
+        ) : null}
+
         <div className="action-stack items-center">
           <button
             type="submit"
-            className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px"
+            disabled={pending}
+            className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <Mail size={14} aria-hidden="true" /> {variant.submit}
+            <Send size={14} aria-hidden="true" /> {pending ? "Sending…" : variant.submit}
           </button>
           <a
             href={`tel:${site.phoneIntl}`}
@@ -151,11 +166,9 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
         </div>
 
         <p aria-live="polite" className="mt-4 text-sm text-ink-soft">
-          {status || `This opens an email on your device, already filled in. You can also call ${site.phone}.`}
+          {pending ? "Sending your details…" : `We usually reply within one working day. You can also call ${site.phone}.`}
         </p>
       </div>
     </form>
-    <EnquiryFallbackModal draft={draft} onClose={closeModal} />
-    </>
   );
 }

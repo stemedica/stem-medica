@@ -8,8 +8,6 @@ Production uses one Neon Postgres database:
 
 - `auth_*` tables store the administrator account, password credential, sessions and sign-in throttles.
 - `content_document` stores the current catalogue, posts and temporary proforma drafts as atomic JSON documents.
-- `enquiry` stores quotation requests submitted from the public website.
-- `enquiry_throttle` limits repeated public submissions without storing raw IP addresses.
 
 Runtime traffic uses pooled `DATABASE_URL`. Reviewed migrations use direct `DATABASE_URL_UNPOOLED`. Production deliberately has no `CMS_DATABASE_URL` override, so authentication and CMS traffic cannot silently point at different Neon branches.
 
@@ -19,7 +17,9 @@ Images use a private Vercel Blob store. `/media/[id]` only serves files referenc
 
 ### Public quotation request
 
-`/quote` posts to `/api/enquiries`. The server validates lengths and formats, checks a honeypot, rate-limits a pseudonymized connection identifier, and saves the request before confirming success. The same form works without JavaScript through a normal POST and redirect. Staff review requests at `/admin/enquiries`.
+`/quote` and `/partnership` call a Server Action that validates the fields, drops anything caught by the honeypot, throttles bursts per instance, then emails the enquiry through Resend with the visitor's address as `Reply-To`. Nothing is stored: the inbox is the record.
+
+Delivery needs `RESEND_API_KEY`. `ENQUIRY_FROM` must be an address on a domain verified in Resend; while `stemedicaet.com` has no DNS, it stays on `onboarding@resend.dev`, which Resend only delivers to the account owner's own address — so `ENQUIRY_TO` overrides the public address in `src/lib/site.ts`. When the send fails the form says so and offers the phone number and WhatsApp rather than losing the enquiry silently.
 
 ### Admin authentication
 
