@@ -41,7 +41,7 @@ export default async function BlogIndex({ searchParams }: {
       </p>
     </header>
 
-    <BlogBrowser posts={previews} kinds={[...postKinds]} initialQuery={query} initialKind={kind ?? ""} />
+    <BlogBrowser key={`${kind ?? ""}|${query}`} posts={previews} kinds={[...postKinds]} initialQuery={query} initialKind={kind ?? ""} />
 
     {/* The blog had no conversion path at all: a reader who had just seen an
         arrival announced could not act on it from here. */}

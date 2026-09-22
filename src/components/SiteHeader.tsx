@@ -12,6 +12,7 @@ export type NavCategory = { slug: string; name: string };
 export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; categories?: NavCategory[] }) {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   // "/" is a prefix of every route, so the home link has to match exactly or
@@ -144,24 +145,33 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                 {item.label}
                 <span aria-hidden="true" className="text-navy">→</span>
               </Link>
-              {/* Departments are listed inline rather than behind a second tap:
-                  a menu that hides them on the device most people use is a menu
-                  that may as well not exist. */}
               {item.href === "/products" && categories.length ? (
-                <ul className="border-b border-hair bg-paper py-1">
-                  {categories.map((category) => (
-                    <li key={category.slug}>
-                      <Link
-                        href={`/products?cat=${encodeURIComponent(category.slug)}`}
-                        prefetch={false}
-                        onClick={() => setOpen(false)}
-                        className="flex min-h-11 items-center px-5 py-2 pl-8 text-[15px] text-ink-soft transition-colors hover:text-navy"
-                      >
-                        {category.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setMobileMenu((value) => !value)}
+                    aria-expanded={mobileMenu}
+                    aria-controls="mobile-departments"
+                    className="flex min-h-12 w-full items-center justify-between border-b border-hair bg-paper px-5 py-3 text-left text-[15px] font-medium text-navy"
+                  >
+                    Browse departments
+                    <ChevronDown size={18} aria-hidden="true" className={`transition-transform duration-300 ${mobileMenu ? "rotate-180" : ""}`} />
+                  </button>
+                  <ul hidden={!mobileMenu} id="mobile-departments" className="border-b border-hair bg-paper py-1">
+                    {categories.map((category) => (
+                      <li key={category.slug}>
+                        <Link
+                          href={`/products?cat=${encodeURIComponent(category.slug)}`}
+                          prefetch={false}
+                          onClick={() => { setOpen(false); setMobileMenu(false); }}
+                          className="flex min-h-11 items-center px-5 py-2 pl-8 text-[15px] text-ink-soft transition-colors hover:text-navy"
+                        >
+                          {category.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
               ) : null}
             </div>
           ))}

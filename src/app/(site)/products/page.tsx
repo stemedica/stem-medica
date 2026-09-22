@@ -52,7 +52,12 @@ export default async function ProductsPage({ searchParams }: {
     {/* The hardcoded family list that sat here named the same ten categories as
         the filter twenty pixels below it, as plain text rather than links, and
         pushed the first product a full screen down on a phone. */}
+    {/* Keyed on the filters it was given. Navigating from /products to
+        /products?cat=… is the same route, so React would otherwise keep the
+        browser's existing state and the heading would change while the results
+        did not. */}
     <CatalogueBrowser
+      key={`${category ? category.slug : ""}|${query}`}
       products={listing}
       categories={categories}
       initialQuery={query}
