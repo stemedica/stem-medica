@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
-import { TextField, TextareaField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
+import { control, TextField, TextareaField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
 import { downscaleForUpload } from "@/lib/client-image";
 import { useAdminFeedback } from "@/components/useAdminFeedback";
 import { AdminSaveBar } from "@/components/AdminSaveBar";
@@ -32,6 +32,7 @@ export function StoriesEditor() {
   const [busy, setBusy] = useState(true);
   const [loaded, setLoaded] = useState(false);
   const [attempted, setAttempted] = useState(false);
+  const [query, setQuery] = useState("");
 
   const serialized = useMemo(() => JSON.stringify(stories), [stories]);
   const dirty = saved !== serialized;
@@ -58,6 +59,14 @@ export function StoriesEditor() {
   }, [accept, setMessage]);
 
   useUnsavedChanges(dirty, confirm);
+
+  /** Discard local edits and take the stored document again. */
+  async function reload() {
+    setBusy(true);
+    try { accept(await fetchStories()); }
+    catch { setMessage("Unable to reload achievements. Check your connection and try again.", "error"); }
+    finally { setBusy(false); }
+  }
 
   function update(id: string, patch: Partial<CmsStory>) {
     setStories((list) => list.map((story) => story.id === id ? { ...story, ...patch } : story));
@@ -131,111 +140,110 @@ export function StoriesEditor() {
     } finally { saving.current = false; setBusy(false); }
   }
 
-  return (
-    <main className="mx-auto max-w-6xl space-y-6 px-5 py-10">
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-display text-2xl font-semibold text-navy">Achievements</h1>
-          <p className="mt-1.5 max-w-[60ch] text-sm leading-relaxed text-ink-soft">
-            Work you have carried out, shown on the homepage as a row people can scroll. Name the facility and the town in <strong>Where</strong>, and what you supplied or installed in <strong>What you did</strong>.
-          </p>
+  const matching = stories.filter((story) =>
+    `${story.title} ${story.place}`.toLowerCase().includes(query.toLowerCase()));
+
+  return <main className="mx-auto max-w-6xl px-5 py-10">
+    {confirmationModal}
+    <h1 className="font-display text-3xl font-semibold">Achievements</h1>
+    <p className="mt-2 text-ink-soft">Work you have carried out, shown on the homepage as a row people can scroll. Drafts are private.</p>
+
+    <AdminSaveBar
+      label={current ? current.published ? "Save changes" : "Save draft" : "Save achievements"}
+      onSave={() => save()} disabled={!loaded || !dirty} busy={busy} dirty={dirty} tone={tone} message={message}
+    >
+      <button className="btn-outline min-h-11" disabled={busy} onClick={reload}>Reload</button>
+      {current ? <button type="button" className="btn-outline min-h-11" disabled={busy || !loaded} onClick={async () => {
+        if (current.published && !await confirm({ title: "Unpublish this achievement?", message: "It will be hidden from the homepage, not deleted. This also saves your current edits.", action: "Unpublish" })) return;
+        update(current.id, { published: !current.published });
+      }}>{current.published ? "Unpublish" : "Publish"}</button> : null}
+    </AdminSaveBar>
+    <p className="mt-3 text-sm text-steel">Saving keeps each achievement’s current publication status. These actions save all pending edits.</p>
+
+    <FormProblems problems={attempted ? problems : []} onSelect={(problem) => focusProblem(problem.path)} />
+
+    <fieldset disabled={busy || !loaded} className="mt-6 grid min-w-0 gap-8 disabled:opacity-60 md:grid-cols-[260px_minmax(0,1fr)]">
+      <div className="min-w-0">
+        <button className="btn-outline min-h-11 w-full" type="button" disabled={stories.length >= 60} onClick={add}>Add achievement</button>
+
+        <label className="mt-3 block">
+          <span className="sr-only">Search achievements</span>
+          <input className={control} type="search" placeholder="Search achievements…" value={query} onChange={(event) => setQuery(event.target.value)} />
+        </label>
+
+        <div className="mt-3 max-h-[60vh] min-w-0 overflow-y-auto overscroll-contain rounded-xl border border-hair bg-white">
+          {matching.length ? matching.map((story) => (
+            <button type="button" key={story.id} aria-current={selected === story.id ? "true" : undefined}
+              onClick={() => setSelected(story.id)}
+              className={`block w-full border-b border-hair px-4 py-3 text-left last:border-0 transition-colors ${selected === story.id ? "bg-navy-tint" : "hover:bg-paper"}`}>
+              <span className={`block truncate text-sm ${selected === story.id ? "font-semibold text-navy" : "text-ink"}`}>{story.title || "Untitled"}</span>
+              <span className="mt-1 flex flex-wrap items-center gap-2">
+                <StatusPill published={story.published} />
+                <span className="truncate text-xs text-steel">{story.place || "No location yet"}</span>
+              </span>
+            </button>
+          )) : (
+            <p className="px-4 py-8 text-center text-sm text-steel">
+              {stories.length ? "No achievement matches that search." : "No achievements yet. Add your first one."}
+            </p>
+          )}
         </div>
-        <button type="button" onClick={add} className="btn-primary min-h-11">Add achievement</button>
-      </header>
-
-      <FormProblems problems={attempted ? problems : []} onSelect={(problem) => focusProblem(problem.path)} />
-
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <section aria-label="All achievements" className="space-y-2">
-          {!loaded && busy ? <p className="text-sm text-steel">Loading…</p> : null}
-          {loaded && !stories.length ? (
-            <EmptyState
-              title="No achievements yet"
-              message="Add your first one. Until something is published here, the homepage shows a short description of the work you do instead."
-            />
-          ) : null}
-          {stories.map((story, position) => (
-            <div key={story.id} className={`rounded-xl border p-3 transition-colors ${story.id === selected ? "border-navy bg-navy-tint" : "border-hair bg-white hover:border-navy/40"}`}>
-              <button type="button" onClick={() => setSelected(story.id)} className="block w-full text-left">
-                <span className="block truncate font-medium text-navy">{story.title || "Untitled achievement"}</span>
-                <span className="mt-0.5 block truncate text-xs text-steel">{story.place || "No location yet"}</span>
-                <span className="mt-2 inline-flex"><StatusPill published={story.published} /></span>
-              </button>
-              <div className="mt-2 flex gap-1 border-t border-hair pt-2">
-                <button type="button" onClick={() => move(position, position - 1)} disabled={position === 0} aria-label={`Move ${story.title || "achievement"} earlier`} className="flex size-9 items-center justify-center rounded-lg text-steel hover:bg-white hover:text-navy disabled:opacity-30"><ArrowUp size={16} aria-hidden="true" /></button>
-                <button type="button" onClick={() => move(position, position + 1)} disabled={position === stories.length - 1} aria-label={`Move ${story.title || "achievement"} later`} className="flex size-9 items-center justify-center rounded-lg text-steel hover:bg-white hover:text-navy disabled:opacity-30"><ArrowDown size={16} aria-hidden="true" /></button>
-                <button type="button" onClick={() => remove(story)} aria-label={`Delete ${story.title || "achievement"}`} className="ml-auto flex size-9 items-center justify-center rounded-lg text-steel hover:bg-white hover:text-scarlet"><Trash2 size={16} aria-hidden="true" /></button>
-              </div>
-            </div>
-          ))}
-        </section>
-
-        <section aria-label="Achievement details" className="min-w-0 space-y-5">
-          {current ? (
-            <>
-              <Panel title="What you did">
-                <TextField
-                  label="Title" required value={current.title}
-                  onChange={(value) => update(current.id, { title: value })}
-                  path={`${index}.title`} problems={attempted ? problems : []}
-                  hint="For example: Equipping a new intensive care unit."
-                />
-                <TextField
-                  label="Where" required value={current.place}
-                  onChange={(value) => update(current.id, { place: value })}
-                  path={`${index}.place`} problems={attempted ? problems : []}
-                  hint="The facility and town, or the kind of facility."
-                />
-                <TextareaField
-                  label="Description" value={current.summary} rows={5}
-                  onChange={(value) => update(current.id, { summary: value })}
-                  path={`${index}.summary`} problems={attempted ? problems : []}
-                  hint="What was supplied, installed or supported. A few sentences."
-                />
-              </Panel>
-
-              <Panel title="Photo">
-                <ImagePlaceholder
-                  src={current.image ? `/admin/api/media?id=${current.image.split("/").pop()}` : ""}
-                  label={current.title || "Achievement photo"}
-                  ratio="5/3"
-                />
-                <FileField
-                  label={current.image ? "Replace photo" : "Add photo"}
-                  accept="image/*"
-                  onFiles={(files) => pickImage(files[0] ?? null, current.id)}
-                  hint="Optional. Without one the card shows a marked placeholder."
-                />
-                {current.image ? (
-                  <button type="button" onClick={() => update(current.id, { image: "" })} className="btn-outline min-h-11">Remove photo</button>
-                ) : null}
-              </Panel>
-
-              <Panel title="Publishing">
-                <CheckboxField
-                  checked={current.published}
-                  onChange={(checked) => update(current.id, { published: checked })}
-                  label="Show on the homepage"
-                  hint="Unpublished achievements stay here and are not shown to visitors."
-                />
-              </Panel>
-            </>
-          ) : loaded ? (
-            <EmptyState title="Nothing selected" message="Choose an achievement on the left, or add a new one." />
-          ) : null}
-        </section>
       </div>
 
-      <AdminSaveBar
-        label="Save achievements"
-        onSave={save}
-        disabled={!loaded}
-        busy={busy}
-        dirty={dirty}
-        message={message}
-        tone={tone}
-      />
-      {confirmationModal}
-    </main>
-  );
+      <div className="min-w-0 space-y-5">
+        {current ? <>
+          <Panel title="What you did">
+            <TextField label="Title" required value={current.title}
+              onChange={(value) => update(current.id, { title: value })}
+              path={`${index}.title`} problems={attempted ? problems : []}
+              hint="For example: Equipping a new intensive care unit." />
+            <TextField label="Where" required value={current.place}
+              onChange={(value) => update(current.id, { place: value })}
+              path={`${index}.place`} problems={attempted ? problems : []}
+              hint="The facility and town, or the kind of facility." />
+            <TextareaField label="Description" value={current.summary} rows={5}
+              onChange={(value) => update(current.id, { summary: value })}
+              path={`${index}.summary`} problems={attempted ? problems : []}
+              hint="What was supplied, installed or supported. A few sentences." />
+          </Panel>
+
+          <Panel title="Photo">
+            <ImagePlaceholder
+              src={current.image ? `/admin/api/media?id=${current.image.split("/").pop()}` : ""}
+              label={current.title || "Achievement photo"} ratio="5/3" />
+            <FileField label={current.image ? "Replace photo" : "Add photo"} accept="image/*"
+              onFiles={(files) => pickImage(files[0] ?? null, current.id)}
+              hint="Optional. Without one the card shows a marked placeholder." />
+            {current.image ? <button type="button" onClick={() => update(current.id, { image: "" })} className="btn-outline min-h-11">Remove photo</button> : null}
+          </Panel>
+
+          <Panel title="Publishing">
+            <CheckboxField checked={current.published}
+              onChange={(checked) => update(current.id, { published: checked })}
+              label="Show on the homepage"
+              hint="Unpublished achievements stay here and are not shown to visitors." />
+          </Panel>
+
+          {/* Order decides the order of the homepage row, so it lives with the
+              selected item rather than cluttering every row of the list. */}
+          <Panel title="Order and removal">
+            <div className="flex flex-wrap items-center gap-2">
+              <button type="button" className="btn-outline min-h-11" disabled={index <= 0} onClick={() => move(index, index - 1)}>
+                <ArrowUp size={16} aria-hidden="true" /> Move earlier
+              </button>
+              <button type="button" className="btn-outline min-h-11" disabled={index >= stories.length - 1} onClick={() => move(index, index + 1)}>
+                <ArrowDown size={16} aria-hidden="true" /> Move later
+              </button>
+              <span className="text-sm text-steel">Position {index + 1} of {stories.length}</span>
+            </div>
+            <button type="button" onClick={() => remove(current)} className="btn-outline min-h-11 text-scarlet">
+              <Trash2 size={16} aria-hidden="true" /> Delete this achievement
+            </button>
+          </Panel>
+        </> : loaded ? (
+          <EmptyState title="Nothing selected" message="Choose an achievement on the left, or add a new one." />
+        ) : null}
+      </div>
+    </fieldset>
+  </main>;
 }
