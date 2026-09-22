@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import type { CmsProduct } from "@/lib/cms-schema";
+import type { CatalogueItem } from "@/lib/cms-schema";
 import { ImagePlaceholder } from "./ImagePlaceholder";
 import { AvailabilityTag } from "./AvailabilityTag";
 
@@ -9,7 +9,7 @@ import { AvailabilityTag } from "./AvailabilityTag";
  * with the index stamped in the corner and the data row set in mono.
  */
 export function ProductCard({ product, index, categoryName = "" }: {
-  product: CmsProduct;
+  product: CatalogueItem;
   index: number;
   /** Resolved from the product's category slug by the caller. */
   categoryName?: string;

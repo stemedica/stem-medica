@@ -37,6 +37,11 @@ export const cataloguePickerPageSchema = z.object({
 export type CataloguePickerPage = z.infer<typeof cataloguePickerPageSchema>;
 export type Catalogue = z.infer<typeof catalogueSchema>;
 export type CmsProduct = z.infer<typeof productSchema>;
+/**
+ * What a listing needs. Specs and services are the bulk of a product and no
+ * card reads them, so browsing does not ship them to the client.
+ */
+export type CatalogueItem = Omit<CmsProduct, "specs" | "services">;
 export type CmsCategory = z.infer<typeof categorySchema>;
 
 const draftText = z.string().max(2000);

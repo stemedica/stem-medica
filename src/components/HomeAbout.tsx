@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { V2Photo } from "./V2";
-import { site } from "@/lib/site";
 
 /**
  * The company, stated at full scale.
@@ -46,17 +45,19 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
         </div>
       </div>
 
-      {/* Three checkable statements. The figure is read from the catalogue so
-          it cannot drift; nothing here is a total nobody has supplied. */}
+      {/* Three reasons to buy here, in the buyer's terms. Deliberately no
+          figures: a delivery time or a satisfaction rate nobody has supplied
+          would be invented, and this is the panel a procurement officer is
+          most likely to quote back at us. */}
       <dl className="reveal-stagger mt-16 grid overflow-hidden rounded-2xl border border-hair bg-paper divide-y divide-hair sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:mt-20">
         {([
-          ["Registered importer", "Working with manufacturers and exporters to bring equipment into Ethiopia."],
-          [`${categoryCount} departments supplied`, "Monitoring and emergency care through imaging, laboratory and dental."],
-          ["Addis Ababa, nationwide", `Based in ${site.city.split(",")[0]}, delivering and supporting facilities around the country.`],
+          ["Quality", "Equipment sourced from manufacturers and exporters we deal with directly, chosen for build and for the support behind it."],
+          ["Expertise", `Biomedical engineers who install and commission what we supply, and train the people who will use it — across ${categoryCount} departments.`],
+          ["Fast delivery", "Stock held in Addis Ababa wherever we can, and indent orders followed through to your site rather than left with the shipper."],
         ] as [string, string][]).map(([term, detail]) => (
           <div key={term} className="reveal p-6 lg:p-7">
-            <dt className="font-display text-lg font-semibold text-navy">{term}</dt>
-            <dd className="mt-2 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
+            <dt className="font-display text-xl font-semibold text-navy">{term}</dt>
+            <dd className="mt-2.5 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
           </div>
         ))}
       </dl>
