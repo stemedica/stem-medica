@@ -23,19 +23,33 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
     <div className="mx-auto max-w-6xl">
       <header className="flex flex-wrap items-end justify-between gap-5">
         <div className="max-w-2xl">
-          <h2 id="equipment-heading" className="font-display text-4xl font-semibold leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
+          <h2 id="equipment-heading" className="font-display text-3xl font-semibold leading-[1.06] tracking-[-.03em] text-navy sm:text-4xl lg:text-5xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
           <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-soft">Browse by category. When you find an item, ask us to confirm the model, price and delivery time.</p>
         </div>
         <Link prefetch={false} href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">Browse all equipment <ArrowUpRight size={18} aria-hidden="true" /></Link>
       </header>
-      <nav aria-label="Equipment categories" className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 py-2 sm:mt-8 lg:flex-wrap">
-        {groups.map(group => <a key={group.slug} href={group.slug ? `/products?cat=${encodeURIComponent(group.slug)}` : "/products"}
-          aria-current={current.slug === group.slug ? "true" : undefined} aria-controls="home-equipment-results"
-          onClick={event => { if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return; event.preventDefault(); setSelected(group.slug); setSlide(0); }}
-          className={`inline-flex min-h-11 max-w-[280px] shrink-0 items-center gap-3 rounded-full border px-4 py-2 text-sm font-medium transition-colors ${current.slug === group.slug ? "border-navy bg-navy text-white" : "border-hair bg-white text-ink-soft hover:border-navy hover:text-navy"}`}>
-          <span className="truncate" title={group.name}>{group.name}</span><span className="text-xs tabular-nums opacity-80">{group.count}</span>
-        </a>)}
-      </nav>
+      <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-hair pt-6">
+        <label className="flex min-w-0 flex-1 items-center gap-3 sm:flex-none">
+          <span className="shrink-0 text-sm font-medium text-ink">Category</span>
+          <span className="relative min-w-0 flex-1 sm:w-80 sm:flex-none">
+            <select
+              value={current.slug}
+              onChange={event => { setSelected(event.target.value); setSlide(0); }}
+              aria-controls="home-equipment-results"
+              className="site-select w-full min-h-12 truncate rounded-full py-2.5 pl-5 pr-11 text-sm font-medium"
+            >
+              {groups.map(group => <option key={group.slug} value={group.slug}>{group.name} ({group.count})</option>)}
+            </select>
+            {/* The native arrow differs per platform; this keeps the control consistent. */}
+            <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-navy">
+              <path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </label>
+        {current.slug ? <button type="button" onClick={() => { setSelected(""); setSlide(0); }} className="min-h-11 text-sm font-medium text-navy underline underline-offset-4">
+          Show all equipment
+        </button> : null}
+      </div>
       <p role="status" aria-live="polite" aria-atomic="true" className="mt-3 text-xs text-steel">{current.count ? `Showing ${current.products.length} of ${current.count} products · ${current.name}` : `No equipment listed yet · ${current.name}`}</p>
       <div id="home-equipment-results" className="mt-5">
         {current.products.length > 1 ? <div className="mb-3 flex items-center justify-between gap-3 sm:hidden">

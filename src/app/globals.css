@@ -45,6 +45,8 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
   --shadow-deep:  0 30px 70px -30px rgba(15,37,85,.55);
 
   --ease-out: cubic-bezier(.22,.61,.36,1);
+  /* Measured height of the sticky header; the hero fills the rest of the fold. */
+  --header-h: 73px;
 
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-sans:    var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
@@ -134,8 +136,9 @@ body {
   50% { transform: translateY(4px); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .hero-ribbon-front { animation: hero-ribbon-flow 4.8s ease-in-out both; }
-  .hero-ribbon-back { animation: hero-ribbon-flow 4.8s ease-in-out both reverse; }
+  /* Slow enough to read as depth rather than as something demanding attention. */
+  .hero-ribbon-front { animation: hero-ribbon-flow 26s ease-in-out infinite alternate; }
+  .hero-ribbon-back { animation: hero-ribbon-flow 34s ease-in-out infinite alternate-reverse; }
 }
 @keyframes hero-ribbon-flow {
   from { transform: translate(-24px, 18px) rotate(-3deg) scale(1.08); }
@@ -319,3 +322,30 @@ body {
   .rise { animation: rise .7s var(--ease-out) both; }
   @keyframes rise { from { opacity: .001; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 }
+
+/* The hero introduces itself once. This stagger is the page's single authored
+   entrance; no other section repeats it, so arriving still feels like arriving.
+   Blur carries most of the settle — translation alone reads as a slide-in. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-in > * { animation: hero-settle .9s var(--ease-out) both; }
+  .hero-in > *:nth-child(1) { animation-delay: .05s; }
+  .hero-in > *:nth-child(2) { animation-delay: .14s; }
+  .hero-in > *:nth-child(3) { animation-delay: .26s; }
+  .hero-in > *:nth-child(4) { animation-delay: .38s; }
+}
+@keyframes hero-settle {
+  from { opacity: .001; transform: translateY(22px); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+
+/* Public-site select. The native control is styled per platform, so the arrow
+   is drawn and the box matches the site's other inputs. */
+.site-select {
+  appearance: none;
+  border: 1px solid var(--color-hair);
+  background: #fff;
+  color: var(--color-navy);
+  transition: border-color .25s var(--ease-out), box-shadow .25s var(--ease-out);
+}
+.site-select:hover { border-color: var(--color-navy); }
+.site-select:focus-visible { border-color: var(--color-navy); box-shadow: 0 0 0 3px var(--color-navy-tint-2); }
