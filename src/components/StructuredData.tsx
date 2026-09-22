@@ -118,8 +118,8 @@ function Script({ data }: { data: object }) {
   return (
     <script
       type="application/ld+json"
-      // Server-rendered from our own typed data, never user input.
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      // Server-rendered from typed data; < is escaped to prevent script breakout (XSS).
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }}
     />
   );
 }

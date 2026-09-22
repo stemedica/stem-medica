@@ -40,6 +40,16 @@ function withinRate(key: string) {
   return true;
 }
 
+async function checkEnquiryThrottle(ip: string): Promise<boolean> {
+  try {
+    const { checkRateLimit } = await import("@/lib/auth");
+    const allowed = await checkRateLimit(`quote:${ip}`, 5);
+    return allowed && withinRate(ip);
+  } catch {
+    return withinRate(ip);
+  }
+}
+
 export type EnquiryResult = { ok: true } | { ok: false; message: string };
 
 const TROUBLE = `We couldn’t send that just now. Please call ${site.phone} or message us on WhatsApp and we’ll pick it up right away.`;
@@ -55,7 +65,8 @@ export async function sendEnquiry(raw: Record<string, string>): Promise<EnquiryR
   if (fields.website.trim()) return { ok: true };
 
   const forwarded = (await headers()).get("x-forwarded-for") ?? "";
-  if (!withinRate(forwarded.split(",")[0].trim() || "unknown")) {
+  const ip = forwarded.split(",")[0].trim() || "unknown";
+  if (!await checkEnquiryThrottle(ip)) {
     return { ok: false, message: `That’s a few requests in quick succession. Please wait a minute, or call ${site.phone}.` };
   }
 

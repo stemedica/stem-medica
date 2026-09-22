@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { randomUUID } from "node:crypto";
 import { blankStory, storiesSchema, storySchema } from "../src/lib/story-schema";
 
 test("a new achievement starts unpublished so nothing reaches the homepage by accident", () => {
@@ -24,6 +25,6 @@ test("only media-route images are accepted, so no remote URL can be injected", (
 
 test("the collection is bounded", () => {
   const one = { ...blankStory(), title: "A", place: "B" };
-  assert.equal(storiesSchema.safeParse(Array.from({ length: 60 }, () => ({ ...one, id: crypto.randomUUID() }))).success, true);
-  assert.equal(storiesSchema.safeParse(Array.from({ length: 61 }, () => ({ ...one, id: crypto.randomUUID() }))).success, false);
+  assert.equal(storiesSchema.safeParse(Array.from({ length: 60 }, () => ({ ...one, id: randomUUID() }))).success, true);
+  assert.equal(storiesSchema.safeParse(Array.from({ length: 61 }, () => ({ ...one, id: randomUUID() }))).success, false);
 });

@@ -139,7 +139,7 @@ export function CatalogueBrowser({ products, categories, initialQuery, initialCa
             Try fewer words, or clear the filters to see everything. If we do not list it, we can still source it — send us the details.
           </p>
           <div className="action-stack mt-5">
-            <Link href="/quote" className="btn-primary min-h-11">Ask us to source it</Link>
+            <Link href={query.trim() ? `/quote?equipment=${encodeURIComponent(query.trim())}` : "/quote"} className="btn-primary min-h-11">Ask us to source it</Link>
             <button type="button" onClick={() => { setQuery(""); setCategory(""); }} className="btn-outline min-h-11">Clear filters</button>
           </div>
         </div>

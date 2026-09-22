@@ -74,15 +74,26 @@ export function addCatalogueProduct(
   return { ...p, items: empty < 0 ? [...p.items, item] : p.items.map((entry, index) => index === empty ? item : entry) };
 }
 
+function generateUUID(): string {
+  if (typeof globalThis !== "undefined" && globalThis.crypto?.randomUUID) {
+    return globalThis.crypto.randomUUID();
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 /** Unique references without a database counter. These are not sequential invoice numbers. */
 export function nextNumber(): string {
-  return `SM/PI/${new Date().getFullYear()}/${crypto.randomUUID().replaceAll("-", "").slice(0, 16).toUpperCase()}`;
+  return `SM/PI/${new Date().getFullYear()}/${generateUUID().replaceAll("-", "").slice(0, 16).toUpperCase()}`;
 }
 
 export const today = () => new Date().toISOString().slice(0, 10);
 
 export const blankItem = (): LineItem => ({
-  id: crypto.randomUUID(),
+  id: generateUUID(),
   description: "",
   qty: 1,
   unit: "pcs",

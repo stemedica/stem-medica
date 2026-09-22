@@ -14,7 +14,8 @@ function subscribeToLocation(onChange: () => void) {
 
 export function QuoteFormFromUrl({ variant = copy.quotation }: { variant?: FormCopy }) {
   const search = useSyncExternalStore(subscribeToLocation, () => window.location.search, () => "");
-  const presetItem = (new URLSearchParams(search).get("item") ?? "").slice(0, 500);
+  const params = new URLSearchParams(search);
+  const presetItem = (params.get("equipment") || params.get("item") || "").slice(0, 500);
   return <QuoteForm key={presetItem} presetItem={presetItem} variant={variant} />;
 }
 

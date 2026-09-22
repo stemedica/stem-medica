@@ -68,7 +68,8 @@ export function ProformaStyles() {
   .pf { box-shadow:none; margin:0; width:auto; min-height:auto; }
   .pf-foot { position:fixed; }
   .pf-items { page-break-inside:auto; }
-  .pf-items tr { page-break-inside:avoid; }
+  .pf-items tr { page-break-inside:avoid; break-inside:avoid; }
+  .pf-terms, .pf-notes, .pf-sign { page-break-inside:avoid; break-inside:avoid; }
 }
 ` }} />
   );
