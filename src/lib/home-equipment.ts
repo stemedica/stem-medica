@@ -8,8 +8,10 @@ export function homeEquipment(catalogue: Catalogue) {
   const categoryNames = new Map(catalogue.categories.map(category => [category.slug, category.name]));
   const group = (slug: string, name: string, items: CmsProduct[]) => ({
     slug, name, count: items.length,
-    products: items.slice(0, 6).map(({ slug, name, brand, image, summary, category }): EquipmentPreview => ({
-      slug, name, brand, image, summary: summary.slice(0, 180),
+    // The homepage lists these in a dropdown rather than a grid, so it can carry
+    // the whole category; the cap only bounds the payload for a large catalogue.
+    products: items.slice(0, 60).map(({ slug, name, brand, image, summary, category }): EquipmentPreview => ({
+      slug, name, brand, image, summary: summary.slice(0, 320),
       categoryName: categoryNames.get(category) ?? "",
     })),
   });

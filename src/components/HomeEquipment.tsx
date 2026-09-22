@@ -1,103 +1,115 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, ArrowUpRight, ImageIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import type { homeEquipment } from "@/lib/home-equipment";
-import { publicMediaUrl } from "@/lib/preview-paths";
+import { V2Photo } from "./V2";
 
+/**
+ * Browse by picking, not by scrolling a grid.
+ *
+ * Two dropdowns narrow to one item and the panel beside them shows it. The
+ * card rail this replaced put six near-identical placeholder tiles on the
+ * homepage, which said little and took most of a screen to say it.
+ *
+ * The photo panel is desktop only. On a phone it would push the controls
+ * below the fold to show an image that is, for now, a placeholder.
+ */
 export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipment> }) {
-  const [selected, setSelected] = useState("");
-  const [slide, setSlide] = useState(0);
-  const rail = useRef<HTMLDivElement>(null);
-  const current = groups.find(group => group.slug === selected) ?? groups[0];
-  function moveSlide(index: number) {
-    const container = rail.current;
-    const card = container?.children[index] as HTMLElement | undefined;
-    if (!container || !card) return;
-    container.scrollTo({ left: card.offsetLeft - (container.firstElementChild as HTMLElement).offsetLeft,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
-  }
-  const catalogueUrl = current.slug ? `/products?cat=${encodeURIComponent(current.slug)}` : "/products";
-  return <section id="equipment" aria-labelledby="equipment-heading" className="border-b border-hair bg-white px-4 py-10 sm:px-6 sm:py-14 lg:py-20">
-    <div className="mx-auto max-w-6xl">
-      <header className="flex flex-wrap items-end justify-between gap-5">
-        <div className="max-w-2xl">
-          <h2 id="equipment-heading" className="font-display text-3xl font-semibold leading-[1.06] tracking-[-.03em] text-navy sm:text-4xl lg:text-5xl">Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span></h2>
-          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-soft">Browse by category. When you find an item, ask us to confirm the model, price and delivery time.</p>
+  const [categorySlug, setCategorySlug] = useState("");
+  const [productSlug, setProductSlug] = useState("");
+
+  const current = groups.find(group => group.slug === categorySlug) ?? groups[0];
+  // No effect needed to reset the product: a slug from the previous category
+  // simply will not match, and the first item of the new one takes over.
+  const chosen = current.products.find(product => product.slug === productSlug) ?? current.products[0];
+
+  const selectCls = "site-select w-full min-h-12 truncate rounded-full py-2.5 pl-5 pr-11 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-55";
+
+  return <section id="equipment" aria-labelledby="equipment-heading" className="border-b border-hair bg-white px-4 py-14 sm:px-6 lg:py-20">
+    <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-16">
+
+      <div>
+        <h2 id="equipment-heading" className="font-display text-3xl font-semibold leading-[1.06] tracking-[-.03em] text-navy sm:text-4xl lg:text-5xl">
+          Explore our<br className="sm:hidden" /> equipment<span className="text-navy-2">.</span>
+        </h2>
+        <p className="mt-5 max-w-[56ch] text-base leading-relaxed text-ink-soft">
+          Choose a category, then the item you are interested in. Ask us to confirm the model, price and delivery time — we supply, install and support everything listed here.
+        </p>
+
+        <div className="mt-8 grid gap-4 sm:max-w-md">
+          <label className="block">
+            <span className="text-sm font-medium text-ink">Category</span>
+            <span className="relative mt-2 block">
+              <select
+                value={current.slug}
+                onChange={event => { setCategorySlug(event.target.value); setProductSlug(""); }}
+                className={selectCls}
+              >
+                {groups.map(group => <option key={group.slug} value={group.slug}>{group.name} ({group.count})</option>)}
+              </select>
+              <Chevron />
+            </span>
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-ink">Equipment</span>
+            <span className="relative mt-2 block">
+              <select
+                value={chosen?.slug ?? ""}
+                disabled={!chosen}
+                onChange={event => setProductSlug(event.target.value)}
+                className={selectCls}
+              >
+                {chosen
+                  ? current.products.map(product => <option key={product.slug} value={product.slug}>{product.name}</option>)
+                  : <option value="">Nothing listed yet</option>}
+              </select>
+              <Chevron />
+            </span>
+          </label>
         </div>
-        <Link prefetch={false} href="/products" className="inline-flex min-h-11 items-center gap-3 text-sm font-semibold text-navy underline underline-offset-4">Browse all equipment <ArrowUpRight size={18} aria-hidden="true" /></Link>
-      </header>
-      <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-hair pt-6">
-        <label className="flex min-w-0 flex-1 items-center gap-3 sm:flex-none">
-          <span className="shrink-0 text-sm font-medium text-ink">Category</span>
-          <span className="relative min-w-0 flex-1 sm:w-80 sm:flex-none">
-            <select
-              value={current.slug}
-              onChange={event => { setSelected(event.target.value); setSlide(0); }}
-              aria-controls="home-equipment-results"
-              className="site-select w-full min-h-12 truncate rounded-full py-2.5 pl-5 pr-11 text-sm font-medium"
-            >
-              {groups.map(group => <option key={group.slug} value={group.slug}>{group.name} ({group.count})</option>)}
-            </select>
-            {/* The native arrow differs per platform; this keeps the control consistent. */}
-            <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-navy">
-              <path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        </label>
-        {current.slug ? <button type="button" onClick={() => { setSelected(""); setSlide(0); }} className="min-h-11 text-sm font-medium text-navy underline underline-offset-4">
-          Show all equipment
-        </button> : null}
+
+        <p role="status" aria-live="polite" aria-atomic="true" className="mt-4 text-sm text-steel">
+          {current.count
+            ? `${current.count} ${current.count === 1 ? "item" : "items"} in ${current.name.toLowerCase()}`
+            : `Nothing listed in ${current.name.toLowerCase()} yet — try another category.`}
+        </p>
+
+        <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+          {/* A fixed label: putting the product name in the button made it
+              resize on every change of the dropdown beside it. */}
+          {chosen ? <Link prefetch={false} href={`/products/${chosen.slug}`} aria-label={`View ${chosen.name}`} className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-navy px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-navy-deep">
+            View equipment<ArrowRight size={17} aria-hidden="true" />
+          </Link> : null}
+          <Link prefetch={false} href={current.slug ? `/products?cat=${encodeURIComponent(current.slug)}` : "/products"} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy underline underline-offset-4">
+            {current.slug ? "See the whole category" : "Browse all equipment"}<ArrowUpRight size={16} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
-      <p role="status" aria-live="polite" aria-atomic="true" className="mt-3 text-xs text-steel">{current.count ? `Showing ${current.products.length} of ${current.count} products · ${current.name}` : `No equipment listed yet · ${current.name}`}</p>
-      <div id="home-equipment-results" className="mt-5">
-        {current.products.length > 1 ? <div className="mb-3 flex items-center justify-between gap-3 sm:hidden">
-          <p className="text-xs font-medium text-navy">Swipe to explore <span className="ml-2 tabular-nums text-steel" aria-live="polite">{slide + 1} / {current.products.length}</span></p>
-          <div className="flex gap-2">
-            <button type="button" aria-label="Previous product" aria-controls="equipment-product-rail" disabled={slide === 0} onClick={() => moveSlide(slide - 1)} className="flex size-11 items-center justify-center rounded-full border border-hair text-navy disabled:opacity-35"><ArrowLeft size={18} aria-hidden="true" /></button>
-            <button type="button" aria-label="Next product" aria-controls="equipment-product-rail" disabled={slide === current.products.length - 1} onClick={() => moveSlide(slide + 1)} className="flex size-11 items-center justify-center rounded-full border border-navy bg-navy text-white disabled:opacity-35"><ArrowRight size={18} aria-hidden="true" /></button>
-          </div>
+
+      <div className="hidden lg:block">
+        <V2Photo
+          key={chosen?.slug ?? "empty"}
+          src={chosen?.image}
+          label={chosen ? `${chosen.name}: product photo` : "Equipment photo"}
+          className="aspect-[4/5] w-full"
+        />
+        {chosen ? <div className="mt-5">
+          <p className="font-display text-xl font-semibold leading-snug text-navy">{chosen.name}</p>
+          <p className="mt-1 text-sm text-steel">{chosen.brand}</p>
+          {chosen.summary ? <p className="mt-3 line-clamp-3 max-w-[54ch] text-[15px] leading-relaxed text-ink-soft">{chosen.summary}</p> : null}
         </div> : null}
-        {current.products.length ? <div key={current.slug} id="equipment-product-rail" ref={rail}
-          onScroll={event => {
-            const el = event.currentTarget;
-            if (el.scrollWidth <= el.clientWidth) return;
-            const first = el.children[0] as HTMLElement, second = el.children[1] as HTMLElement | undefined;
-            if (!second) return;
-            setSlide(el.scrollLeft >= el.scrollWidth - el.clientWidth - 2 ? current.products.length - 1 :
-              Math.min(current.products.length - 1, Math.round(el.scrollLeft / (second.offsetLeft - first.offsetLeft))));
-          }}
-          className="flex snap-x snap-mandatory scroll-px-1 gap-3 overflow-x-auto overscroll-x-contain p-1 pb-3 sm:grid sm:grid-cols-2 sm:gap-5 sm:overflow-visible lg:grid-cols-3">
-          {current.products.map(product => <Link prefetch={false} key={product.slug} href={`/products/${product.slug}`} className={`group flex min-w-0 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-colors hover:border-navy ${current.products.length > 1 ? "w-[86%]" : "w-full"} sm:w-auto`}>
-            <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden border-b border-hair bg-navy-tint/60 p-3 sm:p-6">
-              {product.image ? /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={publicMediaUrl(product.image)} alt={`${product.name}: product photo`} loading="lazy" decoding="async" className="h-full w-full object-contain" /> :
-                <div className="flex flex-col items-center gap-3 text-center text-navy/70"><ImageIcon size={36} strokeWidth={1.2} aria-hidden="true" /><span className="text-xs">Product photo<br />coming soon</span></div>}
-            </div>
-            <div className="flex flex-1 flex-col p-3 sm:p-5">
-              <p className="mb-2 flex flex-wrap items-baseline gap-x-1.5 break-words text-xs">
-                {product.categoryName ? <>
-                  <span className="font-medium text-navy-2">{product.categoryName}</span>
-                  <span aria-hidden="true" className="text-steel/40">/</span>
-                </> : null}
-                <span className="font-medium text-steel">{product.brand}</span>
-              </p>
-              <h3 className="font-display break-words text-base font-semibold leading-snug text-navy sm:text-xl">{product.name}</h3>
-              {product.summary ? <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-ink-soft sm:text-sm">{product.summary}</p> : null}
-              <span className="mt-auto pt-5 text-xs font-semibold text-navy sm:text-sm"><span className="flex min-h-6 items-center justify-between gap-2">View equipment <ArrowUpRight size={17} className="shrink-0" aria-hidden="true" /></span></span>
-            </div>
-          </Link>)}
-        </div> : <div className="rounded-2xl border border-hair bg-paper p-6 sm:p-10">
-          <h3 className="font-display text-xl font-semibold text-navy">{current.slug ? "This category is being updated" : "Our catalogue is being updated"}</h3>
-          <p className="mt-2 text-base leading-relaxed text-ink-soft">{current.slug ? "There is no equipment listed in this category yet. Try another category or check back later." : "We are adding equipment now. Please check back soon or contact us for help."}</p>
-          {current.slug ? <button type="button" onClick={() => setSelected("")} className="btn-outline mt-5 min-h-11">Show all equipment</button> : null}
-        </div>}
       </div>
-      {current.count ? <div className="mt-7 flex flex-wrap items-center justify-between gap-4 border-t border-hair pt-5">
-        <p className="max-w-md text-sm leading-relaxed text-ink-soft">We’ll confirm the model, price and delivery time when you contact us.</p>
-        <Link prefetch={false} href={catalogueUrl} className="inline-flex min-h-12 items-center justify-center gap-4 rounded-full bg-navy px-6 py-3 text-sm font-semibold text-white hover:bg-navy-deep">{current.slug ? "View category" : "Browse all equipment"}<ArrowRight size={17} aria-hidden="true" /></Link>
-      </div> : null}
+
     </div>
   </section>;
+}
+
+/** The native arrow differs per platform; this keeps the control consistent. */
+function Chevron() {
+  return <svg aria-hidden="true" viewBox="0 0 20 20" className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-navy">
+    <path d="M6 8l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>;
 }
