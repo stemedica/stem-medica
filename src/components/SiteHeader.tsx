@@ -4,16 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type React from "react";
+import { ChevronDown } from "lucide-react";
 import { nav, site } from "@/lib/site";
 
-export function SiteHeader({ logo }: { logo: React.ReactNode }) {
+export type NavCategory = { slug: string; name: string };
+
+export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; categories?: NavCategory[] }) {
   const [open, setOpen] = useState(false);
+  const [menu, setMenu] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   // "/" is a prefix of every route, so the home link has to match exactly or
   // it reads as the current page everywhere.
   const isCurrent = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
   const trigger = useRef<HTMLButtonElement>(null);
   const header = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!menu) return;
+    function keydown(event: KeyboardEvent) { if (event.key === "Escape") setMenu(false); }
+    function outside(event: PointerEvent) { if (!menuRef.current?.contains(event.target as Node)) setMenu(false); }
+    document.addEventListener("keydown", keydown);
+    document.addEventListener("pointerdown", outside);
+    return () => { document.removeEventListener("keydown", keydown); document.removeEventListener("pointerdown", outside); };
+  }, [menu]);
+
   useEffect(() => {
     if (!open) return;
     function keydown(event: KeyboardEvent) { if (event.key === "Escape") { setOpen(false); trigger.current?.focus(); } }
@@ -33,19 +47,57 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
         </Link>
 
         <nav aria-label="Main navigation" className="hidden items-center gap-5 lg:flex">
-          {nav.filter((i) => !("cta" in i)).map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={false}
-              aria-current={isCurrent(item.href) ? "page" : undefined}
-              className={`label inline-flex min-h-11 items-center whitespace-nowrap transition-colors hover:text-navy ${
-                isCurrent(item.href) ? "text-navy underline underline-offset-8" : "text-ink-soft"
-              }`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {nav.filter((i) => !("cta" in i)).map((item) => {
+            const link = `label inline-flex min-h-11 items-center whitespace-nowrap transition-colors hover:text-navy ${
+              isCurrent(item.href) ? "text-navy underline underline-offset-8" : "text-ink-soft"
+            }`;
+            // Products keeps its own link and gains a separate disclosure beside
+            // it, so the department list never costs anyone the catalogue page.
+            if (item.href === "/products" && categories.length) {
+              return (
+                <div key={item.href} ref={menuRef} className="relative flex items-center gap-1">
+                  <Link href={item.href} prefetch={false} aria-current={isCurrent(item.href) ? "page" : undefined} className={link}>
+                    {item.label}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setMenu((value) => !value)}
+                    aria-expanded={menu}
+                    aria-controls="products-menu"
+                    aria-label={menu ? "Hide departments" : "Show departments"}
+                    className="flex size-8 items-center justify-center rounded-lg text-steel transition-colors hover:bg-navy-tint hover:text-navy"
+                  >
+                    <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-300 ${menu ? "rotate-180" : ""}`} />
+                  </button>
+                  {/* Rendered whether or not it is open, and hidden with the
+                      attribute. These are the only links to a department left
+                      on the site, so they have to exist in the markup — and a
+                      hidden subtree is correctly ignored by assistive tech. */}
+                  <div hidden={!menu} id="products-menu" className="absolute left-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-hair bg-white py-1.5 shadow-[0_18px_44px_rgba(15,37,85,.16)]">
+                      <Link href="/products" prefetch={false} onClick={() => setMenu(false)} className="block border-b border-hair px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-navy-tint">
+                        All equipment
+                      </Link>
+                      {categories.map((category) => (
+                        <Link
+                          key={category.slug}
+                          href={`/products?cat=${encodeURIComponent(category.slug)}`}
+                          prefetch={false}
+                          onClick={() => setMenu(false)}
+                          className="block px-4 py-2.5 text-sm text-ink-soft transition-colors hover:bg-navy-tint hover:text-navy"
+                        >
+                          {category.name}
+                        </Link>
+                      ))}
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <Link key={item.href} href={item.href} prefetch={false} aria-current={isCurrent(item.href) ? "page" : undefined} className={link}>
+                {item.label}
+              </Link>
+            );
+          })}
           <a
             href={`tel:${site.phoneIntl}`}
             className="label inline-flex min-h-11 items-center whitespace-nowrap font-semibold text-ink transition-colors hover:text-navy"
@@ -81,17 +133,37 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
       {open ? (
         <nav id="mobile-navigation" aria-label="Mobile navigation" className="max-h-[calc(100dvh-150px)] overflow-y-auto border-t border-hair lg:hidden">
           {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              prefetch={false}
-              onClick={() => setOpen(false)}
-              aria-current={isCurrent(item.href) ? "page" : undefined}
-              className="flex min-h-12 items-center justify-between border-b border-hair px-5 py-3 text-base text-ink-soft aria-[current=page]:bg-navy-tint aria-[current=page]:font-semibold aria-[current=page]:text-navy"
-            >
-              {item.label}
-              <span aria-hidden="true" className="text-navy">→</span>
-            </Link>
+            <div key={item.href}>
+              <Link
+                href={item.href}
+                prefetch={false}
+                onClick={() => setOpen(false)}
+                aria-current={isCurrent(item.href) ? "page" : undefined}
+                className="flex min-h-12 items-center justify-between border-b border-hair px-5 py-3 text-base text-ink-soft aria-[current=page]:bg-navy-tint aria-[current=page]:font-semibold aria-[current=page]:text-navy"
+              >
+                {item.label}
+                <span aria-hidden="true" className="text-navy">→</span>
+              </Link>
+              {/* Departments are listed inline rather than behind a second tap:
+                  a menu that hides them on the device most people use is a menu
+                  that may as well not exist. */}
+              {item.href === "/products" && categories.length ? (
+                <ul className="border-b border-hair bg-paper py-1">
+                  {categories.map((category) => (
+                    <li key={category.slug}>
+                      <Link
+                        href={`/products?cat=${encodeURIComponent(category.slug)}`}
+                        prefetch={false}
+                        onClick={() => setOpen(false)}
+                        className="flex min-h-11 items-center px-5 py-2 pl-8 text-[15px] text-ink-soft transition-colors hover:text-navy"
+                      >
+                        {category.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
           ))}
         </nav>
       ) : null}
