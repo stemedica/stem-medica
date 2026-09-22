@@ -28,7 +28,7 @@ export function HomeHero() {
         Medical supplies, devices and equipment—distributed and supported across Ethiopia.
       </p>
       <div className="mt-9 flex w-full flex-col gap-3 sm:w-fit sm:flex-row sm:flex-wrap">
-        <a href="#equipment" className="group inline-flex min-h-14 items-center justify-between gap-6 rounded-full bg-white py-2 pl-7 pr-2 text-sm font-semibold text-navy transition-colors hover:bg-blue-50">
+        <a href="#equipment" className="group inline-flex min-h-14 items-center justify-between gap-6 rounded-full bg-white py-2 pl-7 pr-2 text-sm font-semibold text-navy transition-colors hover:bg-navy-tint">
           Browse equipment
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-white transition-transform duration-300 group-hover:translate-y-0.5">
             <ArrowDown size={19} aria-hidden="true" />

@@ -6,6 +6,7 @@ import { EcgRule, SectionHead } from "@/components/Section";
 import { WaveField } from "@/components/WaveField";
 import { Button } from "@/components/Button";
 import { ProductCard } from "@/components/ProductCard";
+import { AvailabilityTag } from "@/components/AvailabilityTag";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { getCatalogue } from "@/lib/catalogue";
 import { site } from "@/lib/site";
@@ -96,7 +97,11 @@ export default async function ProductPage({
                   className={`min-w-0 px-3.5 py-3 ${i % 2 === 1 ? "border-l border-white/20" : ""} ${i > 1 ? "border-t border-white/20" : ""}`}
                 >
                   <dt className="uppercase tracking-[.1em] text-on-navy/70">{k}</dt>
-                  <dd className="mt-1.5 text-on-navy/90">{v}</dd>
+                  <dd className="mt-1.5 text-on-navy/90">
+                    {k === "Availability"
+                      ? <AvailabilityTag availability={product.availability} tone="dark" />
+                      : v}
+                  </dd>
                 </div>
               ))}
             </dl>

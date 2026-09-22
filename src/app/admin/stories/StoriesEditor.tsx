@@ -132,7 +132,7 @@ export function StoriesEditor() {
   }
 
   return (
-    <div className="space-y-6">
+    <main className="mx-auto max-w-6xl space-y-6 px-5 py-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-2xl font-semibold text-navy">Achievements</h1>
@@ -236,6 +236,6 @@ export function StoriesEditor() {
         tone={tone}
       />
       {confirmationModal}
-    </div>
+    </main>
   );
 }

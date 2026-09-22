@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { CmsProduct } from "@/lib/cms-schema";
 import { ImagePlaceholder } from "./ImagePlaceholder";
+import { AvailabilityTag } from "./AvailabilityTag";
 
 /**
  * Catalogue entry styled as an equipment nameplate: squared, hairline-bordered,
@@ -46,6 +47,10 @@ export function ProductCard({ product, index, categoryName = "" }: {
             <dd className="mt-0.5 break-words text-ink">{product.origin}</dd>
           </div> : null}
         </dl>
+
+        <div className="mt-4">
+          <AvailabilityTag availability={product.availability} />
+        </div>
 
         <span className="label mt-4 inline-flex items-center gap-2 font-semibold text-navy">
           View equipment

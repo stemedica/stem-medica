@@ -33,6 +33,21 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
   --color-navy-tint-2:  #D6E0F4;
   --color-scarlet-tint: #F7EBE9;
 
+  /* Semantic roles. Defined once here so feedback, status pills and the
+     catalogue stop improvising a colour each. Hues are drawn from the brand
+     rather than the usual green/amber defaults: the positive state sits beside
+     navy, and caution warms toward the scarlet without borrowing its urgency. */
+  --color-ok:        #1E6B4F;
+  --color-ok-tint:   #E4F1EA;
+  --color-wait:      #8A5A12;
+  --color-wait-tint: #FBF0DC;
+  --color-info:      var(--color-navy);
+  --color-info-tint: var(--color-navy-tint);
+  /* The same roles lifted for navy surfaces, where the ink-weight versions
+     above fall below contrast. */
+  --color-ok-lift:   #74D3A8;
+  --color-wait-lift: #EBBB6A;
+
   /* radius scale: spent by role, not stamped on everything */
   --radius-xs: 6px;
   --radius-sm: 10px;
@@ -434,4 +449,33 @@ body {
 @keyframes media-drift {
   from { transform: scale(1.12) translateY(-2.5%); }
   to { transform: scale(1.12) translateY(2.5%); }
+}
+
+/* Feedback motion.
+ *
+ * Not decoration: these mark the two moments the enquiry form changes state.
+ * Sending is the only point where the visitor waits on us, and the
+ * confirmation replacing the form is the only irreversible thing that happens
+ * on the public site, so both are acknowledged rather than swapped silently.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* The confirmation arrives rather than appearing: a short settle, in the
+     same language as the hero's, so the page feels continuous. */
+  .state-enter { animation: state-enter .55s var(--ease-out) both; }
+
+  /* A pending strip under the submit button. It reads as indeterminate work,
+     which is honest — we cannot know how long Resend will take. */
+  .pending-strip::after {
+    content: ""; position: absolute; inset: auto 0 0 0; height: 2px;
+    background: linear-gradient(90deg, transparent, currentColor, transparent);
+    animation: pending-sweep 1.1s var(--ease-out) infinite;
+  }
+}
+@keyframes state-enter {
+  from { opacity: .001; transform: translateY(14px); filter: blur(6px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes pending-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
 }

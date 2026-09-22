@@ -45,7 +45,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
 
   if (sent) {
     return (
-      <div role="status" className="mt-8 rounded-[2px] border border-hair bg-paper p-6 sm:p-8">
+      <div role="status" className="state-enter mt-8 rounded-[2px] border border-hair bg-paper p-6 sm:p-8">
         <p className="flex items-center gap-2.5 font-display text-xl font-semibold text-navy">
           <Check size={20} aria-hidden="true" className="text-vital" />
           {variant.kind === "quotation" ? "Your request is with us" : "Your details are with us"}
@@ -136,7 +136,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
 
       <div className="sm:col-span-2">
         {problem ? (
-          <div role="alert" className="mb-5 rounded-[2px] border border-scarlet/35 bg-scarlet/5 p-4">
+          <div role="alert" className="state-enter mb-5 rounded-[2px] border border-scarlet/35 bg-scarlet/5 p-4">
             <p className="text-sm leading-relaxed text-ink">{problem}</p>
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
               <a href={site.whatsapp} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-navy underline underline-offset-4">
@@ -153,7 +153,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           <button
             type="submit"
             disabled={pending}
-            className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
+            className={`label relative inline-flex min-h-11 items-center justify-center gap-2.5 overflow-hidden rounded-[2px] bg-scarlet px-6 py-3.5 text-center font-semibold text-white transition-colors duration-300 hover:bg-vital active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 ${pending ? "pending-strip" : ""}`}
           >
             <Send size={14} aria-hidden="true" /> {pending ? "Sending…" : variant.submit}
           </button>
