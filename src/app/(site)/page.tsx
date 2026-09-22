@@ -7,15 +7,16 @@ import { getAllPosts, formatDate } from "@/lib/post-store";
 import { site } from "@/lib/site";
 import { HomeHero } from "@/components/HomeHero";
 import { HomeEquipment } from "@/components/HomeEquipment";
+import { ScrollRail } from "@/components/ScrollRail";
+import { successStories } from "@/lib/success-stories";
 import { homeEquipment } from "@/lib/home-equipment";
-import { MobileCardRail } from "@/components/MobileCardRail";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
 function EquipmentSection({ products, categories }: Awaited<ReturnType<typeof getCatalogue>>) {
   return <HomeEquipment groups={homeEquipment({ products, categories })} />;
 }
 
 function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getAllPosts>> }) {
-  const posts = allPosts.slice(0, 6);
+  const posts = allPosts.slice(0, 8);
 
   if (posts.length === 0) return null;
 
@@ -24,7 +25,7 @@ function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getA
       title="The latest from STEM MEDICA"
       lede="New equipment and practical updates from our team."
     />
-    <div className="mt-9"><MobileCardRail label="Latest updates">
+    <div className="reveal mt-9"><ScrollRail label="Latest updates" size="narrow">
       {posts.map((post) => (
         <Link prefetch={false} key={post.slug} href={`/blog/${post.slug}`} className={`v2-card group flex flex-col p-5 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
           {post.image ? <V2Photo src={post.image} label={post.title} className="mb-4 aspect-video w-full" /> : null}
@@ -46,7 +47,7 @@ function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getA
           </span>
         </Link>
       ))}
-    </MobileCardRail></div>
+    </ScrollRail></div>
     <div className="mt-7"><V2Button href="/blog" variant="outline">View all updates</V2Button></div>
   </section>;
 }
@@ -62,14 +63,6 @@ export const revalidate = 300;
 
 export default async function Home() {
   const [catalogue, allPosts] = await Promise.all([getCatalogue(), getAllPosts()]);
-
-  /* Every line here is checkable against the business or the catalogue. No
-     invented totals: figures Geremew has not supplied are simply not claimed. */
-  const strengths: [string, string][] = [
-    ["Registered importer", "A registered medical importing company, working with manufacturers and exporters to bring their equipment into Ethiopia."],
-    [`${catalogue.categories.length} equipment categories`, "From monitoring and emergency care to imaging, laboratory and dental — supplied from one place."],
-    ["Based in Addis Ababa", "Our team works from Bole, and delivers, installs and supports equipment at facilities around the country."],
-  ];
 
   return (
     <>
@@ -100,7 +93,6 @@ export default async function Home() {
         </div>
       </section>
 
-
       {/* Who we are, and what that is built on. Replaces the single-paragraph
           mission block: one section carries both rather than stacking two
           near-identical bands of text. */}
@@ -117,17 +109,24 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* One panel with dividers, not three tiles: the services band above
-            already uses a three-column rule, and repeating it here made the
-            two read as the same section twice. */}
-        <dl className="reveal-stagger mt-14 grid overflow-hidden rounded-2xl border border-hair bg-white divide-y divide-hair sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:mt-16">
-          {strengths.map(([term, detail]) => (
-            <div key={term} className="reveal p-6 lg:p-7">
-              <dt className="font-display text-lg font-semibold leading-tight text-navy">{term}</dt>
-              <dd className="mt-2 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
-            </div>
-          ))}
-        </dl>
+        <h3 className="reveal font-display mt-16 text-2xl font-semibold tracking-tight text-navy lg:mt-20">Working with facilities</h3>
+
+        {/* Story cards, not a metrics row. The next card is deliberately part
+            visible at the edge: the crop is what says the row continues. */}
+        <div className="reveal mt-14 lg:mt-16">
+          <ScrollRail label="Working with facilities">
+            {successStories.map((story) => (
+              <article key={story.title} className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-white">
+                <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} className="aspect-[5/3] w-full" />
+                <div className="flex flex-1 flex-col p-5 sm:p-6">
+                  <p className="text-sm font-medium text-navy-2">{story.place}</p>
+                  <h3 className="font-display mt-1.5 text-xl font-semibold leading-snug text-navy text-balance">{story.title}</h3>
+                  <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{story.summary}</p>
+                </div>
+              </article>
+            ))}
+          </ScrollRail>
+        </div>
       </section>
 
       {/* Insights */}
