@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { V2Photo } from "@/components/V2";
 import { LocationMap } from "@/components/LocationMap";
+import { QuietTrace } from "@/components/QuietTrace";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -39,6 +40,8 @@ export default function AboutPage() {
             <p>Our mission is to advance medical research and development and improve healthcare outcomes across the country — through collaboration, innovation, and product support that does not stop at delivery.</p>
           </div>
         </div>
+
+        <QuietTrace className="mt-14 h-12 w-full lg:mt-16" />
       </div>
     </section>
 

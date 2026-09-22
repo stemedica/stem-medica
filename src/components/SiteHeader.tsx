@@ -9,6 +9,9 @@ import { nav, site } from "@/lib/site";
 export function SiteHeader({ logo }: { logo: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  // "/" is a prefix of every route, so the home link has to match exactly or
+  // it reads as the current page everywhere.
+  const isCurrent = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
   const trigger = useRef<HTMLButtonElement>(null);
   const header = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -35,9 +38,9 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
               key={item.href}
               href={item.href}
               prefetch={false}
-              aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
               className={`label inline-flex min-h-11 items-center whitespace-nowrap transition-colors hover:text-navy ${
-                pathname.startsWith(item.href) ? "text-navy underline underline-offset-8" : "text-ink-soft"
+                isCurrent(item.href) ? "text-navy underline underline-offset-8" : "text-ink-soft"
               }`}
             >
               {item.label}
@@ -83,7 +86,7 @@ export function SiteHeader({ logo }: { logo: React.ReactNode }) {
               href={item.href}
               prefetch={false}
               onClick={() => setOpen(false)}
-              aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+              aria-current={isCurrent(item.href) ? "page" : undefined}
               className="flex min-h-12 items-center justify-between border-b border-hair px-5 py-3 text-base text-ink-soft aria-[current=page]:bg-navy-tint aria-[current=page]:font-semibold aria-[current=page]:text-navy"
             >
               {item.label}

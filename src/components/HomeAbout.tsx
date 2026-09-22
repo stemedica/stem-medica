@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { V2Photo } from "./V2";
+import { QuietTrace } from "./QuietTrace";
 
 /**
  * The company, stated at full scale.
@@ -61,6 +62,8 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
           </div>
         ))}
       </dl>
+
+      <QuietTrace className="mt-14 h-12 w-full lg:mt-16" />
     </div>
   </section>;
 }
