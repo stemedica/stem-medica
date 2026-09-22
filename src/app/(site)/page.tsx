@@ -1,6 +1,6 @@
 import { PostKindBadge } from "@/components/PostKindBadge";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ImageIcon } from "lucide-react";
 import { V2Button, V2Photo, V2Head } from "@/components/V2";
 import { getCatalogue } from "@/lib/catalogue";
 import { getAllPosts, formatDate } from "@/lib/post-store";
@@ -23,35 +23,50 @@ function UpdatesSection({ allPosts }: { allPosts: Awaited<ReturnType<typeof getA
 
   if (posts.length === 0) return null;
 
-  return <section aria-label="Latest updates and blog" className="mx-auto max-w-6xl px-5 pb-14 lg:pb-20">
-    <V2Head
-      title="The latest from STEM MEDICA"
-      lede="New equipment and practical updates from our team."
-    />
-    <div className="reveal mt-9"><ScrollRail label="Latest updates" size="narrow">
+  return <section aria-labelledby="updates" className="mx-auto max-w-6xl px-5 pb-20 lg:pb-28">
+    <div className="reveal flex flex-wrap items-end justify-between gap-x-10 gap-y-5 border-t border-navy/20 pt-10">
+      <div className="max-w-2xl">
+        <h2 id="updates" className="font-display wdth-w text-[clamp(2.2rem,4.6vw,3.9rem)] font-semibold leading-[1.04] tracking-[-.035em] text-navy">
+          The latest from <span className="whitespace-nowrap">STEM MEDICA<span className="text-scarlet">.</span></span>
+        </h2>
+        <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-ink-soft">New equipment and practical updates from our team.</p>
+      </div>
+      <Link prefetch={false} href="/blog" className="group inline-flex min-h-12 shrink-0 items-center gap-3 rounded-full border border-navy px-6 text-sm font-semibold text-navy transition-colors hover:bg-navy hover:text-white">
+        All updates
+        <ArrowUpRight size={17} aria-hidden="true" className="transition-transform duration-300 group-hover:rotate-45" />
+      </Link>
+    </div>
+
+    <div className="reveal mt-12"><ScrollRail label="Latest updates" size="narrow">
       {posts.map((post) => (
-        <Link prefetch={false} key={post.slug} href={`/blog/${post.slug}`} className={`v2-card group flex flex-col p-5 ${hasArrivalNotice(post) ? "arrival-card" : ""}`}>
-          {post.image ? <V2Photo src={post.image} label={post.title} className="mb-4 aspect-video w-full" /> : null}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <PostKindBadge post={post} />
-            <span className="label text-steel tabular-nums">{formatDate(post.date)}</span>
+        <Link
+          prefetch={false}
+          key={post.slug}
+          href={`/blog/${post.slug}`}
+          className={`group flex flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-navy/40 hover:shadow-[0_18px_44px_rgba(15,37,85,.12)] ${hasArrivalNotice(post) ? "arrival-card" : ""}`}
+        >
+          {/* Posts without a picture show none — a placeholder panel here was
+              asked against, and the card reads fine as text alone. */}
+          {post.image ? <div className="relative overflow-hidden border-b border-hair">
+            <V2Photo src={post.image} label={post.title} rounded={false} className="aspect-[16/10] w-full transition-transform duration-500 group-hover:scale-[1.04]" />
+          </div> : null}
+          <div className="flex flex-1 flex-col p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <PostKindBadge post={post} />
+              <span className="label tabular-nums text-steel">{formatDate(post.date)}</span>
+            </div>
+            <h3 className="font-display mt-4 text-[19px] font-semibold leading-snug text-navy text-balance">
+              {post.title}
+            </h3>
+            <p className="mt-2.5 line-clamp-3 flex-1 text-[15px] leading-relaxed text-ink-soft">{post.excerpt}</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-navy">
+              Read
+              <ArrowRight size={15} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1" />
+            </span>
           </div>
-          <h3 className="font-display wdth-n mt-4 text-[17px] font-semibold leading-snug text-balance">
-            {post.title}
-          </h3>
-          <p className="mt-2 line-clamp-3 flex-1 text-[15px] leading-relaxed text-ink-soft">{post.excerpt}</p>
-          <span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-navy">
-            Read
-            <ArrowRight
-              size={15}
-              aria-hidden="true"
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </span>
         </Link>
       ))}
     </ScrollRail></div>
-    <div className="mt-7"><V2Button href="/blog" variant="outline">View all updates</V2Button></div>
   </section>;
 }
 
@@ -144,19 +159,41 @@ export default async function Home() {
               <span className="text-steel">Achievements</span>
             </span>
           </h2>
-          <p className="max-w-[40ch] text-base leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-ink-soft">
             What we supply, install and keep running — from a single theatre to a whole laboratory.
           </p>
         </div>
         <div className="reveal mt-12 lg:mt-16">
           <ScrollRail label="Working with facilities">
             {stories.map((story) => (
-              <article key={story.title} className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-[border-color,box-shadow] duration-300 hover:border-navy/40 hover:shadow-[0_18px_44px_rgba(15,37,85,.12)]">
-                <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} className="aspect-[5/3] w-full" />
-                <div className="flex flex-1 flex-col p-5 sm:p-6">
-                  <p className="text-sm font-medium text-navy-2">{story.place}</p>
-                  <h3 className="font-display mt-1.5 text-xl font-semibold leading-snug text-navy text-balance">{story.title}</h3>
-                  <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">{story.summary}</p>
+              <article key={story.title} className="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl bg-navy-deep">
+                {/* The shared placeholder captions itself, which would repeat
+                    the title printed directly beneath it. Without a photo the
+                    card shows the marked panel alone. */}
+                {story.image ? (
+                  <V2Photo
+                    src={story.image}
+                    label={`${story.title}: photograph`}
+                    rounded={false}
+                    fill
+                    className="transition-transform duration-700 group-hover:scale-[1.05]"
+                  />
+                ) : (
+                  <span aria-hidden="true" className="absolute inset-0 bg-navy-deep">
+                    <svg className="h-full w-full text-white/10" preserveAspectRatio="none" viewBox="0 0 100 100">
+                      <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+                      <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+                    </svg>
+                    <ImageIcon size={24} className="absolute left-1/2 top-[30%] -translate-x-1/2 text-white/30" />
+                  </span>
+                )}
+                {/* A scrim rather than a flat tint: the text sits at the foot of
+                    the card, so only the foot needs to carry it. */}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(8,24,48,.96)_0%,rgba(8,24,48,.78)_32%,rgba(8,24,48,.12)_72%,transparent_100%)]" />
+                <div className="relative p-6">
+                  <p className="text-sm font-medium text-[#b9deec]">{story.place}</p>
+                  <h3 className="font-display mt-2 text-[22px] font-semibold leading-snug text-white text-balance">{story.title}</h3>
+                  <p className="mt-3 line-clamp-4 text-[15px] leading-relaxed text-white/75">{story.summary}</p>
                 </div>
               </article>
             ))}
