@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, FileText, Newspaper } from "lucide-react";
+import { LayoutDashboard, Package, FileText, Newspaper, Award } from "lucide-react";
 
 const links = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/catalogue", label: "Catalogue", icon: Package },
   { href: "/admin/posts", label: "Updates & blog", icon: Newspaper },
+  { href: "/admin/stories", label: "Achievements", icon: Award },
   { href: "/admin/proformas", label: "Proformas", icon: FileText },
 ];
 

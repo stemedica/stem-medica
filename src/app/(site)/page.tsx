@@ -11,6 +11,7 @@ import { HomeAbout } from "@/components/HomeAbout";
 import { FollowUs } from "@/components/FollowUs";
 import { ScrollRail } from "@/components/ScrollRail";
 import { successStories } from "@/lib/success-stories";
+import { getStories } from "@/lib/story-store";
 import { homeEquipment } from "@/lib/home-equipment";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
 function EquipmentSection({ products, categories }: Awaited<ReturnType<typeof getCatalogue>>) {
@@ -64,7 +65,14 @@ const SUPPORT: [string, string][] = [
 export const revalidate = 300;
 
 export default async function Home() {
-  const [catalogue, allPosts] = await Promise.all([getCatalogue(), getAllPosts()]);
+  const [catalogue, allPosts, published] = await Promise.all([getCatalogue(), getAllPosts(), getStories()]);
+
+  /* Real achievements once Geremew has entered them in the admin. Until then
+     the cards describe the work rather than claiming a project that has not
+     been supplied, so the row is never empty and never invented. */
+  const stories = published.length
+    ? published.map((story) => ({ title: story.title, place: story.place, summary: story.summary, image: story.image || undefined }))
+    : successStories;
 
   return (
     <>
@@ -79,21 +87,46 @@ export default async function Home() {
       <section aria-labelledby="support-band" className="border-y border-hair bg-white">
         <div className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
           <div className="reveal flex flex-wrap items-end justify-between gap-5">
-            <h2 id="support-band" className="font-display max-w-[22ch] text-2xl font-semibold leading-tight tracking-tight text-navy text-balance sm:text-3xl">
+            <h2 id="support-band" className="font-display wdth-w max-w-[18ch] text-[clamp(2rem,4.2vw,3.4rem)] font-semibold leading-[1.05] tracking-[-.035em] text-navy text-balance">
               Supply is where we start, not where we stop
             </h2>
             <Link href="/service" className="inline-flex min-h-11 items-center gap-2.5 text-sm font-semibold text-navy underline underline-offset-4">
               How we support you <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
-          <dl className="reveal-stagger mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-3">
-            {SUPPORT.map(([term, detail]) => (
-              <div key={term} className="reveal border-t border-navy/30 pt-4">
-                <dt className="font-display text-lg font-semibold text-navy">{term}</dt>
-                <dd className="mt-2 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
-              </div>
-            ))}
-          </dl>
+          {/* An ECG baseline carrying a pulse at each service and running on
+              past the last one. The section's claim, drawn: geometry from the
+              site's own motif, not a picture. */}
+          <div className="relative mt-14 pt-12 lg:mt-16">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-12">
+              <svg viewBox="0 0 1200 48" preserveAspectRatio="none" fill="none" className="h-full w-full text-navy/35">
+                <path
+                  className="supply-trace"
+                  d="M0 24 H150 l9 0 6 -15 8 28 6 -22 8 9 H520 l9 0 6 -15 8 28 6 -22 8 9 H900 l9 0 6 -15 8 28 6 -22 8 9 H1200"
+                  stroke="currentColor"
+                  strokeWidth="1.25"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </svg>
+            </div>
+
+            <dl className="reveal-stagger grid gap-x-10 gap-y-12 sm:grid-cols-3">
+              {SUPPORT.map(([term, detail]) => (
+                <div key={term} className="reveal relative">
+                  <span aria-hidden="true" className="absolute -top-12 left-0 flex h-12 items-center">
+                    <svg width="15" height="15" viewBox="0 0 15 15" className="text-scarlet">
+                      <circle cx="7.5" cy="7.5" r="7" fill="white" stroke="currentColor" strokeWidth="1.25" />
+                      <circle cx="7.5" cy="7.5" r="2.75" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <dt className="font-display text-xl font-semibold leading-tight text-navy">{term}</dt>
+                  <dd className="mt-2.5 max-w-[38ch] text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </section>
 
@@ -101,8 +134,15 @@ export default async function Home() {
           visible at the edge: the crop is what says the row continues. */}
       <section aria-labelledby="stories" className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
         <div className="reveal flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
-          <h2 id="stories" className="font-display wdth-w max-w-[16ch] text-[clamp(2.2rem,4.6vw,3.9rem)] font-semibold leading-[1.04] tracking-[-.035em] text-navy text-balance">
-            Working with facilities<span className="text-scarlet">.</span>
+          {/* The two halves each stay whole: "Achievements" split across a line
+              break at this size, which a max-width in ch could not prevent. */}
+          <h2 id="stories" className="font-display wdth-w max-w-[20ch] text-[clamp(2.2rem,4.6vw,3.9rem)] font-semibold leading-[1.04] tracking-[-.035em] text-navy">
+            <span className="whitespace-nowrap">Working with</span>{" "}
+            <span className="whitespace-nowrap">facilities<span className="text-scarlet">.</span></span>{" "}
+            <span className="whitespace-nowrap">
+              <span aria-hidden="true" className="mr-3 font-normal text-hair">|</span>
+              <span className="text-steel">Achievements</span>
+            </span>
           </h2>
           <p className="max-w-[40ch] text-base leading-relaxed text-ink-soft">
             What we supply, install and keep running — from a single theatre to a whole laboratory.
@@ -110,7 +150,7 @@ export default async function Home() {
         </div>
         <div className="reveal mt-12 lg:mt-16">
           <ScrollRail label="Working with facilities">
-            {successStories.map((story) => (
+            {stories.map((story) => (
               <article key={story.title} className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-[border-color,box-shadow] duration-300 hover:border-navy/40 hover:shadow-[0_18px_44px_rgba(15,37,85,.12)]">
                 <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} className="aspect-[5/3] w-full" />
                 <div className="flex flex-1 flex-col p-5 sm:p-6">

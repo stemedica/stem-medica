@@ -37,9 +37,9 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
           <p>
             Our mission is to advance medical research and development and improve healthcare outcomes across the country — through collaboration, innovation, and product support that does not stop at delivery.
           </p>
-          <Link prefetch={false} href="/about" className="group mt-2 inline-flex min-h-13 items-center gap-4 rounded-full bg-navy py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-navy-deep">
+          <Link prefetch={false} href="/about" className="group mt-2 inline-flex min-h-13 items-center gap-4 rounded-full bg-scarlet py-2 pl-6 pr-2 text-sm font-semibold text-white transition-colors hover:bg-vital">
             Read our story
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-navy transition-transform duration-300 group-hover:rotate-45">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-scarlet transition-transform duration-300 group-hover:rotate-45">
               <ArrowUpRight size={17} aria-hidden="true" />
             </span>
           </Link>

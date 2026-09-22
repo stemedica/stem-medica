@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { readJson, writeJson, listObjects, deleteObject, ConflictError } from "../src/lib/storage";
+import { readJson, writeJson, listObjects, deleteObject, ConflictError, CONTENT_DOCUMENT_MAX_BYTES } from "../src/lib/storage";
 import { catalogueSchema, isExpired, DAYS_7 } from "../src/lib/cms-schema";
 
 test("storage persists JSON, rejects stale/concurrent writes and protects deletes", async () => {
@@ -38,4 +38,16 @@ test("draft expires exactly at seven days", () => {
   const draft = { expiresAt: new Date(start + DAYS_7).toISOString() };
   assert.equal(isExpired(draft, start + DAYS_7 - 1), false);
   assert.equal(isExpired(draft, start + DAYS_7), true);
+});
+
+test("every content collection routes to the content store, not blob", async () => {
+  // stories/ once fell through this test to Vercel Blob, which is unreachable
+  // during a build and took the whole prerender down with a connect timeout.
+  // The size guard only runs for content keys, so it doubles as the probe.
+  const oversized = { blob: "x".repeat(CONTENT_DOCUMENT_MAX_BYTES + 1) };
+  for (const key of ["catalogue/current.json", "posts/current.json", "stories/current.json", "drafts/current.json"]) {
+    let refused = "";
+    try { await writeJson(key, oversized); } catch (error) { refused = (error as Error).message; }
+    assert.match(refused, /KB limit/, `${key} is not treated as a content document`);
+  }
 });
