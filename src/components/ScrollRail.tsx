@@ -14,8 +14,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 export function ScrollRail({ children, label, size = "wide" }: {
   children: ReactNode;
   label: string;
-  /** "wide" fits about three across on a desktop; "narrow" about four. */
-  size?: "wide" | "narrow";
+  /** "feature" fits two across, "wide" about three, "narrow" about four. */
+  size?: "feature" | "wide" | "narrow";
 }) {
   const items = Children.toArray(children);
   const id = useId();
@@ -52,9 +52,13 @@ export function ScrollRail({ children, label, size = "wide" }: {
 
   if (!items.length) return null;
 
-  const width = size === "wide"
-    ? "w-[82%] sm:w-[54%] lg:w-[31.5%]"
-    : "w-[78%] sm:w-[44%] lg:w-[30%] xl:w-[23.5%]";
+  const width = {
+    // Half-width cards read as stories; thirds read as tiles. Each keeps the
+    // next card part-visible, which is what says the row continues.
+    feature: "w-[86%] sm:w-[70%] lg:w-[47.5%]",
+    wide: "w-[82%] sm:w-[54%] lg:w-[31.5%]",
+    narrow: "w-[78%] sm:w-[44%] lg:w-[30%] xl:w-[23.5%]",
+  }[size];
   const arrow = "pointer-events-auto flex size-12 items-center justify-center rounded-full border border-hair bg-white text-navy shadow-[0_6px_20px_rgba(15,37,85,.16)] transition-[opacity,transform,background-color] duration-300 hover:bg-navy hover:text-white disabled:pointer-events-none disabled:opacity-0 focus-visible:opacity-100 group-hover/rail:opacity-100 sm:opacity-0";
 
   return (

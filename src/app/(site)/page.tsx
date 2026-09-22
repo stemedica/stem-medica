@@ -46,36 +46,35 @@ export default async function Home() {
           </p>
         </div>
         <div className="reveal mt-12 lg:mt-16">
-          <ScrollRail label="Working with facilities">
+          <ScrollRail label="Working with facilities" size="feature">
             {stories.map((story) => (
-              <article key={story.title} className="group relative isolate flex aspect-[4/5] flex-col justify-end overflow-hidden rounded-2xl bg-navy-deep">
-                {/* The shared placeholder captions itself, which would repeat
-                    the title printed directly beneath it. Without a photo the
-                    card shows the marked panel alone. */}
-                {story.image ? (
-                  <V2Photo
-                    src={story.image}
-                    label={`${story.title}: photograph`}
-                    rounded={false}
-                    fill
-                    className="parallax-media"
-                  />
-                ) : (
-                  <span aria-hidden="true" className="absolute inset-0 bg-navy-deep">
-                    <svg className="h-full w-full text-white/10" preserveAspectRatio="none" viewBox="0 0 100 100">
-                      <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-                      <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
-                    </svg>
-                    <ImageIcon size={24} className="absolute left-1/2 top-[30%] -translate-x-1/2 text-white/30" />
-                  </span>
-                )}
-                {/* A scrim rather than a flat tint: the text sits at the foot of
-                    the card, so only the foot needs to carry it. */}
-                <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(8,24,48,.96)_0%,rgba(8,24,48,.78)_32%,rgba(8,24,48,.12)_72%,transparent_100%)]" />
-                <div className="relative p-6">
-                  <p className="text-sm font-medium text-[#b9deec]">{story.place}</p>
-                  <h3 className="font-display mt-2 text-[22px] font-semibold leading-snug text-white text-balance">{story.title}</h3>
-                  <p className="mt-3 line-clamp-4 text-[15px] leading-relaxed text-white/75">{story.summary}</p>
+              <article key={story.title} className="group flex flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-[border-color,box-shadow] duration-300 hover:border-navy/40 hover:shadow-[0_18px_44px_rgba(15,37,85,.12)]">
+                <div className="relative aspect-[3/2] overflow-hidden border-b border-hair bg-navy-deep">
+                  {/* The shared placeholder captions itself, which would repeat
+                      the title printed directly beneath it. Without a photo the
+                      card shows the marked panel alone. */}
+                  {story.image ? (
+                    <V2Photo
+                      src={story.image}
+                      label={`${story.title}: photograph`}
+                      rounded={false}
+                      fill
+                      className="parallax-media"
+                    />
+                  ) : (
+                    <span aria-hidden="true" className="absolute inset-0">
+                      <svg className="h-full w-full text-white/10" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+                        <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.4" vectorEffect="non-scaling-stroke" />
+                      </svg>
+                      <ImageIcon size={26} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white/30" />
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-1 flex-col p-6 sm:p-7">
+                  <p className="text-sm font-medium text-navy-2">{story.place}</p>
+                  <h3 className="font-display mt-2 text-[clamp(1.35rem,2.2vw,1.75rem)] font-semibold leading-snug text-navy text-balance">{story.title}</h3>
+                  <p className="mt-3.5 text-base leading-relaxed text-ink-soft">{story.summary}</p>
                 </div>
               </article>
             ))}
