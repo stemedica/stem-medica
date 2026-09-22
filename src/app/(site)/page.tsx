@@ -63,6 +63,14 @@ export const revalidate = 300;
 export default async function Home() {
   const [catalogue, allPosts] = await Promise.all([getCatalogue(), getAllPosts()]);
 
+  /* Every line here is checkable against the business or the catalogue. No
+     invented totals: figures Geremew has not supplied are simply not claimed. */
+  const strengths: [string, string][] = [
+    ["Registered importer", "A registered medical importing company, working with manufacturers and exporters to bring their equipment into Ethiopia."],
+    [`${catalogue.categories.length} equipment categories`, "From monitoring and emergency care to imaging, laboratory and dental — supplied from one place."],
+    ["Based in Addis Ababa", "Our team works from Bole, and delivers, installs and supports equipment at facilities around the country."],
+  ];
+
   return (
     <>
       <HomeHero />
@@ -73,7 +81,7 @@ export default async function Home() {
           themselves did not, so this names the three services instead. */}
       <section aria-labelledby="support-band" className="border-y border-hair bg-white">
         <div className="mx-auto max-w-6xl px-5 py-12 lg:py-16">
-          <div className="flex flex-wrap items-end justify-between gap-5">
+          <div className="reveal flex flex-wrap items-end justify-between gap-5">
             <h2 id="support-band" className="font-display max-w-[22ch] text-2xl font-semibold leading-tight tracking-tight text-navy text-balance sm:text-3xl">
               Supply is where we start, not where we stop
             </h2>
@@ -81,9 +89,9 @@ export default async function Home() {
               How we support you <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
-          <dl className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-3">
+          <dl className="reveal-stagger mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-3">
             {SUPPORT.map(([term, detail]) => (
-              <div key={term} className="border-t border-navy/30 pt-4">
+              <div key={term} className="reveal border-t border-navy/30 pt-4">
                 <dt className="font-display text-lg font-semibold text-navy">{term}</dt>
                 <dd className="mt-2 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
               </div>
@@ -93,20 +101,33 @@ export default async function Home() {
       </section>
 
 
-      {/* Heading and body sit side by side so this reads as a statement rather
-          than another centred block in the stack. */}
-      <section aria-labelledby="mission" className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
-        <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          <h2 id="mission" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.06] tracking-[-.03em] text-navy text-balance">
-            Advancing healthcare across Ethiopia
+      {/* Who we are, and what that is built on. Replaces the single-paragraph
+          mission block: one section carries both rather than stacking two
+          near-identical bands of text. */}
+      <section aria-labelledby="about" className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
+        <div className="reveal grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
+          <h2 id="about" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.06] tracking-[-.03em] text-navy text-balance">
+            Closing the healthcare technology gap
           </h2>
           <div className="lg:pt-3">
             <p className="max-w-[62ch] text-lg leading-relaxed text-ink-soft">
-              We believe in collaboration and innovation. By importing and distributing quality medical products, we help health facilities access the equipment and support they need.
+              STEM MEDICA is a registered medical importing company distributing medical supplies, devices and equipment across Ethiopia. We focus on quality and affordability so more hospitals, clinics and laboratories can reach the technology they need.
             </p>
             <div className="mt-8"><V2Button href="/about" badge>Read our story</V2Button></div>
           </div>
         </div>
+
+        {/* One panel with dividers, not three tiles: the services band above
+            already uses a three-column rule, and repeating it here made the
+            two read as the same section twice. */}
+        <dl className="reveal-stagger mt-14 grid overflow-hidden rounded-2xl border border-hair bg-white divide-y divide-hair sm:grid-cols-3 sm:divide-x sm:divide-y-0 lg:mt-16">
+          {strengths.map(([term, detail]) => (
+            <div key={term} className="reveal p-6 lg:p-7">
+              <dt className="font-display text-lg font-semibold leading-tight text-navy">{term}</dt>
+              <dd className="mt-2 text-[15px] leading-relaxed text-ink-soft">{detail}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
       {/* Insights */}
@@ -114,7 +135,7 @@ export default async function Home() {
 
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">
-        <div className="v2-frame v2-frame-dark relative isolate px-6 py-16 text-center sm:px-10 sm:py-20">
+        <div className="reveal v2-frame v2-frame-dark relative isolate px-6 py-16 text-center sm:px-10 sm:py-20">
           <V2Head
             align="center"
             tone="dark"
