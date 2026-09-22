@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, Trash2 } from "lucide-react";
-import { control, TextField, TextareaField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
+import { control, TextField, TextareaField, SelectField, CheckboxField, FileField, Panel, StatusPill, EmptyState } from "../ui";
 import { downscaleForUpload } from "@/lib/client-image";
 import { useAdminFeedback } from "@/components/useAdminFeedback";
 import { AdminSaveBar } from "@/components/AdminSaveBar";
@@ -33,6 +33,8 @@ export function StoriesEditor() {
   const [loaded, setLoaded] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [query, setQuery] = useState("");
+  /** Titles for the post picker; a slug typed by hand is a broken link waiting. */
+  const [posts, setPosts] = useState<{ slug: string; title: string }[]>([]);
 
   const serialized = useMemo(() => JSON.stringify(stories), [stories]);
   const dirty = saved !== serialized;
@@ -57,6 +59,20 @@ export function StoriesEditor() {
       .finally(() => { if (active) setBusy(false); });
     return () => { active = false; };
   }, [accept, setMessage]);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/admin/api/posts", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((body) => {
+        if (!active || !body?.posts) return;
+        setPosts(body.posts
+          .filter((post: { published: boolean; slug: string }) => post.published && post.slug)
+          .map((post: { slug: string; title: string }) => ({ slug: post.slug, title: post.title })));
+      })
+      .catch(() => { /* The picker is optional; a failure here must not block editing. */ });
+    return () => { active = false; };
+  }, []);
 
   useUnsavedChanges(dirty, confirm);
 
@@ -215,6 +231,22 @@ export function StoriesEditor() {
               onFiles={(files) => pickImage(files[0] ?? null, current.id)}
               hint="Optional. Without one the card shows a marked placeholder." />
             {current.image ? <button type="button" onClick={() => update(current.id, { image: "" })} className="btn-outline min-h-11">Remove photo</button> : null}
+          </Panel>
+
+          <Panel title="Linked story">
+            <SelectField
+              label="Blog post" value={current.postSlug}
+              onChange={(value) => update(current.id, { postSlug: value })}
+              hint={posts.length
+                ? "Adds a “Read the story” button to the card. Leave as none for no button."
+                : "No published posts yet. Publish one under Updates & blog to link it here."}
+            >
+              <option value="">No linked post</option>
+              {posts.map((post) => <option key={post.slug} value={post.slug}>{post.title}</option>)}
+              {current.postSlug && !posts.some((post) => post.slug === current.postSlug)
+                ? <option value={current.postSlug}>{current.postSlug} (not published)</option>
+                : null}
+            </SelectField>
           </Panel>
 
           <Panel title="Publishing">

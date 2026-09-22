@@ -15,11 +15,17 @@ export const storySchema = z.object({
   place: z.string().trim().min(1).max(120),
   summary: z.string().trim().max(600).default(""),
   image: image.default(""),
+  /**
+   * Optional blog post telling this story in full. When set the card carries a
+   * button through to it; when empty the card shows none, because a button
+   * that goes nowhere is worse than no button at all.
+   */
+  postSlug: z.union([z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(120), z.literal("")]).default(""),
   published: z.boolean(),
 });
 export const storiesSchema = z.array(storySchema).max(60);
 export type CmsStory = z.infer<typeof storySchema>;
 
 export function blankStory(): CmsStory {
-  return { id: crypto.randomUUID(), title: "", place: "", summary: "", image: "", published: false };
+  return { id: crypto.randomUUID(), title: "", place: "", summary: "", image: "", postSlug: "", published: false };
 }

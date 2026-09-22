@@ -14,13 +14,14 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 export function ScrollRail({ children, label, size = "wide" }: {
   children: ReactNode;
   label: string;
-  /** "feature" fits two across, "wide" about three, "narrow" about four. */
-  size?: "feature" | "wide" | "narrow";
+  /** "single" shows one at a time, "feature" two, "wide" three, "narrow" four. */
+  size?: "single" | "feature" | "wide" | "narrow";
 }) {
   const items = Children.toArray(children);
   const id = useId();
   const rail = useRef<HTMLDivElement>(null);
   const [edge, setEdge] = useState({ start: true, end: false });
+  const [position, setPosition] = useState(0);
 
   const measure = useCallback(() => {
     const el = rail.current;
@@ -29,6 +30,13 @@ export function ScrollRail({ children, label, size = "wide" }: {
       start: el.scrollLeft <= 2,
       end: el.scrollLeft >= el.scrollWidth - el.clientWidth - 2,
     });
+    const first = el.children[0] as HTMLElement | undefined;
+    const second = el.children[1] as HTMLElement | undefined;
+    if (!first || !second) return;
+    const step = second.offsetLeft - first.offsetLeft;
+    setPosition(el.scrollLeft >= el.scrollWidth - el.clientWidth - 2
+      ? el.children.length - 1
+      : Math.min(el.children.length - 1, Math.max(0, Math.round(el.scrollLeft / step))));
   }, []);
 
   useEffect(() => {
@@ -52,7 +60,11 @@ export function ScrollRail({ children, label, size = "wide" }: {
 
   if (!items.length) return null;
 
+  const single = size === "single";
   const width = {
+    // One at a time, with a sliver of the next: without the peek nothing on
+    // screen says the row continues, and the counter alone is easy to miss.
+    single: "w-[92%] sm:w-[88%] lg:w-[84%]",
     // Half-width cards read as stories; thirds read as tiles. Each keeps the
     // next card part-visible, which is what says the row continues.
     feature: "w-[86%] sm:w-[70%] lg:w-[47.5%]",
@@ -63,6 +75,12 @@ export function ScrollRail({ children, label, size = "wide" }: {
 
   return (
     <div className="group/rail relative min-w-0">
+      {single && items.length > 1 ? (
+        <p className="mb-4 flex items-center gap-3 text-sm font-medium text-steel">
+          <span aria-live="polite" aria-atomic="true" className="tabular-nums">{position + 1} of {items.length}</span>
+          <span aria-hidden="true" className="h-px flex-1 bg-hair" />
+        </p>
+      ) : null}
       <div
         id={id}
         ref={rail}

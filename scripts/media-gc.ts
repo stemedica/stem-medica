@@ -2,7 +2,8 @@
  * List, and optionally delete, blobs under media/ that no published content
  * references.
  *
- * Referenced means: a category image, a product image, a post cover, or a post
+ * Referenced means: a category image, a product image, an achievement photo,
+ * a post cover, or a post
  * gallery entry. Anything else is an upload that was replaced or abandoned.
  *
  *   npx tsx scripts/media-gc.ts            # list only
@@ -18,9 +19,11 @@ async function main() {
 
   let catalogue: { categories?: { image?: string }[]; products?: { image?: string }[] } | undefined;
   let posts: { slug: string; image?: string; gallery?: { src: string }[] }[] = [];
+  let stories: { image?: string }[] = [];
   try {
     catalogue = await doc("catalogue/current.json");
     posts = (await doc("posts/current.json")) ?? [];
+    stories = (await doc("stories/current.json")) ?? [];
   } finally {
     await pool.end();
   }
@@ -32,6 +35,11 @@ async function main() {
   for (const post of posts) {
     if (post.image) referenced.add(post.image);
     for (const image of post.gallery ?? []) referenced.add(image.src);
+  }
+  // Achievements were missing here, so every achievement photo counted as an
+  // orphan and would have been deleted on the next sweep.
+  for (const story of stories) {
+    if (story.image) referenced.add(story.image);
   }
 
   const blobs: { pathname: string; url: string; size: number }[] = [];
