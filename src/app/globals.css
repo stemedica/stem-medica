@@ -479,3 +479,26 @@ body {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
 }
+
+/* Image loading shimmer.
+ *
+ * Sits behind the picture, so the photograph simply covers it as it paints.
+ * No script decides when to hide it, which means it cannot strand a card in a
+ * loading state if something fails.
+ *
+ * It runs a bounded number of times rather than forever: on the phones this
+ * site is built for, several cards animating indefinitely behind images that
+ * already arrived is wasted battery for something nobody can see.
+ */
+.media-loading { background-color: var(--color-navy-deep); }
+@media (prefers-reduced-motion: no-preference) {
+  .media-loading::before {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(100deg, transparent 18%, rgba(255, 255, 255, .07) 50%, transparent 82%);
+    animation: media-shimmer 1.6s var(--ease-out) 8;
+  }
+}
+@keyframes media-shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}

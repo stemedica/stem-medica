@@ -53,7 +53,12 @@ export default async function Home() {
                 {/* object-cover, so a portrait, landscape or odd-ratio upload
                     all fill the same frame rather than letterboxing. */}
                 {story.image ? (
-                  <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} fill className="parallax-media" />
+                  // The shimmer is scoped to cards that are waiting for a
+                  // picture. A card with none is not loading, it simply has no
+                  // photograph, and shimmering at it would say otherwise.
+                  <span className="media-loading absolute inset-0">
+                    <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} fill className="parallax-media" />
+                  </span>
                 ) : (
                   <span aria-hidden="true" className="absolute inset-0">
                     <svg className="h-full w-full text-white/10" preserveAspectRatio="none" viewBox="0 0 100 100">
