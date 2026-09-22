@@ -399,3 +399,39 @@ body {
   }
 }
 @keyframes supply-draw { to { stroke-dashoffset: 0; } }
+
+/* Reading progress, drawn on the page's own top edge.
+   Scroll-linked, so it costs no script and cannot drift from the scroll
+   position. Without scroll timelines it stays at scale 0 and is simply not
+   seen, which is the right absence rather than a broken bar. */
+.scroll-progress {
+  position: fixed; inset: 0 0 auto 0; height: 2px; z-index: 60;
+  background: var(--color-scarlet);
+  transform: scaleX(0); transform-origin: 0 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress { animation: progress-grow linear both; animation-timeline: scroll(root block); }
+  }
+}
+@keyframes progress-grow { to { transform: scaleX(1); } }
+
+/* The hero hands the page over as it leaves rather than simply scrolling off. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .hero-recede { animation: hero-recede linear both; animation-timeline: view(); animation-range: exit 0% exit 100%; }
+  }
+}
+@keyframes hero-recede { to { opacity: .3; transform: translateY(-48px); } }
+
+/* Slow drift on card media, tied to the scroll rather than a timer, so a
+   photograph has some life in it without asking to be looked at. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .parallax-media { animation: media-drift linear both; animation-timeline: view(); animation-range: cover 0% cover 100%; }
+  }
+}
+@keyframes media-drift {
+  from { transform: scale(1.12) translateY(-2.5%); }
+  to { transform: scale(1.12) translateY(2.5%); }
+}

@@ -17,11 +17,11 @@ export function HomeHero() {
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(8,24,48,.95)_0%,rgba(8,24,48,.74)_46%,rgba(8,24,48,.18)_100%)]" />
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,rgba(8,24,48,.92),transparent_44%)]" />
 
-    <div className="hero-in relative z-10 mx-auto flex min-h-[calc(100svh_-_var(--header-h))] w-full max-w-6xl flex-col justify-center px-5 pb-28 pt-12 sm:px-6 sm:pb-24">
+    <div className="hero-in hero-recede relative z-10 mx-auto flex min-h-[calc(100svh_-_var(--header-h))] w-full max-w-6xl flex-col justify-center px-5 pb-28 pt-12 sm:px-6 sm:pb-24">
       <p className="flex items-center gap-2 text-sm font-medium text-white/75">
         <MapPin size={15} aria-hidden="true" />{site.city}
       </p>
-      <h1 id="hero-title" className="font-display mt-7 max-w-[13ch] text-[clamp(2.75rem,7vw,5.75rem)] font-semibold leading-[1.02] tracking-[-.035em] text-balance">
+      <h1 id="hero-title" className="font-display wdth-xw mt-7 max-w-[13ch] text-[clamp(2.75rem,7vw,5.75rem)] font-semibold leading-[1.02] tracking-[-.035em] text-balance">
         Quality equipment.<br /><span className="text-[#b9deec]">Better care.</span>
       </h1>
       <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-white/85">

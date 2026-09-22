@@ -27,9 +27,9 @@ export function HomeEquipment({ groups }: { groups: ReturnType<typeof homeEquipm
       </div>
 
       {listed.length ? (
-        <ul className="reveal mt-12 border-t border-navy/20 lg:mt-16">
+        <ul className="mt-12 border-t border-navy/20 lg:mt-16">
           {listed.map(category => (
-            <li key={category.slug}>
+            <li key={category.slug} className="reveal">
               <Link
                 prefetch={false}
                 href={`/products?cat=${encodeURIComponent(category.slug)}`}

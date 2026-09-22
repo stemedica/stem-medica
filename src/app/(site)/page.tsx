@@ -9,6 +9,7 @@ import { HomeHero } from "@/components/HomeHero";
 import { HomeEquipment } from "@/components/HomeEquipment";
 import { HomeAbout } from "@/components/HomeAbout";
 import { FollowUs } from "@/components/FollowUs";
+import { WaveField } from "@/components/WaveField";
 import { ScrollRail } from "@/components/ScrollRail";
 import { successStories } from "@/lib/success-stories";
 import { getStories } from "@/lib/story-store";
@@ -176,7 +177,7 @@ export default async function Home() {
                     label={`${story.title}: photograph`}
                     rounded={false}
                     fill
-                    className="transition-transform duration-700 group-hover:scale-[1.05]"
+                    className="parallax-media"
                   />
                 ) : (
                   <span aria-hidden="true" className="absolute inset-0 bg-navy-deep">
@@ -207,13 +208,14 @@ export default async function Home() {
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">
         <div className="reveal v2-frame v2-frame-dark relative isolate px-6 py-16 text-center sm:px-10 sm:py-20">
+          <WaveField className="opacity-60" />
           <V2Head
             align="center"
             tone="dark"
             title="Let’s improve healthcare together"
             lede="Tell us what your facility needs. We’ll help you choose the right equipment and prepare a quote."
           />
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="relative z-10 mt-8 flex flex-wrap justify-center gap-3">
             <V2Button href="/quote" badge>Request a quote</V2Button>
             <V2Button href={`tel:${site.phoneIntl}`} variant="glass">{site.phone}</V2Button>
           </div>
@@ -221,6 +223,7 @@ export default async function Home() {
       </section>
 
       <FollowUs />
+      <div aria-hidden="true" className="scroll-progress" />
     </>
   );
 }
