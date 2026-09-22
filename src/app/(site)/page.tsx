@@ -46,7 +46,10 @@ export default async function Home() {
         <div className="reveal mt-12 lg:mt-16">
           <ScrollRail label="Working with facilities" size="single">
             {stories.map((story) => (
-              <article key={story.title} className="relative isolate flex aspect-[3/4] min-h-[440px] flex-col justify-end overflow-hidden rounded-2xl bg-navy-deep sm:aspect-[4/3] lg:aspect-[16/9]">
+              <article key={story.title} className="relative isolate flex min-h-[78svh] flex-col justify-end overflow-hidden rounded-2xl bg-navy-deep sm:aspect-[5/4] sm:min-h-[560px] lg:aspect-[16/10] lg:min-h-[660px]">
+                {/* No fixed ratio on a phone: the card takes its height from the
+                    viewport and its own text, so a long summary lengthens it rather
+                    than being clipped. Ratios return once there is width to spare. */}
                 {/* object-cover, so a portrait, landscape or odd-ratio upload
                     all fill the same frame rather than letterboxing. */}
                 {story.image ? (
