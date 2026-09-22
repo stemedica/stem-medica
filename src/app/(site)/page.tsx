@@ -7,6 +7,8 @@ import { getAllPosts, formatDate } from "@/lib/post-store";
 import { site } from "@/lib/site";
 import { HomeHero } from "@/components/HomeHero";
 import { HomeEquipment } from "@/components/HomeEquipment";
+import { HomeAbout } from "@/components/HomeAbout";
+import { FollowUs } from "@/components/FollowUs";
 import { ScrollRail } from "@/components/ScrollRail";
 import { successStories } from "@/lib/success-stories";
 import { homeEquipment } from "@/lib/home-equipment";
@@ -68,6 +70,8 @@ export default async function Home() {
     <>
       <HomeHero />
 
+      <HomeAbout categoryCount={catalogue.categories.length} />
+
       <EquipmentSection {...catalogue} />
 
       {/* What happens after the order. Numbered steps said nothing the words
@@ -93,30 +97,21 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Who we are, and what that is built on. Replaces the single-paragraph
-          mission block: one section carries both rather than stacking two
-          near-identical bands of text. */}
-      <section aria-labelledby="about" className="mx-auto max-w-6xl px-5 py-16 lg:py-24">
-        <div className="reveal grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:gap-16">
-          <h2 id="about" className="font-display text-[clamp(2rem,4vw,3.25rem)] font-semibold leading-[1.06] tracking-[-.03em] text-navy text-balance">
-            Closing the healthcare technology gap
+      {/* Story cards, not a metrics row. The next card is deliberately part
+          visible at the edge: the crop is what says the row continues. */}
+      <section aria-labelledby="stories" className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
+        <div className="reveal flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+          <h2 id="stories" className="font-display wdth-w max-w-[16ch] text-[clamp(2.2rem,4.6vw,3.9rem)] font-semibold leading-[1.04] tracking-[-.035em] text-navy text-balance">
+            Working with facilities<span className="text-scarlet">.</span>
           </h2>
-          <div className="lg:pt-3">
-            <p className="max-w-[62ch] text-lg leading-relaxed text-ink-soft">
-              STEM MEDICA is a registered medical importing company distributing medical supplies, devices and equipment across Ethiopia. We focus on quality and affordability so more hospitals, clinics and laboratories can reach the technology they need.
-            </p>
-            <div className="mt-8"><V2Button href="/about" badge>Read our story</V2Button></div>
-          </div>
+          <p className="max-w-[40ch] text-base leading-relaxed text-ink-soft">
+            What we supply, install and keep running — from a single theatre to a whole laboratory.
+          </p>
         </div>
-
-        <h3 className="reveal font-display mt-16 text-2xl font-semibold tracking-tight text-navy lg:mt-20">Working with facilities</h3>
-
-        {/* Story cards, not a metrics row. The next card is deliberately part
-            visible at the edge: the crop is what says the row continues. */}
-        <div className="reveal mt-14 lg:mt-16">
+        <div className="reveal mt-12 lg:mt-16">
           <ScrollRail label="Working with facilities">
             {successStories.map((story) => (
-              <article key={story.title} className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-white">
+              <article key={story.title} className="flex flex-col overflow-hidden rounded-2xl border border-hair bg-white transition-[border-color,box-shadow] duration-300 hover:border-navy/40 hover:shadow-[0_18px_44px_rgba(15,37,85,.12)]">
                 <V2Photo src={story.image} label={`${story.title}: photograph`} rounded={false} className="aspect-[5/3] w-full" />
                 <div className="flex flex-1 flex-col p-5 sm:p-6">
                   <p className="text-sm font-medium text-navy-2">{story.place}</p>
@@ -147,6 +142,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <FollowUs />
     </>
   );
 }
