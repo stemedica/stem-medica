@@ -91,8 +91,8 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
 
         <nav aria-label="Main navigation" className="hidden items-center gap-5 lg:flex">
           {nav.filter((i) => !("cta" in i)).map((item) => {
-            const link = `label inline-flex min-h-11 items-center whitespace-nowrap transition-colors hover:text-navy ${
-              isCurrent(item.href) ? "text-navy underline underline-offset-8" : "text-ink-soft"
+            const link = `label inline-flex min-h-11 items-center whitespace-nowrap transition-colors duration-200 hover:text-scarlet ${
+              isCurrent(item.href) ? "text-navy underline underline-offset-8 decoration-scarlet decoration-2" : "text-ink-soft"
             }`;
             // Products keeps its own link and gains a separate disclosure beside
             // it, so the department list never costs anyone the catalogue page.
@@ -108,7 +108,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                     aria-expanded={menu}
                     aria-controls="products-menu"
                     aria-label={menu ? "Hide departments" : "Show departments"}
-                    className="flex size-8 items-center justify-center rounded-lg text-steel transition-colors hover:bg-navy-tint hover:text-navy"
+                    className="flex size-8 items-center justify-center rounded-lg text-steel transition-colors duration-200 hover:bg-scarlet-tint hover:text-scarlet"
                   >
                     <ChevronDown size={16} aria-hidden="true" className={`transition-transform duration-300 ${menu ? "rotate-180" : ""}`} />
                   </button>
@@ -117,7 +117,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                       on the site, so they have to exist in the markup — and a
                       hidden subtree is correctly ignored by assistive tech. */}
                   <div hidden={!menu} id="products-menu" className="absolute left-0 top-full z-50 mt-2 w-72 overflow-hidden rounded-xl border border-hair bg-white py-1.5 shadow-[0_18px_44px_rgba(15,37,85,.16)]">
-                      <Link href="/products" prefetch={false} onClick={() => setMenu(false)} className="block border-b border-hair px-4 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-navy-tint">
+                      <Link href="/products" prefetch={false} onClick={() => setMenu(false)} className="block border-b border-hair px-4 py-2.5 text-sm font-semibold text-navy transition-colors duration-200 hover:bg-scarlet-tint hover:text-scarlet">
                         All equipment
                       </Link>
                       {categories.map((category) => (
@@ -126,7 +126,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                           href={`/products?cat=${encodeURIComponent(category.slug)}`}
                           prefetch={false}
                           onClick={() => setMenu(false)}
-                          className="block px-4 py-2.5 text-sm text-ink-soft transition-colors hover:bg-navy-tint hover:text-navy"
+                          className="block px-4 py-2.5 text-sm text-ink-soft transition-colors duration-200 hover:bg-scarlet-tint hover:text-scarlet"
                         >
                           {category.name}
                         </Link>
@@ -143,14 +143,14 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
           })}
           <a
             href={`tel:${site.phoneIntl}`}
-            className="label inline-flex min-h-11 items-center whitespace-nowrap font-semibold text-ink transition-colors hover:text-navy"
+            className="label inline-flex min-h-11 items-center whitespace-nowrap font-semibold text-ink transition-colors duration-200 hover:text-scarlet"
           >
             {site.phone}
           </a>
           <Link
             href="/quote"
             prefetch={false}
-            className="label inline-flex min-h-11 items-center whitespace-nowrap rounded-xl bg-navy px-4 py-2.5 font-semibold text-white transition-colors hover:bg-navy-deep"
+            className="label inline-flex min-h-11 items-center whitespace-nowrap rounded-xl bg-navy px-4 py-2.5 font-semibold text-white transition-colors duration-200 hover:bg-scarlet"
           >
             Request a quote
           </Link>
@@ -163,7 +163,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="-mr-1 flex shrink-0 min-h-10 items-center gap-2 rounded-full border border-hair bg-paper/80 px-3 text-xs font-semibold uppercase tracking-wider text-navy transition-colors hover:bg-navy-tint hover:text-navy active:bg-navy/10 lg:hidden"
+          className="-mr-1 flex shrink-0 min-h-10 items-center gap-2 rounded-full border border-hair bg-paper/80 px-3 text-xs font-semibold uppercase tracking-wider text-navy transition-colors duration-200 hover:border-scarlet/40 hover:bg-scarlet-tint hover:text-scarlet active:bg-scarlet/10 lg:hidden"
         >
           <span>{open ? "Close" : "Menu"}</span>
           <span className="relative block h-3.5 w-4 shrink-0 text-navy" aria-hidden="true">
@@ -183,10 +183,10 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                 prefetch={false}
                 onClick={() => setOpen(false)}
                 aria-current={isCurrent(item.href) ? "page" : undefined}
-                className="flex min-h-12 items-center justify-between border-b border-hair px-5 py-3 text-base text-ink-soft aria-[current=page]:bg-navy-tint aria-[current=page]:font-semibold aria-[current=page]:text-navy"
+                className="flex min-h-12 items-center justify-between border-b border-hair px-5 py-3 text-base text-ink-soft transition-colors duration-200 hover:text-scarlet aria-[current=page]:bg-scarlet-tint aria-[current=page]:font-semibold aria-[current=page]:text-scarlet"
               >
                 {item.label}
-                <span aria-hidden="true" className="text-navy">→</span>
+                <span aria-hidden="true" className="text-current">→</span>
               </Link>
               {item.href === "/products" && categories.length ? (
                 <>
@@ -195,7 +195,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                     onClick={() => setMobileMenu((value) => !value)}
                     aria-expanded={mobileMenu}
                     aria-controls="mobile-departments"
-                    className="flex min-h-12 w-full items-center justify-between border-b border-hair bg-paper px-5 py-3 text-left text-[15px] font-medium text-navy"
+                    className="flex min-h-12 w-full items-center justify-between border-b border-hair bg-paper px-5 py-3 text-left text-[15px] font-medium text-navy transition-colors duration-200 hover:text-scarlet"
                   >
                     Browse departments
                     <ChevronDown size={18} aria-hidden="true" className={`transition-transform duration-300 ${mobileMenu ? "rotate-180" : ""}`} />
@@ -207,7 +207,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
                           href={`/products?cat=${encodeURIComponent(category.slug)}`}
                           prefetch={false}
                           onClick={() => { setOpen(false); setMobileMenu(false); }}
-                          className="flex min-h-11 items-center px-5 py-2 pl-8 text-[15px] text-ink-soft transition-colors hover:text-navy"
+                          className="flex min-h-11 items-center px-5 py-2 pl-8 text-[15px] text-ink-soft transition-colors duration-200 hover:text-scarlet"
                         >
                           {category.name}
                         </Link>
