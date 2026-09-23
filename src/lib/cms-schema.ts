@@ -51,7 +51,7 @@ export const draftSchema = z.object({
     number: z.string().max(100), date: z.iso.date(), validity: z.union([z.literal(""), z.iso.date()]),
     currency: z.string().trim().min(1).max(10), includeVat: z.boolean().default(true), vatRate: z.number().min(0).max(100),
     client: z.object({ name: draftText, attn: draftText, address: draftText, tin: draftText }),
-    items: z.array(z.object({ id: z.string().min(1).max(100), catalogueSlug: slug.optional(), description: draftText, qty: z.number().positive().max(1e6), unit: z.string().max(30), price: z.number().min(0).max(1e10) })).min(1).max(100).superRefine((items, ctx) => {
+    items: z.array(z.object({ id: z.string().min(1).max(100), catalogueSlug: slug.optional(), description: draftText, model: draftText.default(""), manufacturer: draftText.default(""), brand: draftText.default(""), qty: z.number().positive().max(1e6), unit: z.string().max(30), price: z.number().min(0).max(1e10) })).min(1).max(100).superRefine((items, ctx) => {
       const ids = new Set<string>();
       items.forEach((item, index) => {
         if (ids.has(item.id)) ctx.addIssue({ code: "custom", path: [index, "id"], message: "Duplicate line item identifier" });

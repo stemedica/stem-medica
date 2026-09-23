@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Wrench, GraduationCap, PackageSearch, Headset } from "lucide-react";
+import { Stethoscope, Wrench, GraduationCap, Headset } from "lucide-react";
 import { Section } from "@/components/Section";
 import { Button } from "@/components/Button";
 import { site } from "@/lib/site";
@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 };
 
 const stages = [
-  { n: "01", icon: Wrench, title: "Installation", body: "Complete medical equipment installation, coordinated with delivery and shipping services for your facility." },
-  { n: "02", icon: GraduationCap, title: "Training", body: "Practical product training for health professionals and biomedical engineers who use and maintain the equipment." },
-  { n: "03", icon: PackageSearch, title: "Spare parts", body: "Supply of spare parts, consumables and accessories used across the medical device industry." },
+  { n: "01", icon: Stethoscope, title: "Consultation", body: "Expert clinical planning, equipment selection and facility needs assessment tailored to your medical requirements." },
+  { n: "02", icon: Wrench, title: "Installation", body: "Complete medical equipment installation, coordinated with delivery and precision calibration for your facility." },
+  { n: "03", icon: GraduationCap, title: "Training", body: "Practical product training for health professionals and biomedical engineers who use and maintain the equipment." },
   { n: "04", icon: Headset, title: "Technical support", body: "Ongoing technical assistance to help your team use our products effectively and respond to equipment issues." },
 ];
 
@@ -24,7 +24,7 @@ export default function ServicePage() {
       <Section
         headingLevel="h1"
         title="Service beyond delivery"
-        lede="We install equipment, train teams and provide the parts and technical support needed for dependable daily use."
+        lede="From clinical planning and installation to staff training and ongoing technical support, our services ensure dependable daily use."
       >
         <ol className="mt-12 border-t border-hair">
           {stages.map(({ n, icon: Icon, title, body }) => (

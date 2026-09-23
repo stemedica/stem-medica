@@ -17,11 +17,11 @@ import {
 } from "./proforma";
 
 const DEFAULT_ISSUER: Issuer = {
-  name: "STEM MEDICA",
+  name: "GEREMEW ZEWDE TADESE",
   address: "Addis Ababa, Ethiopia",
-  tin: "",
+  tin: "0066339979",
   vatReg: "",
-  phone: "0921 136 180",
+  phone: "+251 921 136 180",
   email: "info@stemedicaet.com",
   bank: "",
   account: "",
@@ -215,7 +215,7 @@ export function Builder() {
           <div className="grid gap-3 sm:grid-cols-2">
             <Field path="doc.number" problems={problems} label="Number" value={doc.number} onChange={(v) => setDoc((d) => ({ ...d, number: v }))} />
             <Field path="doc.date" problems={problems} label="Date" type="date" value={doc.date} onChange={(v) => setDoc((d) => ({ ...d, date: v }))} />
-            <Field path="doc.validity" problems={problems} label="Valid until" type="date" value={doc.validity} onChange={(v) => setDoc((d) => ({ ...d, validity: v }))} />
+            <Field path="doc.validity" problems={problems} label="Price validity" type="date" value={doc.validity} onChange={(v) => setDoc((d) => ({ ...d, validity: v }))} />
             <Field path="doc.currency" problems={problems} label="Currency" value={doc.currency} onChange={(v) => setDoc((d) => ({ ...d, currency: v }))} />
             <div className="sm:col-span-2 flex min-h-14 items-center justify-between gap-4 border border-hair px-3 py-2.5">
               <div>
@@ -279,7 +279,12 @@ export function Builder() {
                   </button>
                 </div>
                 <Field path={`doc.items.${n}.description`} problems={problems} label="Description" value={i.description} onChange={(v) => setItem(i.id, { description: v })} />
-                <div className="grid grid-cols-3 gap-3">
+                <div className="mt-3 grid grid-cols-3 gap-3">
+                  <Field path={`doc.items.${n}.model`} problems={problems} label="Model" value={i.model || ""} onChange={(v) => setItem(i.id, { model: v })} />
+                  <Field path={`doc.items.${n}.manufacturer`} problems={problems} label="Manufacturer" value={i.manufacturer || ""} onChange={(v) => setItem(i.id, { manufacturer: v })} />
+                  <Field path={`doc.items.${n}.brand`} problems={problems} label="Brand" value={i.brand || ""} onChange={(v) => setItem(i.id, { brand: v })} />
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-3">
                   <Field path={`doc.items.${n}.qty`} problems={problems} label="Qty" type="number" value={String(i.qty)} onChange={(v) => setItem(i.id, { qty: Number(v) || 0 })} />
                   <Field path={`doc.items.${n}.unit`} problems={problems} label="Unit" value={i.unit} onChange={(v) => setItem(i.id, { unit: v })} />
                   <Field path={`doc.items.${n}.price`} problems={problems} label="Price" type="number" value={String(i.price)} onChange={(v) => setItem(i.id, { price: Number(v) || 0 })} />

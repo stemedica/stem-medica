@@ -12,8 +12,8 @@ import { site } from "@/lib/site";
  * stays out of the way until the hero has been passed, so it never competes
  * with the opening screen.
  *
- * Desktop only. On a phone the call and WhatsApp bar already owns this corner,
- * and the footer carries the same link.
+ * Available across mobile and desktop. On mobile, it floats comfortably above
+ * the quick contact bar.
  */
 export function FollowUs() {
   const [past, setPast] = useState(false);
@@ -35,12 +35,12 @@ export function FollowUs() {
          opacity in the base string too would be a coin flip: Tailwind emits
          utilities in its own order, so the later rule wins regardless of the
          order they appear in this attribute. */
-      className={`group/follow fixed bottom-6 right-6 z-40 hidden items-center gap-0 rounded-full border border-hair bg-white/85 py-2.5 pl-3 pr-3 text-navy shadow-[0_6px_24px_rgba(15,37,85,.14)] backdrop-blur-sm transition-[opacity,transform,gap,padding,background-color] duration-500 hover:gap-2.5 hover:bg-white hover:pr-5 hover:opacity-100 focus-visible:gap-2.5 focus-visible:pr-5 focus-visible:opacity-100 sm:flex ${
-        past ? "pointer-events-auto translate-y-0 opacity-70" : "pointer-events-none translate-y-3 opacity-0"
+      className={`group/follow fixed bottom-[calc(4.75rem+env(safe-area-inset-bottom,0px))] right-4 z-40 flex items-center gap-0 rounded-full border border-hair bg-white/90 py-2.5 pl-3 pr-3 text-navy shadow-[0_6px_24px_rgba(15,37,85,.14)] backdrop-blur-sm transition-[opacity,transform,gap,padding,background-color] duration-500 hover:gap-2.5 hover:bg-white hover:pr-5 hover:opacity-100 active:gap-2.5 active:bg-white active:pr-5 active:opacity-100 focus-visible:gap-2.5 focus-visible:pr-5 focus-visible:opacity-100 lg:bottom-6 lg:right-6 ${
+        past ? "pointer-events-auto translate-y-0 opacity-80" : "pointer-events-none translate-y-3 opacity-0"
       }`}
     >
       <LinkedInIcon size={18} />
-      <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-[max-width] duration-500 group-hover/follow:max-w-[7rem] group-focus-visible/follow:max-w-[7rem]">
+      <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm font-semibold transition-[max-width] duration-500 group-hover/follow:max-w-[7rem] group-active/follow:max-w-[7rem] group-focus-visible/follow:max-w-[7rem]">
         Follow us
       </span>
     </a>

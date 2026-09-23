@@ -34,15 +34,18 @@ export function ProformaStyles() {
 .pf-table-block { position:relative; z-index:0; margin-top:5mm; }
 .pf-table-block h2 { margin:0 0 4mm; text-align:center; font-size:14pt; line-height:1.2; }
 .pf-watermark { position:absolute; z-index:-1; top:10mm; left:50%; width:112mm; height:auto; transform:translateX(-50%); opacity:.15; }
-.pf-items { width:100%; border-collapse:collapse; table-layout:fixed; font-size:10.5pt; }
-.pf-items th, .pf-items td { border:1px solid #111; padding:1.7mm 2mm; vertical-align:top; overflow-wrap:anywhere; }
+.pf-items { width:100%; border-collapse:collapse; table-layout:fixed; font-size:9.5pt; }
+.pf-items th, .pf-items td { border:1px solid #111; padding:1.5mm 1.5mm; vertical-align:top; overflow-wrap:anywhere; }
 .pf-items thead th { text-align:center; font-weight:normal; }
-.pf-items thead th:nth-child(1) { width:7%; }
-.pf-items thead th:nth-child(2) { width:35%; }
-.pf-items thead th:nth-child(3) { width:10%; }
-.pf-items thead th:nth-child(4) { width:9%; }
-.pf-items thead th:nth-child(5) { width:17%; }
-.pf-items thead th:nth-child(6) { width:22%; }
+.pf-items thead th:nth-child(1) { width:5%; }
+.pf-items thead th:nth-child(2) { width:23%; }
+.pf-items thead th:nth-child(3) { width:11%; }
+.pf-items thead th:nth-child(4) { width:13%; }
+.pf-items thead th:nth-child(5) { width:11%; }
+.pf-items thead th:nth-child(6) { width:6%; }
+.pf-items thead th:nth-child(7) { width:6%; }
+.pf-items thead th:nth-child(8) { width:12%; }
+.pf-items thead th:nth-child(9) { width:13%; }
 .pf-items tbody td { min-height:12mm; }
 .pf-items .n { text-align:center; }
 .pf-items .r { text-align:right; }

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Phone, ClipboardList, Mail, MapPin, Link2, Handshake } from "lucide-react";
-import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { ClipboardList, Mail, Handshake } from "lucide-react";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
 import Link from "next/link";
@@ -8,18 +7,13 @@ import Link from "next/link";
 export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
   title: "Contact",
-  description: `Call ${site.phone} or ${site.secondaryPhone}, email ${site.email}, or visit STEM MEDICA in Addis Ababa.`,
+  description: `Email ${site.email}, request an equipment quotation, or connect with STEM MEDICA.`,
 };
 
 const channels = [
-  { icon: Phone, label: "Primary phone", value: site.phone, href: `tel:${site.phoneIntl}`, note: "Talk to our team about equipment, quotations or support." },
-  { icon: Phone, label: "Second phone", value: site.secondaryPhone, href: `tel:${site.secondaryPhoneIntl}`, note: "An additional direct line to the STEM MEDICA team." },
   { icon: Mail, label: "Email", value: site.email, href: `mailto:${site.email}`, note: "Send product lists, partnership details or support questions." },
-  { icon: WhatsAppIcon, label: "WhatsApp", brand: "#25D366", value: site.phoneIntl, href: site.whatsapp, note: "Send the equipment name, quantity and any helpful photos." },
   { icon: ClipboardList, label: "Quotation request", accent: true, value: "Send equipment details", href: "/quote", note: "Your request is saved for our team to review and follow up." },
   { icon: Handshake, label: "Distribution partnership", value: "Manufacturers & exporters", href: "/partnership", note: "Selling medical equipment? Tell us what you make and the partner you need." },
-  { icon: MapPin, label: "Office", value: "Kal Building, Room 213", href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`, note: "In front of Nyala Motors, Bole to Megenagna, Addis Ababa." },
-  { icon: Link2, label: "LinkedIn", value: "STEM MEDICA", href: site.linkedin, note: "Visit our company page in a new tab." },
 ];
 
 export default function ContactPage() {
@@ -29,8 +23,8 @@ export default function ContactPage() {
       title="Let’s advance healthcare together"
       lede="Contact our team for medical equipment, quotations, installation, training or technical support."
     >
-      <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-2">
-        {channels.map(({ icon: Icon, label, value, href, note, brand, accent }) => (
+      <div className="mt-12 grid gap-px border border-hair bg-hair sm:grid-cols-3">
+        {channels.map(({ icon: Icon, label, value, href, note, accent }) => (
           <a
             key={label}
             href={href}
@@ -40,7 +34,7 @@ export default function ContactPage() {
           >
             <div className="flex items-start justify-between gap-4">
               <div className="label text-steel">{label}</div>
-              <span style={brand ? { color: brand } : undefined} className={`shrink-0 ${brand ? "" : accent ? "text-scarlet" : "text-navy"}`}>
+              <span className={`shrink-0 ${accent ? "text-scarlet" : "text-navy"}`}>
                 <Icon size={17} aria-hidden="true" />
               </span>
             </div>

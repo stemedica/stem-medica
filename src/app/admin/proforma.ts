@@ -5,6 +5,9 @@ export type LineItem = {
   id: string;
   catalogueSlug?: string;
   description: string;
+  model?: string;
+  manufacturer?: string;
+  brand?: string;
   qty: number;
   unit: string;
   price: number;
@@ -51,11 +54,11 @@ export function totals(p: Proforma) {
 
 export function addCatalogueProduct(
   p: Proforma,
-  product: { slug: string; name: string; brand: string },
+  product: { slug: string; name: string; brand: string; origin?: string },
 ): Proforma {
   const generatedDescription = `${product.name} — ${product.brand}`;
   const existing = p.items.findIndex((item) => item.catalogueSlug === product.slug
-    || (!item.catalogueSlug && item.description.trim() === generatedDescription));
+    || (!item.catalogueSlug && (item.description.trim() === generatedDescription || item.description.trim() === product.name)));
   if (existing >= 0) {
     return {
       ...p,
@@ -65,10 +68,12 @@ export function addCatalogueProduct(
     };
   }
   if (p.items.length >= 100) return p;
-  const item = {
+  const item: LineItem = {
     ...blankItem(),
     catalogueSlug: product.slug,
-    description: generatedDescription,
+    description: product.name,
+    brand: product.brand,
+    manufacturer: product.origin || "",
   };
   const empty = p.items.findIndex((entry) => !entry.description.trim() && entry.price === 0 && entry.qty === 1 && entry.unit === "pcs");
   return { ...p, items: empty < 0 ? [...p.items, item] : p.items.map((entry, index) => index === empty ? item : entry) };
@@ -95,6 +100,9 @@ export const today = () => new Date().toISOString().slice(0, 10);
 export const blankItem = (): LineItem => ({
   id: generateUUID(),
   description: "",
+  model: "",
+  manufacturer: "",
+  brand: "",
   qty: 1,
   unit: "pcs",
   price: 0,

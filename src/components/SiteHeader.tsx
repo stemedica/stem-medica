@@ -9,12 +9,36 @@ import { nav, site } from "@/lib/site";
 
 export type NavCategory = { slug: string; name: string };
 
+const TICKER_MESSAGES = [
+  "Quality First",
+  "Customer Satisfaction",
+  "Professional Efficiency",
+  "Clinical Reliability",
+];
+
 export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; categories?: NavCategory[] }) {
   const [open, setOpen] = useState(false);
   const [menu, setMenu] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [tickerIndex, setTickerIndex] = useState(0);
+  const [tickerFade, setTickerFade] = useState(true);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    const interval = setInterval(() => {
+      setTickerFade(false);
+      timeout = setTimeout(() => {
+        setTickerIndex((prev) => (prev + 1) % TICKER_MESSAGES.length);
+        setTickerFade(true);
+      }, 300);
+    }, 4000);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
+  }, []);
   // "/" is a prefix of every route, so the home link has to match exactly or
   // it reads as the current page everywhere.
   const isCurrent = (href: string) => href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -41,11 +65,29 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
 
   return (
     <header ref={header} className="sticky top-0 z-50 border-b border-hair bg-white/95 text-ink backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
-        <Link prefetch={false} href="/" aria-label={`${site.name} home`} className="flex items-center" onClick={() => setOpen(false)}>
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-3.5">
+        <Link prefetch={false} href="/" aria-label={`${site.name} home`} className="flex shrink-0 items-center" onClick={() => setOpen(false)}>
           {logo}
           <span className="sr-only">{site.name} home</span>
         </Link>
+
+        {/* Animated Tagline Ticker for Mobile Header Gap */}
+        <Link
+          href="/about"
+          prefetch={false}
+          aria-label={`STEM MEDICA: ${TICKER_MESSAGES[tickerIndex]}`}
+          className="mx-auto flex h-7 shrink min-w-0 max-w-[155px] sm:max-w-[190px] items-center gap-1.5 overflow-hidden rounded-full border border-hair/80 bg-paper/70 px-2.5 shadow-2xs backdrop-blur-xs transition-colors hover:border-navy/30 hover:bg-white lg:hidden"
+        >
+          <span className="size-1.5 shrink-0 rounded-full bg-scarlet" aria-hidden="true" />
+          <span
+            className={`truncate text-[10px] sm:text-[10.5px] font-medium tracking-tight text-ink-soft transition-all duration-300 ease-out ${
+              tickerFade ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
+            }`}
+          >
+            {TICKER_MESSAGES[tickerIndex]}
+          </span>
+        </Link>
+
 
         <nav aria-label="Main navigation" className="hidden items-center gap-5 lg:flex">
           {nav.filter((i) => !("cta" in i)).map((item) => {
@@ -121,12 +163,13 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
           aria-expanded={open}
           aria-controls="mobile-navigation"
           aria-label={open ? "Close menu" : "Open menu"}
-          className="-mr-2 flex h-11 w-11 items-center justify-center lg:hidden"
+          className="-mr-1 flex shrink-0 min-h-10 items-center gap-2 rounded-full border border-hair bg-paper/80 px-3 text-xs font-semibold uppercase tracking-wider text-navy transition-colors hover:bg-navy-tint hover:text-navy active:bg-navy/10 lg:hidden"
         >
-          <span className="relative block h-3.5 w-5">
-            <span className={`absolute left-0 block h-0.5 w-5 bg-current transition-transform ${open ? "top-1.5 rotate-45" : "top-0"}`} />
-            <span className={`absolute left-0 top-1.5 block h-0.5 w-5 bg-current transition-opacity ${open ? "opacity-0" : ""}`} />
-            <span className={`absolute left-0 block h-0.5 w-5 bg-current transition-transform ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
+          <span>{open ? "Close" : "Menu"}</span>
+          <span className="relative block h-3.5 w-4 shrink-0 text-navy" aria-hidden="true">
+            <span className={`absolute left-0 block h-0.5 w-4 bg-current transition-transform duration-300 ${open ? "top-1.5 rotate-45" : "top-0"}`} />
+            <span className={`absolute left-0 top-1.5 block h-0.5 w-4 bg-current transition-opacity duration-300 ${open ? "opacity-0" : ""}`} />
+            <span className={`absolute left-0 block h-0.5 w-4 bg-current transition-transform duration-300 ${open ? "top-1.5 -rotate-45" : "top-3"}`} />
           </span>
         </button>
       </div>

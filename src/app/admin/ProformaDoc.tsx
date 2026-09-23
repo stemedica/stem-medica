@@ -15,7 +15,7 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
           {/* A plain image is intentional: the same markup is embedded into Word exports. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="" className="pf-logo" />
-          <span>{issuer.name || "STEM MEDICA"}</span>
+          <span>STEM MEDICA</span>
         </div>
       </header>
 
@@ -54,6 +54,9 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
             <tr>
               <th className="n">No</th>
               <th>Description</th>
+              <th>Model</th>
+              <th>Manufacturer</th>
+              <th>Brand</th>
               <th>Unit</th>
               <th className="n">Qty</th>
               <th className="r">Unit Price</th>
@@ -65,6 +68,9 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
               <tr key={i.id}>
                 <td className="n">{n + 1}</td>
                 <td>{i.description || "—"}</td>
+                <td>{i.model || "—"}</td>
+                <td>{i.manufacturer || "—"}</td>
+                <td>{i.brand || "—"}</td>
                 <td>{i.unit}</td>
                 <td className="n">{i.qty}</td>
                 <td className="r">{money(i.price, p.currency)}</td>
@@ -73,9 +79,9 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
             ))}
           </tbody>
           <tfoot>
-            <tr><th colSpan={5} className="r">Subtotal :</th><td className="r">{money(t.subtotal, p.currency)}</td></tr>
-            {p.includeVat ? <tr><th colSpan={5} className="r">VAT {p.vatRate}% :</th><td className="r">{money(t.vat, p.currency)}</td></tr> : null}
-            <tr className="pf-grand"><th colSpan={5} className="r">Total :</th><td className="r">{money(t.grand, p.currency)}</td></tr>
+            <tr><th colSpan={8} className="r">Subtotal :</th><td className="r">{money(t.subtotal, p.currency)}</td></tr>
+            {p.includeVat ? <tr><th colSpan={8} className="r">VAT {p.vatRate}% :</th><td className="r">{money(t.vat, p.currency)}</td></tr> : null}
+            <tr className="pf-grand"><th colSpan={8} className="r">Total :</th><td className="r">{money(t.grand, p.currency)}</td></tr>
           </tfoot>
         </table>
       </section>
@@ -83,7 +89,7 @@ export const ProformaDoc = memo(function ProformaDoc({ issuer, p }: { issuer: Is
       <section className="pf-terms">
         <p><strong>Delivery date :</strong> {p.delivery || "—"}</p>
         <p><strong>Terms of payment :</strong> {p.payment || "—"}</p>
-        <p><strong>Validity:</strong> {p.validity || "—"}</p>
+        <p><strong>Price validity :</strong> {p.validity || "—"}</p>
         {issuer.bank || issuer.account ? (
           <p><strong>Bank:</strong> {[issuer.bank, issuer.account].filter(Boolean).join(" · ")}</p>
         ) : null}

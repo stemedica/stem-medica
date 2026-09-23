@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { getCatalogue } from "@/lib/catalogue";
 import { QuoteFormFromUrl } from "./QuoteForm";
 import { QuotePageFrame } from "./QuotePageFrame";
 
@@ -11,10 +12,17 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-static";
 
-export default function QuotePage() {
+export default async function QuotePage() {
+  const { products } = await getCatalogue();
+  const equipment = products.map((p) => ({
+    name: p.name,
+    brand: p.brand,
+    slug: p.slug,
+  }));
+
   return (
     <QuotePageFrame>
-      <QuoteFormFromUrl />
+      <QuoteFormFromUrl equipment={equipment} />
     </QuotePageFrame>
   );
 }

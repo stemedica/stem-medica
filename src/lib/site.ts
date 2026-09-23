@@ -5,10 +5,8 @@ export const site = {
   description:
     "Quality medical supplies, devices and equipment for health facilities across Ethiopia, with installation, training, spare parts and technical support.",
   city: "Addis Ababa, Ethiopia",
-  phone: "0921 136 180",
+  phone: "+251 921 136 180",
   phoneIntl: "+251921136180",
-  secondaryPhone: "0911 272 252",
-  secondaryPhoneIntl: "+251911272252",
   email: "info@stemedicaet.com",
   address: "Kal Building, Room 213, in front of Nyala Motors, Bole to Megenagna, Addis Ababa",
   whatsapp: "https://wa.me/251921136180",
@@ -34,7 +32,6 @@ export const site = {
 export const nav = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Products" },
-  { href: "/service", label: "Service" },
   { href: "/blog", label: "Updates & blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },

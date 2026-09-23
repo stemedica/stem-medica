@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Mono, Noto_Sans_Ethiopic } from "next/font/google";
+import { Archivo, IBM_Plex_Mono, Noto_Sans_Ethiopic, Playfair_Display, Syne } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site";
 import { OrganizationSchema, WebSiteSchema } from "@/components/StructuredData";
@@ -9,6 +9,17 @@ const archivo = Archivo({
   subsets: ["latin"],
   axes: ["wdth"],
   variable: "--font-archivo",
+  display: "swap",
+});
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+});
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
   display: "swap",
 });
 const plexMono = IBM_Plex_Mono({
@@ -59,7 +70,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} ${plexMono.variable} ${ethiopic.variable}`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} ${plexMono.variable} ${ethiopic.variable} ${playfair.variable} ${syne.variable}`}>
       <body className="antialiased">
         {children}
         <OrganizationSchema />

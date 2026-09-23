@@ -37,14 +37,7 @@ export function OrganizationSchema() {
       {
         "@type": "ContactPoint",
         telephone: site.phoneIntl,
-        contactType: "sales",
-        areaServed: "ET",
-        availableLanguage: ["en", "am"],
-      },
-      {
-        "@type": "ContactPoint",
-        telephone: site.secondaryPhoneIntl,
-        contactType: "customer support",
+        contactType: "customer service",
         areaServed: "ET",
         availableLanguage: ["en", "am"],
       },

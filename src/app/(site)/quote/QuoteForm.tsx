@@ -1,30 +1,69 @@
 "use client";
 
-import { useState, useSyncExternalStore, useTransition } from "react";
-import { Check, Phone, Send } from "lucide-react";
+import { useEffect, useRef, useState, useSyncExternalStore, useTransition } from "react";
+import { Check, ChevronDown, Phone, Send } from "lucide-react";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 import { site } from "@/lib/site";
 import { copy, type FormCopy } from "./form-copy";
 import { sendEnquiry } from "./actions";
+
+export type EquipmentOption = {
+  name: string;
+  brand?: string;
+  slug?: string;
+};
 
 function subscribeToLocation(onChange: () => void) {
   window.addEventListener("popstate", onChange);
   return () => window.removeEventListener("popstate", onChange);
 }
 
-export function QuoteFormFromUrl({ variant = copy.quotation }: { variant?: FormCopy }) {
+export function QuoteFormFromUrl({
+  variant = copy.quotation,
+  equipment = [],
+}: {
+  variant?: FormCopy;
+  equipment?: EquipmentOption[];
+}) {
   const search = useSyncExternalStore(subscribeToLocation, () => window.location.search, () => "");
   const params = new URLSearchParams(search);
   const presetItem = (params.get("equipment") || params.get("item") || "").slice(0, 500);
-  return <QuoteForm key={presetItem} presetItem={presetItem} variant={variant} />;
+  return <QuoteForm key={presetItem} presetItem={presetItem} variant={variant} equipment={equipment} />;
 }
 
 const field = "mt-2 w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy";
 
-export function QuoteForm({ presetItem = "", variant = copy.quotation }: { presetItem?: string; variant?: FormCopy }) {
+export function QuoteForm({
+  presetItem = "",
+  variant = copy.quotation,
+  equipment = [],
+}: {
+  presetItem?: string;
+  variant?: FormCopy;
+  equipment?: EquipmentOption[];
+}) {
   const [sent, setSent] = useState(false);
   const [problem, setProblem] = useState("");
   const [pending, startTransition] = useTransition();
+  const [equipmentValue, setEquipmentValue] = useState(presetItem);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const comboboxRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (comboboxRef.current && !comboboxRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const filteredEquipment = equipment.filter((item) => {
+    if (!equipmentValue.trim()) return true;
+    const query = equipmentValue.toLowerCase();
+    return item.name.toLowerCase().includes(query) || (item.brand && item.brand.toLowerCase().includes(query));
+  });
 
   /**
    * The enquiry is delivered server-side, so nothing depends on the visitor
@@ -58,7 +97,7 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
           <a href={`tel:${site.phoneIntl}`} className="label inline-flex min-h-11 items-center justify-center gap-2.5 rounded-[2px] border border-ink px-6 py-3.5 font-semibold transition-colors duration-300 hover:bg-ink hover:text-paper">
             <Phone size={14} aria-hidden="true" /> Call {site.phone}
           </a>
-          <button type="button" onClick={() => setSent(false)} className="label min-h-11 font-semibold text-navy underline underline-offset-4">
+          <button type="button" onClick={() => { setSent(false); setEquipmentValue(""); }} className="label min-h-11 font-semibold text-navy underline underline-offset-4">
             Send another
           </button>
         </div>
@@ -92,22 +131,106 @@ export function QuoteForm({ presetItem = "", variant = copy.quotation }: { prese
         </label>
       ))}
 
-      <label className="block sm:col-span-2">
-        <span className="text-sm font-medium text-ink">
+      <div ref={comboboxRef} className="relative block sm:col-span-2">
+        <label htmlFor="equipment-input" className="block text-sm font-medium text-ink">
           {variant.mainLabel}<span className="text-scarlet"> *</span>
-        </span>
-        <input
-          name="equipment"
-          onInvalid={(event) => event.currentTarget.setCustomValidity(variant.mainInvalid)}
-          onInput={(event) => event.currentTarget.setCustomValidity("")}
-          required
-          pattern=".*\S.*"
-          maxLength={500}
-          defaultValue={presetItem}
-          placeholder={variant.mainPlaceholder}
-          className={field}
-        />
-      </label>
+        </label>
+
+        <div className="relative mt-2">
+          <input
+            id="equipment-input"
+            name="equipment"
+            value={equipmentValue}
+            onChange={(event) => {
+              setEquipmentValue(event.target.value);
+              if (!dropdownOpen && equipment.length > 0 && variant.kind === "quotation") {
+                setDropdownOpen(true);
+              }
+            }}
+            onFocus={() => {
+              if (equipment.length > 0 && variant.kind === "quotation") {
+                setDropdownOpen(true);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") setDropdownOpen(false);
+            }}
+            onInvalid={(event) => event.currentTarget.setCustomValidity(variant.mainInvalid)}
+            onInput={(event) => event.currentTarget.setCustomValidity("")}
+            required
+            pattern=".*\S.*"
+            maxLength={500}
+            placeholder={
+              variant.kind === "quotation"
+                ? "Select from catalogue or type equipment needed..."
+                : variant.mainPlaceholder
+            }
+            className={`w-full rounded-[2px] border border-hair bg-white px-3.5 py-3 text-base outline-none transition-colors placeholder:text-steel focus:border-navy ${
+              equipment.length > 0 && variant.kind === "quotation" ? "pr-10" : ""
+            }`}
+          />
+
+          {equipment.length > 0 && variant.kind === "quotation" ? (
+            <button
+              type="button"
+              tabIndex={-1}
+              aria-label={dropdownOpen ? "Close catalogue menu" : "Open catalogue menu"}
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              className="absolute right-0 top-0 flex h-full w-10 items-center justify-center text-steel hover:text-navy transition-colors"
+            >
+              <ChevronDown
+                size={18}
+                className={`transition-transform duration-200 ${dropdownOpen ? "rotate-180 text-navy" : ""}`}
+                aria-hidden="true"
+              />
+            </button>
+          ) : null}
+
+          {dropdownOpen && equipment.length > 0 && variant.kind === "quotation" ? (
+            <ul
+              role="listbox"
+              className="absolute left-0 right-0 top-full z-30 mt-1 max-h-60 overflow-y-auto rounded-[2px] border border-hair bg-white py-1 shadow-lift outline-none"
+            >
+              <li className="px-3 py-1.5 text-[11px] font-mono font-medium uppercase tracking-wider text-steel border-b border-hair/60 bg-paper/50">
+                Catalogue items ({filteredEquipment.length})
+              </li>
+              {filteredEquipment.length > 0 ? (
+                filteredEquipment.map((item) => {
+                  const isSelected = item.name.toLowerCase() === equipmentValue.trim().toLowerCase();
+                  return (
+                    <li
+                      key={item.slug || item.name}
+                      role="option"
+                      aria-selected={isSelected}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        setEquipmentValue(item.name);
+                        setDropdownOpen(false);
+                      }}
+                      className={`flex cursor-pointer items-center justify-between px-3.5 py-2.5 text-sm transition-colors ${
+                        isSelected
+                          ? "bg-navy-tint font-medium text-navy"
+                          : "text-ink hover:bg-paper"
+                      }`}
+                    >
+                      <span className="truncate">{item.name}</span>
+                      {item.brand ? (
+                        <span className="ml-2 shrink-0 rounded-[2px] border border-hair/80 bg-paper px-2 py-0.5 text-xs text-steel">
+                          {item.brand}
+                        </span>
+                      ) : null}
+                    </li>
+                  );
+                })
+              ) : (
+                <li className="px-3.5 py-2.5 text-sm text-steel">
+                  No exact catalogue match. Your text will be submitted as a custom request.
+                </li>
+              )}
+            </ul>
+          ) : null}
+        </div>
+      </div>
 
       {variant.showQuantity ? <label className="block">
         <span className="text-sm font-medium text-ink">Quantity (optional)</span>

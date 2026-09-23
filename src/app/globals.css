@@ -65,6 +65,8 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
 
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-sans:    var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-serif:   var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-syne:    var(--font-syne), "Syne", sans-serif;
   --font-mono:    var(--font-plex-mono), ui-monospace, Menlo, monospace;
   --font-ethiopic: var(--font-ethiopic), "Nyala", serif;
 }
@@ -76,6 +78,8 @@ input[aria-invalid="true"], textarea[aria-invalid="true"], select[aria-invalid="
 :root {
   --font-display: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   --font-sans:    var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-serif:   var(--font-serif), "Playfair Display", Georgia, serif;
+  --font-syne:    var(--font-syne), "Syne", sans-serif;
   --font-mono:    var(--font-plex-mono), ui-monospace, Menlo, monospace;
   --font-ethiopic: var(--font-ethiopic-face), "Nyala", serif;
 }
@@ -415,6 +419,7 @@ body {
 }
 @keyframes supply-draw { to { stroke-dashoffset: 0; } }
 
+
 /* Reading progress, drawn on the page's own top edge.
    Scroll-linked, so it costs no script and cannot drift from the scroll
    position. Without scroll timelines it stays at scale 0 and is simply not
@@ -501,4 +506,34 @@ body {
 @keyframes media-shimmer {
   from { transform: translateX(-100%); }
   to { transform: translateX(100%); }
+}
+
+/* Partner companies hairline marquee strip */
+@keyframes partner-marquee {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+.animate-partner-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: partner-marquee 50s linear infinite;
+}
+
+.animate-partner-marquee:hover,
+.animate-partner-marquee:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-partner-marquee {
+    animation: none;
+    transform: none;
+  }
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
 }

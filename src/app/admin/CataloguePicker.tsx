@@ -91,7 +91,7 @@ export function CataloguePicker({ onAdd, limitReached, selectedItems }: {
           {products.map((product) => {
             const generatedDescription = `${product.name} — ${product.brand}`;
             const selectedQuantity = selectedItems.find((item) => item.catalogueSlug === product.slug
-              || (!item.catalogueSlug && item.description.trim() === generatedDescription))?.qty ?? 0;
+              || (!item.catalogueSlug && (item.description.trim() === generatedDescription || item.description.trim() === product.name)))?.qty ?? 0;
             const quantityLimitReached = selectedQuantity >= 1_000_000;
             return <li key={product.slug} className="flex items-center gap-3 py-3">
               <div className="min-w-0 flex-1 break-words text-sm"><span className="font-medium">{product.name}</span><span className="block text-xs text-steel">{product.brand} · {product.availability}</span></div>

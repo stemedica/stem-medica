@@ -40,7 +40,6 @@ export function SiteFooter() {
             <ul className="mt-2 space-y-1">
               {[
                 { label: site.phone, href: `tel:${site.phoneIntl}` },
-                { label: site.secondaryPhone, href: `tel:${site.secondaryPhoneIntl}` },
               ].map((tel) => (
                 <li key={tel.href}>
                   <a

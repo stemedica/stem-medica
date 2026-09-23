@@ -4,20 +4,31 @@ import { V2Button, V2Photo, V2Head } from "@/components/V2";
 import { getCatalogue } from "@/lib/catalogue";
 import { site } from "@/lib/site";
 import { HomeHero } from "@/components/HomeHero";
+import { PartnerStrip } from "@/components/PartnerStrip";
 import { HomeAbout } from "@/components/HomeAbout";
+import { HomeServices } from "@/components/HomeServices";
 import { FollowUs } from "@/components/FollowUs";
 import { WaveField } from "@/components/WaveField";
 import { ScrollRail } from "@/components/ScrollRail";
 import { getStories } from "@/lib/story-store";
+import { successStories } from "@/lib/success-stories";
 export const revalidate = 300;
 
 export default async function Home() {
   const [catalogue, published] = await Promise.all([getCatalogue(), getStories()]);
 
-  /* Achievements come from the admin. No hardcoded fallback: an invented
-     project is worse than an absent section, so when nothing is published the
-     row is not rendered at all. */
-  const stories = published;
+  /* Real achievements once entered and published in the admin. Until then
+     the cards describe the clinical facility equipping work, ensuring the
+     achievements section is always visible and informative. */
+  const stories = published.length
+    ? published.map((story) => ({
+        title: story.title,
+        place: story.place,
+        summary: story.summary,
+        image: story.image || undefined,
+        postSlug: story.postSlug,
+      }))
+    : successStories;
 
   return (
     <>
@@ -25,9 +36,13 @@ export default async function Home() {
 
       <HomeAbout categoryCount={catalogue.categories.length} />
 
+      <HomeServices />
+
+      <PartnerStrip />
+
       {/* Story cards, not a metrics row. The next card is deliberately part
           visible at the edge: the crop is what says the row continues. */}
-      {stories.length ? <section aria-labelledby="stories" className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
+      <section aria-labelledby="stories" className="mx-auto max-w-6xl px-5 py-20 lg:py-28">
         <div className="reveal flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           {/* The two halves each stay whole: "Achievements" split across a line
               break at this size, which a max-width in ch could not prevent. */}
@@ -98,7 +113,7 @@ export default async function Home() {
             ))}
           </ScrollRail>
         </div>
-      </section> : null}
+      </section>
 
       {/* CTA */}
       <section className="px-3 pb-3 sm:px-5 sm:pb-5">
