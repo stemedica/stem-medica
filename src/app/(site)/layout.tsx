@@ -16,7 +16,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   return (
     <div className="public-site">
       <a href="#main-content" className="skip-link">Skip to content</a>
-      <SiteHeader logo={<Logo height={38} preload />} categories={menu} />
+      <SiteHeader logo={<Logo height={38} />} categories={menu} />
       <main id="main-content" tabIndex={-1}>{children}</main>
       <SiteFooter />
       <ContactBar />

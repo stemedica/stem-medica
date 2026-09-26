@@ -10,12 +10,17 @@ const nextConfig: NextConfig = {
   // never shipped to production. Compile and runtime errors are still surfaced.
   devIndicators: false,
   async redirects() {
-    return [{
-      source: "/",
-      has: [{ type: "host", value: "admin\\..+" }],
-      destination: "/admin",
-      permanent: false,
-    }];
+    return [
+      // admin.stemedicaet.com/ → /admin (root redirect for the home path).
+      // All other sub-paths (e.g. /posts, /catalogue) are rewritten internally
+      // by src/proxy.ts so the URL bar keeps showing the subdomain cleanly.
+      {
+        source: "/",
+        has: [{ type: "host", value: "admin\\..+" }],
+        destination: "/admin",
+        permanent: false,
+      },
+    ];
   },
   async headers() {
     return [{

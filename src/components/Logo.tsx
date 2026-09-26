@@ -70,12 +70,10 @@ export function Wordmark({ className = "" }: { className?: string }) {
 export function Logo({
   height = 38,
   onDark = false,
-  preload = false,
   className = "",
 }: {
   height?: number;
   onDark?: boolean;
-  preload?: boolean;
   className?: string;
 }) {
   const logo = discoveredLogo;
@@ -96,7 +94,8 @@ export function Logo({
       width={logo.w}
       height={logo.h}
       sizes={`${Math.ceil(height * logo.w / logo.h)}px`}
-      preload={preload}
+      priority
+      loading="eager"
       unoptimized={logo.vector}
       className="w-auto"
       style={{ height }}
