@@ -1,6 +1,5 @@
 import fs from "node:fs";
 import path from "node:path";
-import Image from "next/image";
 
 /**
  * Renders the real logo from /public, falling back to the drawn mark if no
@@ -87,19 +86,32 @@ export function Logo({
     );
   }
 
+  const imgStyle: React.CSSProperties = { height, width: "auto" };
+
+  // Serve WebP (72 % smaller) with PNG fallback for old browsers.
+  // We use a plain <picture> so the browser picks the smallest format it
+  // supports without paying the Next.js image-optimisation round-trip for a
+  // static asset that never changes.
   const img = (
-    <Image
-      src={logo.src}
-      alt="STEM MEDICA"
-      width={logo.w}
-      height={logo.h}
-      sizes={`${Math.ceil(height * logo.w / logo.h)}px`}
-      priority
-      loading="eager"
-      unoptimized={logo.vector}
-      className="w-auto"
-      style={{ height }}
-    />
+    <picture>
+      {logo.src.endsWith(".png") && (
+        <source
+          srcSet={logo.src.replace(/\.png$/, ".webp")}
+          type="image/webp"
+        />
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={logo.src}
+        alt="STEM MEDICA"
+        width={logo.w}
+        height={logo.h}
+        fetchPriority="high"
+        decoding="sync"
+        style={imgStyle}
+        className="w-auto"
+      />
+    </picture>
   );
 
   // The artwork's own "STEM" is navy ink, so on a dark ground it needs a light
