@@ -54,3 +54,4 @@ and label. Noto Sans Ethiopic is wired up for Amharic.
 ## Operations
 
 [Architecture](docs/ARCHITECTURE.md), [CMS](docs/CMS.md), [authentication](docs/AUTH.md) and [operations](docs/OPERATIONS.md) describe the production workflows.
+
