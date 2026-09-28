@@ -12,6 +12,7 @@ import { MobileCardRail } from "@/components/MobileCardRail";
 import { V2Photo } from "@/components/V2";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
 import { publicMediaUrl } from "@/lib/preview-paths";
+import { ArticleSchema, BreadcrumbSchema } from "@/components/StructuredData";
 
 export const revalidate = 300;
 
@@ -30,8 +31,24 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   if (!post) notFound();
   const more = (await getAllPosts()).filter((item) => item.id !== post.id).slice(0, 2);
   const sections = postSections(post.body);
-  return <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-16">
-    <Link href="/blog" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-navy"><ArrowLeft size={16} aria-hidden="true" /> Updates &amp; blog</Link>
+  return (
+    <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-16">
+      <ArticleSchema
+        title={post.title}
+        description={post.excerpt}
+        date={post.date}
+        author={post.author}
+        image={post.image}
+        slug={post.slug}
+      />
+      <BreadcrumbSchema
+        trail={[
+          { name: "Home", path: "/" },
+          { name: "Updates & Blog", path: "/blog" },
+          { name: post.title, path: `/blog/${post.slug}` },
+        ]}
+      />
+      <Link href="/blog" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-navy"><ArrowLeft size={16} aria-hidden="true" /> Updates &amp; blog</Link>
     <article>
       <header className={`mx-auto max-w-3xl pb-7 pt-5 sm:pb-14 ${hasArrivalNotice(post) ? "arrival-heading mt-6" : ""}`}>
         <div className="flex flex-wrap items-center gap-3 text-sm text-steel"><Link href={`/blog?kind=${encodeURIComponent(post.kind)}`} className="inline-flex min-h-11 items-center rounded-full"><PostKindBadge post={post} /></Link><span>{readingMinutes(post.body)} min read</span></div>
@@ -52,5 +69,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
       </div>
     </article>
     {more.length ? <section aria-labelledby="more-posts" className="mt-16 border-t border-hair pt-10"><h2 id="more-posts" className="font-display text-3xl font-semibold text-navy">Keep reading</h2><div className="mt-6"><MobileCardRail label="More stories" columns={2}>{more.map((item) => <Link href={`/blog/${item.slug}`} key={item.id} className={`flex flex-col overflow-hidden rounded-xl border border-hair bg-white transition-colors hover:border-navy/40 ${hasArrivalNotice(item) ? "arrival-card" : ""}`}>{item.image ? <V2Photo src={item.image} label={item.title} className="aspect-video w-full" /> : null}<div className="p-5"><PostKindBadge post={item} /><p className="mt-3 text-xs text-steel">{formatDate(item.date)}</p><h3 className="font-display mt-3 break-words text-xl font-semibold text-navy">{item.title}</h3><p className="mt-3 line-clamp-3 break-words text-[15px] leading-relaxed text-ink-soft">{item.excerpt}</p><span className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-navy">Read story <ArrowRight size={16} aria-hidden="true" /></span></div></Link>)}</MobileCardRail></div></section> : null}
-  </div>;
+  </div>
+  );
 }

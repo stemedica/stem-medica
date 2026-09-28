@@ -6,8 +6,8 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
-  title: "Contact",
-  description: `Email ${site.email}, request an equipment quotation, or connect with STEM MEDICA.`,
+  title: "Contact Us | Office & Biomedical Service in Addis Ababa",
+  description: `Contact STEM MEDICA at Kal Building, Bole to Megenagna, Addis Ababa. Call ${site.phone} or email ${site.email} for hospital equipment quotations and biomedical support.`,
 };
 
 const channels = [

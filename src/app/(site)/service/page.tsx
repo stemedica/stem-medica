@@ -6,9 +6,9 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/service" },
-  title: "Service & Support",
+  title: "Biomedical Engineering, Installation & Maintenance Services",
   description:
-    "How STEM MEDICA helps you choose, install and use medical equipment, with warranty and ongoing support.",
+    "Expert medical equipment consultation, installation, calibration, warranty service, staff training, and biomedical maintenance across Ethiopia.",
 };
 
 const stages = [

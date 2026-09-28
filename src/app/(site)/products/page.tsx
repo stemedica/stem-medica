@@ -7,8 +7,9 @@ import type { CatalogueItem } from "@/lib/cms-schema";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/products" },
-  title: "Products",
-  description: "Medical equipment, supplies and devices for hospitals, clinics and laboratories across Ethiopia.",
+  title: "Medical Equipment & Hospital Supplies Catalogue",
+  description:
+    "Browse high-precision diagnostic ultrasound, patient monitoring, surgical, and laboratory medical equipment supplied across Ethiopia by STEM MEDICA.",
 };
 
 export default async function ProductsPage({ searchParams }: {

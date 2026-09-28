@@ -42,28 +42,47 @@ const ethiopic = Noto_Sans_Ethiopic({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | ${site.tagline}`,
+    default: `${site.name} | Medical Equipment & Supplies in Ethiopia`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
   applicationName: site.name,
+  keywords: [
+    "medical equipment Ethiopia",
+    "medical supplies Addis Ababa",
+    "hospital equipment distributor Ethiopia",
+    "biomedical engineering Ethiopia",
+    "diagnostic equipment Addis Ababa",
+    "laboratory equipment Ethiopia",
+    "ultrasound machine Ethiopia",
+    "patient monitor Addis Ababa",
+    "STEM MEDICA",
+    "medical device import Ethiopia",
+  ],
+  authors: [{ name: "STEM MEDICA", url: site.url }],
+  creator: "STEM MEDICA",
+  publisher: "STEM MEDICA",
+  category: "Medical Equipment",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: site.name,
     locale: "en_ET",
     url: site.url,
-    title: `${site.name} | ${site.tagline}`,
+    title: `${site.name} | Medical Equipment & Supplies in Ethiopia`,
     description: site.description,
     images: [{ url: "/og.png", width: 1200, height: 630, alt: `${site.name}: medical equipment for Ethiopian hospitals` }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} | ${site.tagline}`,
+    title: `${site.name} | Medical Equipment & Supplies in Ethiopia`,
     description: site.description,
     images: ["/og.png"],
   },
   robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
 };
 
 export default function RootLayout({

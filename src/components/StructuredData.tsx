@@ -18,12 +18,17 @@ export function OrganizationSchema() {
     "@id": `${site.url}/#organization`,
     name: site.name,
     legalName: site.legalName,
+    slogan: site.tagline,
     url: site.url,
     logo: `${site.url}/logo.png`,
     image: `${site.url}/og.png`,
     description: site.description,
     telephone: site.phoneIntl,
     email: site.email,
+    priceRange: "$$$",
+    hasMap: site.map.directions,
+    currenciesAccepted: "ETB, USD",
+    paymentAccepted: "Cash, Bank Transfer, Letter of Credit",
     address: {
       "@type": "PostalAddress",
       streetAddress: site.streetAddress,
@@ -31,8 +36,30 @@ export function OrganizationSchema() {
       addressCountry: site.addressCountry,
     },
     geo: { "@type": "GeoCoordinates", latitude: site.geo.lat, longitude: site.geo.lng },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:30",
+        closes: "17:30",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: "Saturday",
+        opens: "08:30",
+        closes: "12:30",
+      },
+    ],
     areaServed: { "@type": "Country", name: "Ethiopia" },
     sameAs: [site.linkedin],
+    knowsAbout: [
+      "Medical Devices",
+      "Hospital Equipment",
+      "Biomedical Engineering",
+      "Diagnostic Ultrasound",
+      "Patient Monitors",
+      "Clinical Laboratory Equipment",
+    ],
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -56,6 +83,55 @@ export function WebSiteSchema() {
         url: site.url,
         name: site.name,
         publisher: { "@id": `${site.url}/#organization` },
+        potentialAction: {
+          "@type": "SearchAction",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: `${site.url}/products?q={search_term_string}`,
+          },
+          "query-input": "required name=search_term_string",
+        },
+      }}
+    />
+  );
+}
+
+export function ArticleSchema({
+  title,
+  description,
+  date,
+  author,
+  image,
+  slug,
+}: {
+  title: string;
+  description: string;
+  date: string;
+  author: string;
+  image?: string;
+  slug: string;
+}) {
+  return (
+    <Script
+      data={{
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: title,
+        description,
+        datePublished: `${date}T12:00:00Z`,
+        dateModified: `${date}T12:00:00Z`,
+        author: {
+          "@type": "Person",
+          name: author,
+        },
+        publisher: {
+          "@id": `${site.url}/#organization`,
+        },
+        ...(image ? { image: `${site.url}${image}` } : {}),
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `${site.url}/blog/${slug}`,
+        },
       }}
     />
   );

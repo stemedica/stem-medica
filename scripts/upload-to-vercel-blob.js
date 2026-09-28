@@ -2,7 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const { put, head } = require("@vercel/blob");
 
-const TOKEN = process.env.BLOB_READ_WRITE_TOKEN || "";
+const TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+if (!TOKEN) {
+  console.error("Error: BLOB_READ_WRITE_TOKEN environment variable is required.");
+  process.exit(1);
+}
 const MEDIA_DIR = path.resolve("public/media");
 
 async function uploadAll() {

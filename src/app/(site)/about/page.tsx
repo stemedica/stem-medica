@@ -7,9 +7,9 @@ import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/about" },
-  title: "About Us",
+  title: "About Us | Medical Importer & Distributor in Ethiopia",
   description:
-    "STEM MEDICA is an Ethiopian registered medical distributor established in 2023 G.C. by biomedical engineer Mr. Geremew Zewdie, providing quality and affordable healthcare technology across Ethiopia.",
+    "STEM MEDICA is an Ethiopian registered medical distributor established in 2023 G.C. by biomedical engineer Mr. Geremew Zewdie, providing certified medical technology across Ethiopia.",
 };
 
 const STATS = [
