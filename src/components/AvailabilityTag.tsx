@@ -12,17 +12,17 @@ type Availability = CmsProduct["availability"];
  * Colour is never the only carrier: each state keeps its own wording and a
  * dot, so the distinction survives greyscale printing and colour blindness.
  */
-const LIGHT: Record<Availability, { text: string; surface: string; dot: string }> = {
-  "In stock, Addis Ababa": { text: "text-ok", surface: "bg-ok-tint", dot: "bg-ok" },
-  "Indent order": { text: "text-wait", surface: "bg-wait-tint", dot: "bg-wait" },
-  "On request": { text: "text-navy", surface: "bg-navy-tint", dot: "bg-navy" },
+const LIGHT: Record<Availability, { text: string; surface: string }> = {
+  "In stock, Addis Ababa": { text: "text-ok", surface: "bg-ok-tint" },
+  "Indent order": { text: "text-wait", surface: "bg-wait-tint" },
+  "On request": { text: "text-navy", surface: "bg-navy-tint" },
 };
 
 /** On navy the ink-weight hues fall below contrast, so the lifted pair is used. */
-const DARK: Record<Availability, { dot: string }> = {
-  "In stock, Addis Ababa": { dot: "bg-ok-lift" },
-  "Indent order": { dot: "bg-wait-lift" },
-  "On request": { dot: "bg-white/70" },
+const DARK: Record<Availability, { text: string }> = {
+  "In stock, Addis Ababa": { text: "text-ok-lift" },
+  "Indent order": { text: "text-wait-lift" },
+  "On request": { text: "text-white/70" },
 };
 
 const LABEL: Record<Availability, string> = {
@@ -37,19 +37,18 @@ export function AvailabilityTag({ availability, tone = "light", className = "" }
   className?: string;
 }) {
   const label = LABEL[availability] ?? availability;
+
   if (tone === "dark") {
     const dark = DARK[availability] ?? DARK["On request"];
     return (
-      <span className={`inline-flex items-center gap-2 ${className}`}>
-        <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${dark.dot}`} />
+      <span className={`inline-flex items-center font-medium ${dark.text} ${className}`}>
         {label}
       </span>
     );
   }
   const light = LIGHT[availability] ?? LIGHT["On request"];
   return (
-    <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${light.surface} ${light.text} ${className}`}>
-      <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${light.dot}`} />
+    <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${light.surface} ${light.text} ${className}`}>
       {label}
     </span>
   );
