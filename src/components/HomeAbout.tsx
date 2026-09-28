@@ -51,83 +51,83 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
       </div>
 
       <div className="reveal-stagger mt-16 grid gap-5 sm:grid-cols-3 lg:mt-20">
-        {/* Vision Card - Subtle Navy Tint on Hover */}
-        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hair bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-navy/40 hover:bg-navy-tint/35 hover:shadow-lift">
+        {/* Vision Card - Deep Navy Blue */}
+        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-navy/[0.03] transition-all duration-300 group-hover:scale-105 group-hover:text-navy/[0.08]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
             <Compass size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-navy-tint text-navy shadow-2xs transition-transform duration-300 group-hover:scale-105">
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
                 <Compass size={22} aria-hidden="true" />
               </span>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-steel">
+              <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
                 01 // Vision
               </span>
             </div>
 
-            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-navy">
+            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-white">
               Our Vision
             </h3>
 
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-              To become a <span className="font-semibold text-navy">renowned supplier</span> of medical devices in Ethiopia and expand into <span className="font-semibold text-navy">local manufacturing</span>, driving lasting healthcare growth.
+            <p className="mt-3 text-[15px] leading-relaxed text-slate-200">
+              To become a <span className="font-semibold text-white">renowned supplier</span> of medical devices in Ethiopia and expand into <span className="font-semibold text-white">local manufacturing</span>, driving lasting healthcare growth.
             </p>
           </div>
         </div>
 
-        {/* Mission Card - Subtle Scarlet Tint on Hover */}
-        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hair bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:bg-scarlet-tint/35 hover:shadow-lift">
+        {/* Mission Card - Deep Navy Blue */}
+        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-scarlet/[0.03] transition-all duration-300 group-hover:scale-105 group-hover:text-scarlet/[0.08]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
             <Target size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-scarlet-tint text-scarlet shadow-2xs transition-transform duration-300 group-hover:scale-105">
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
                 <Target size={22} aria-hidden="true" />
               </span>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-steel">
+              <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
                 02 // Mission
               </span>
             </div>
 
-            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-navy transition-colors duration-300 group-hover:text-scarlet">
+            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-white">
               Our Mission
             </h3>
 
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-              Delivering <span className="font-semibold text-ink transition-colors duration-300 group-hover:text-scarlet">high-quality medical equipment</span> with speed and integrity — meeting clinical demand, <span className="font-semibold text-ink transition-colors duration-300 group-hover:text-scarlet">transferring know-how</span>, and ensuring dependable service.
+            <p className="mt-3 text-[15px] leading-relaxed text-slate-200">
+              Delivering <span className="font-semibold text-white">high-quality medical equipment</span> with speed and integrity — meeting clinical demand, <span className="font-semibold text-white">transferring know-how</span>, and ensuring dependable service.
             </p>
           </div>
         </div>
 
-        {/* Values Card - Subtle Emerald Tint on Hover */}
-        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-hair bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:border-ok/40 hover:bg-ok-tint/35 hover:shadow-lift">
+        {/* Values Card - Deep Navy Blue */}
+        <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-ok/[0.03] transition-all duration-300 group-hover:scale-105 group-hover:text-ok/[0.08]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
             <Award size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-ok-tint text-ok shadow-2xs transition-transform duration-300 group-hover:scale-105">
+              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
                 <Award size={22} aria-hidden="true" />
               </span>
-              <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-steel">
+              <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
                 03 // Values
               </span>
             </div>
 
-            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-navy transition-colors duration-300 group-hover:text-ok">
+            <h3 className="font-display mt-5 text-2xl font-bold tracking-tight text-white">
               Core Values
             </h3>
 
-            <p className="mt-3 text-[15px] leading-relaxed text-ink-soft">
-              <span className="font-semibold text-ink transition-colors duration-300 group-hover:text-ok">Customer satisfaction</span>, clinical reliability, <span className="font-semibold text-ink transition-colors duration-300 group-hover:text-ok">ethical honesty</span>, mutual respect, professional efficiency, and continuous innovation.
+            <p className="mt-3 text-[15px] leading-relaxed text-slate-200">
+              <span className="font-semibold text-white">Customer satisfaction</span>, clinical reliability, <span className="font-semibold text-white">ethical honesty</span>, mutual respect, professional efficiency, and continuous innovation.
             </p>
           </div>
         </div>

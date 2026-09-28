@@ -37,48 +37,48 @@ export function HomeServices() {
     <section
       id="services"
       aria-labelledby="services-heading"
-      className="relative border-b border-hair bg-paper px-5 py-14 sm:px-6 lg:py-18"
+      className="relative border-b border-hair bg-navy px-5 py-16 sm:px-6 lg:py-20 text-white"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="reveal flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+        <div className="reveal flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-scarlet">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-scarlet">
               <span className="h-1.5 w-1.5 rounded-full bg-scarlet animate-pulse" aria-hidden="true" />
               What we do
             </div>
             <h2
               id="services-heading"
-              className="font-display wdth-w mt-2 max-w-[20ch] text-[clamp(2rem,4vw,3.2rem)] font-semibold leading-[1.05] tracking-[-.035em] text-navy text-balance"
+              className="font-display wdth-w mt-2 max-w-[20ch] text-[clamp(2rem,4vw,3.2rem)] font-bold leading-[1.05] tracking-[-.035em] text-white text-balance"
             >
               The services we provide<span className="text-scarlet">.</span>
             </h2>
           </div>
-          <p className="max-w-[46ch] text-sm leading-relaxed text-ink-soft sm:text-[15px]">
+          <p className="max-w-[46ch] text-sm leading-relaxed text-slate-300 sm:text-[15px]">
             Support that does not stop at delivery. We guide planning, install equipment, train your team, and provide ongoing technical assistance.
           </p>
         </div>
 
-        <div className="reveal-stagger mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:mt-10">
+        <div className="reveal-stagger mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {services.map(({ n, title, icon: Icon, description }) => (
             <article
               key={title}
-              className="reveal group relative flex flex-col justify-between overflow-hidden rounded-xl border border-hair bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-navy/40 hover:shadow-[0_12px_28px_rgba(15,37,85,0.07)]"
+              className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/25 hover:bg-white/[0.07] hover:shadow-lg"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="stamp text-xl font-bold tabular-nums text-navy/20 transition-colors duration-300 group-hover:text-scarlet">
+                  <span className="text-xl font-bold tabular-nums text-white/30 transition-colors duration-300 group-hover:text-scarlet">
                     {n}
                   </span>
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-navy/5 text-navy transition-all duration-300 group-hover:rotate-[-4deg] group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
-                    <Icon size={18} strokeWidth={1.8} aria-hidden="true" />
+                  <div className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
+                    <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
                   </div>
                 </div>
 
-                <h3 className="font-display mt-4 text-[17px] font-semibold text-navy transition-colors duration-300 group-hover:text-scarlet">
+                <h3 className="font-display mt-5 text-[18px] font-bold text-white">
                   {title}
                 </h3>
 
-                <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">
+                <p className="mt-2.5 text-[13.5px] leading-relaxed text-slate-300">
                   {description}
                 </p>
               </div>
@@ -92,18 +92,18 @@ export function HomeServices() {
           ))}
         </div>
 
-        <div className="reveal mt-8 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-hair bg-white p-5 sm:p-6">
+        <div className="reveal mt-10 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-white/12 bg-white/[0.05] p-6 sm:p-7">
           <div>
-            <h3 className="font-display text-base font-semibold text-navy sm:text-lg">
+            <h3 className="font-display text-base font-bold text-white sm:text-lg">
               Need assistance with your facility&apos;s equipment?
             </h3>
-            <p className="mt-0.5 text-xs text-ink-soft sm:text-sm">
+            <p className="mt-1 text-xs text-slate-300 sm:text-sm">
               Tell us what technology you need, or request a consultation for your hospital or clinic.
             </p>
           </div>
           <Link
             href="/quote"
-            className="group inline-flex min-h-11 items-center gap-2.5 rounded-full bg-navy px-5 py-2 text-sm font-semibold text-white transition-colors duration-300 hover:bg-navy-deep hover:text-white"
+            className="group inline-flex min-h-11 items-center gap-2.5 rounded-full bg-scarlet px-6 py-2.5 text-sm font-bold text-white shadow-xs transition-all duration-300 hover:bg-scarlet-deep hover:shadow-md"
           >
             Request consultation or quote
             <ArrowRight size={15} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1" />

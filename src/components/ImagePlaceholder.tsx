@@ -1,12 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import { ImageIcon } from "lucide-react";
 import { publicMediaUrl } from "@/lib/preview-paths";
 
 /**
- * Conventional image placeholder: deliberately plain grey with a diagonal
- * cross, so an empty photo slot is never mistaken for finished artwork.
- *
- * Each instance names the photograph that belongs there, which doubles as the
- * shot list for STEM MEDICA. Replace with <Image> as the real photography lands.
+ * Conventional image placeholder: shows a clean hardware-accelerated shimmer
+ * while photos are streaming from storage, and a cross-boxed placeholder
+ * if no asset is available yet.
  */
 export function ImagePlaceholder({
   src,
@@ -21,9 +22,33 @@ export function ImagePlaceholder({
   tone?: "light" | "dark";
   className?: string;
 }) {
-  if (src) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={publicMediaUrl(src)} alt={label} loading="lazy" className={`w-full object-contain ${className}`} style={{ aspectRatio: ratio }} />;
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  if (src && !error) {
+    return (
+      <div
+        className={`relative overflow-hidden ${!loaded ? "shimmer-box" : "bg-white"} ${className}`}
+        style={{ aspectRatio: ratio }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={publicMediaUrl(src)}
+          alt={label}
+          loading="lazy"
+          ref={(el) => {
+            if (el && el.complete && el.naturalWidth > 0) {
+              setLoaded(true);
+            }
+          }}
+          onLoad={() => setLoaded(true)}
+          onError={() => setError(true)}
+          className={`h-full w-full object-contain transition-opacity duration-300 ${
+            loaded ? "opacity-100" : "opacity-0"
+          }`}
+        />
+      </div>
+    );
   }
   const dark = tone === "dark";
   const c = dark

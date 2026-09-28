@@ -311,6 +311,31 @@ body {
   55% { transform: scale(1.8); opacity: .45; }
 }
 
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.shimmer-box {
+  position: relative;
+  overflow: hidden;
+  background-color: #f1f5f9;
+}
+
+.shimmer-box::after {
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.65) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: shimmer 1.6s infinite;
+  content: '';
+}
+
 .v2-btn {
   display: inline-flex; align-items: center; gap: 12px; border-radius: 999px;
   min-height: 48px; max-width: 100%; justify-content: center; overflow-wrap: anywhere;
