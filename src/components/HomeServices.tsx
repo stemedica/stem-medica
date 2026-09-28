@@ -64,7 +64,15 @@ export function HomeServices() {
               key={title}
               className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-white/25 hover:bg-white/[0.07] hover:shadow-lg"
             >
-              <div>
+              {/* Subtle watermark outline icon */}
+              <div
+                className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.08]"
+                aria-hidden="true"
+              >
+                <Icon size={115} strokeWidth={1.2} />
+              </div>
+
+              <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <span className="text-xl font-bold tabular-nums text-white/30 transition-colors duration-300 group-hover:text-scarlet">
                     {n}
