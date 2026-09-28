@@ -54,13 +54,13 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
         {/* Vision Card - Deep Navy Blue */}
         <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-scarlet/[0.06] transition-all duration-300 group-hover:scale-105 group-hover:text-scarlet/[0.12]" aria-hidden="true">
             <Compass size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
+              <span className="flex size-11 items-center justify-center rounded-xl border border-scarlet/25 bg-scarlet/15 text-scarlet shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
                 <Compass size={22} aria-hidden="true" />
               </span>
               <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
@@ -81,13 +81,13 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
         {/* Mission Card - Deep Navy Blue */}
         <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-scarlet/[0.06] transition-all duration-300 group-hover:scale-105 group-hover:text-scarlet/[0.12]" aria-hidden="true">
             <Target size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
+              <span className="flex size-11 items-center justify-center rounded-xl border border-scarlet/25 bg-scarlet/15 text-scarlet shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
                 <Target size={22} aria-hidden="true" />
               </span>
               <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
@@ -108,13 +108,13 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
         {/* Values Card - Deep Navy Blue */}
         <div className="reveal group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-navy p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-scarlet/40 hover:shadow-xl">
           {/* Subtle watermark outline icon */}
-          <div className="pointer-events-none absolute -bottom-5 -right-5 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]" aria-hidden="true">
+          <div className="pointer-events-none absolute -bottom-5 -right-5 text-scarlet/[0.06] transition-all duration-300 group-hover:scale-105 group-hover:text-scarlet/[0.12]" aria-hidden="true">
             <Award size={120} strokeWidth={1.2} />
           </div>
 
           <div className="relative z-10">
             <div className="flex items-center justify-between">
-              <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
+              <span className="flex size-11 items-center justify-center rounded-xl border border-scarlet/25 bg-scarlet/15 text-scarlet shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
                 <Award size={22} aria-hidden="true" />
               </span>
               <span className="text-[12px] font-semibold uppercase tracking-wider text-slate-300/80">
