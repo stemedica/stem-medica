@@ -223,8 +223,11 @@ export function QuoteForm({
                   );
                 })
               ) : (
-                <li className="px-3.5 py-2.5 text-sm text-steel">
-                  No exact catalogue match. Your text will be submitted as a custom request.
+                <li className="px-3.5 py-3 text-sm text-steel">
+                  No exact catalogue match.{" "}
+                  <strong className="font-bold text-navy">
+                    Your text will be submitted as a custom request.
+                  </strong>
                 </li>
               )}
             </ul>
