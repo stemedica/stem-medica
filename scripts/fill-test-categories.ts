@@ -10,7 +10,7 @@ import { contentDatabase } from "../src/lib/content-database";
 const products: CmsProduct[] = [
   {
     slug: "test-melag-vacuklav-31-b-plus", name: "Vacuklav 31 B+ steam sterilizer — test",
-    brand: "MELAG", category: "test", origin: "", image: "",
+    brand: "MELAG", model: "Vacuklav 31 B+", category: "test", origin: "", image: "",
     summary: "Test catalogue entry, not confirmed stock. The Vacuklav 31 B+ is a stand-alone steam sterilizer. This example supports testing catalogue browsing and manual quotations. Confirm the exact model, installation requirements and accessories before ordering.",
     availability: "On request", leadTime: "Test content — no delivery commitment",
     featured: false, published: true, services: [],
@@ -18,7 +18,7 @@ const products: CmsProduct[] = [
   },
   {
     slug: "test-olympus-cx23", name: "CX23 biological microscope — test",
-    brand: "Olympus", category: "test2", origin: "", image: "",
+    brand: "Olympus", model: "CX23", category: "test2", origin: "", image: "",
     summary: "Test catalogue entry, not confirmed stock. The CX23 is a biological microscope. Use this example to review laboratory equipment details and manual quotations. Confirm the optical configuration, accessories and local availability before ordering.",
     availability: "On request", leadTime: "Test content — confirm availability",
     featured: false, published: true, services: [],

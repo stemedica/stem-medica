@@ -94,7 +94,7 @@ export function CataloguePicker({ onAdd, limitReached, selectedItems }: {
               || (!item.catalogueSlug && (item.description.trim() === generatedDescription || item.description.trim() === product.name)))?.qty ?? 0;
             const quantityLimitReached = selectedQuantity >= 1_000_000;
             return <li key={product.slug} className="flex items-center gap-3 py-3">
-              <div className="min-w-0 flex-1 break-words text-sm"><span className="font-medium">{product.name}</span><span className="block text-xs text-steel">{product.brand} · {product.availability}</span></div>
+              <div className="min-w-0 flex-1 break-words text-sm"><span className="font-medium">{product.name}</span><span className="block text-xs text-steel">{product.brand}{product.model ? ` · ${product.model}` : ""} · {product.availability}</span></div>
               <button type="button" className="btn-outline shrink-0" disabled={loading || quantityLimitReached || (limitReached && !selectedQuantity)} aria-label={`Add ${product.name}`} onClick={(event) => {
                 if (event.detail > 1) return;
                 onAdd(product);

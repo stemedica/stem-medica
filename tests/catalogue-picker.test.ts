@@ -7,6 +7,7 @@ const product = (index: number, patch: Partial<CmsProduct> = {}): CmsProduct => 
   slug: `product-${index}`,
   name: `Product ${index}`,
   brand: index === 9 ? "Searchable brand" : "Brand",
+  model: "",
   origin: "",
   category: "diagnostics",
   image: "",

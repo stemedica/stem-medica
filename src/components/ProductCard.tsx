@@ -44,6 +44,10 @@ export function ProductCard({ product, index, categoryName = "" }: {
             <dt className="text-steel">Brand</dt>
             <dd className="mt-0.5 break-words text-ink">{product.brand}</dd>
           </div>
+          {product.model ? <div>
+            <dt className="text-steel">Model</dt>
+            <dd className="mt-0.5 break-words text-ink">{product.model}</dd>
+          </div> : null}
           {product.origin ? <div>
             <dt className="text-steel">Origin</dt>
             <dd className="mt-0.5 break-words text-ink">{product.origin}</dd>

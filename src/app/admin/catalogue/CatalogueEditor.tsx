@@ -17,7 +17,7 @@ import { X } from "lucide-react";
 
 const button = "min-h-11 min-w-11 rounded-lg border border-hair px-4 py-2 text-sm font-medium hover:border-navy disabled:cursor-not-allowed disabled:opacity-50";
 const blankCategory = (): CmsCategory => ({ slug: "", name: "", short: "", blurb: "", image: "" });
-const blankProduct = (category: string): CmsProduct => ({ slug: "", name: "", brand: "", origin: "", category, image: "", summary: "", availability: "On request", leadTime: "Confirm on enquiry", specs: [], services: [], featured: false, published: false });
+const blankProduct = (category: string): CmsProduct => ({ slug: "", name: "", brand: "", model: "", origin: "", category, image: "", summary: "", availability: "In stock, Addis Ababa", leadTime: "From Stock", specs: [], services: [], featured: false, published: false });
 
 export function CatalogueEditor() {
   const [attempted, setAttempted] = useState(false);
@@ -153,10 +153,13 @@ export function CatalogueEditor() {
         || (categoryFilter === "none"
           ? !(item as CmsProduct).category
           : (item as CmsProduct).category === categoryFilter))
-      && (!query.trim() || (item.name || "").toLowerCase().includes(query.trim().toLowerCase())));
+      && (!query.trim()
+        || (item.name || "").toLowerCase().includes(query.trim().toLowerCase())
+        || ("brand" in item && (item.brand || "").toLowerCase().includes(query.trim().toLowerCase()))
+        || ("model" in item && ((item as CmsProduct).model || "").toLowerCase().includes(query.trim().toLowerCase()))));
   const current = data?.[mode][selected];
   const product = mode === "products" ? current as CmsProduct | undefined : undefined;
-  const duplicateIndex = product && product.name.trim() && product.brand.trim() ? data!.products.findIndex((p, i) => i !== selected && normalize(p.name) === normalize(product.name) && normalize(p.brand) === normalize(product.brand)) : -1;
+  const duplicateIndex = product && product.name.trim() && product.brand.trim() ? data!.products.findIndex((p, i) => i !== selected && normalize(p.name) === normalize(product.name) && normalize(p.brand) === normalize(product.brand) && normalize(p.model || "") === normalize(product.model || "")) : -1;
   return (
     <main onBlurCapture={onBlurCapture} className="mx-auto max-w-6xl px-5 py-8 sm:py-10">
       {confirmationModal}
@@ -231,9 +234,13 @@ export function CatalogueEditor() {
                 <span className={`block truncate text-sm ${index === selected ? "font-semibold text-navy" : "text-ink"}`}>{item.name || "Untitled"}</span>
                 <span className="mt-1 flex items-center gap-2">
                   {"published" in item ? <StatusPill published={(item as CmsProduct).published} /> : null}
-                  {mode === "products" && (item as CmsProduct).category
-                    ? <span className="truncate text-xs text-steel">{data.categories.find((c) => c.slug === (item as CmsProduct).category)?.name}</span>
-                    : null}
+                  {mode === "products" ? (
+                    <span className="truncate text-xs text-steel">
+                      {("brand" in item && item.brand && item.brand !== "—") ? item.brand : ""}
+                      {("model" in item && (item as CmsProduct).model) ? ` · ${(item as CmsProduct).model}` : ""}
+                      {(item as CmsProduct).category ? ` (${data.categories.find((c) => c.slug === (item as CmsProduct).category)?.name ?? ""})` : ""}
+                    </span>
+                  ) : null}
                 </span>
               </button>
             )) : (
@@ -266,8 +273,9 @@ export function CatalogueEditor() {
           <Panel title="Basics" description={<>Website address: <span className="break-all font-medium text-ink">{product ? "/products/" : "/products?cat="}{current.slug}</span>. Generated from the name; saved addresses never change.</>}>
             <div className="grid gap-4 sm:grid-cols-2">
               <TextField required label="Name" path={`${mode}.${selected}.name`} problems={problems} value={current.name} onChange={(name) => update({ name })} />
-              {product ? <TextField required label="Brand" path={`${mode}.${selected}.brand`} problems={problems} value={product.brand} onChange={(brand) => update({ brand })} /> : null}
+              {product ? <TextField label="Brand" hint="Manufacturer or brand name" path={`${mode}.${selected}.brand`} problems={problems} value={product.brand} onChange={(brand) => update({ brand })} /> : null}
               {product ? <>
+                <TextField label="Model" hint="Model number or series (e.g. BC-30S, HKN-90)" path={`${mode}.${selected}.model`} problems={problems} value={product.model || ""} onChange={(model) => update({ model })} />
                 <SelectField label="Category" path={`${mode}.${selected}.category`} problems={problems} value={product.category} onChange={(category) => update({ category })}>
                   <option value="">No category — show in All products</option>
                   {data.categories.map((c, i) => <option key={i} value={c.slug}>{c.name || "Untitled category"}</option>)}

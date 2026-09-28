@@ -13,15 +13,15 @@ interface Partner {
 
 const PARTNERS: Partner[] = [
   {
-    slug: "mindray",
-    name: "Mindray",
-    fullName: "Shenzhen Mindray Bio-Medical Electronics Co., Ltd.",
-    website: "https://www.mindray.com",
-    specialty: "Patient Monitoring, Ultrasound & Life Support",
-    category: "Patient Monitoring & Ultrasound",
+    slug: "angell",
+    name: "Angell Technology",
+    fullName: "Shenzhen Angell Technology Co., Ltd.",
+    website: "https://en.szangell.com",
+    specialty: "Digital Radiography (DR), Dynamic DR & X-Ray Systems",
+    category: "Diagnostic Imaging & DR",
     logo: (
-      <svg className="h-6 sm:h-7 w-auto" viewBox="0 0 100 24" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMid meet" aria-label="Mindray">
-        <text x="0" y="19" fontFamily="system-ui, -apple-system, sans-serif" fontSize="21" fontWeight="800" fill="#DE1F27" letterSpacing="-0.5">mindray</text>
+      <svg className="h-6 sm:h-7 w-auto" viewBox="0 0 110 24" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMid meet" aria-label="Angell Technology">
+        <text x="0" y="18" fontFamily="system-ui, -apple-system, sans-serif" fontSize="15" fontWeight="800" fill="#0077C8">Angell<tspan fontSize="10.5" fontWeight="700" fill="#64748B" dx="3">Technology</tspan></text>
       </svg>
     ),
   },
@@ -116,19 +116,6 @@ const PARTNERS: Partner[] = [
     logo: (
       <svg className="h-6 sm:h-7 w-auto" viewBox="0 0 105 24" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMid meet" aria-label="B&E Bio-Technology">
         <text x="0" y="18" fontFamily="system-ui, -apple-system, sans-serif" fontSize="15" fontWeight="900" fill="#0A2555">B&amp;E<tspan fontSize="10.5" fontWeight="700" fill="#64748B" dx="3">Bio-Tech</tspan></text>
-      </svg>
-    ),
-  },
-  {
-    slug: "angell",
-    name: "Angell Technology",
-    fullName: "Shenzhen Angell Technology Co., Ltd.",
-    website: "https://en.szangell.com",
-    specialty: "Digital Radiography (DR), Dynamic DR & X-Ray Systems",
-    category: "Diagnostic Imaging & DR",
-    logo: (
-      <svg className="h-6 sm:h-7 w-auto" viewBox="0 0 110 24" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMid meet" aria-label="Angell Technology">
-        <text x="0" y="18" fontFamily="system-ui, -apple-system, sans-serif" fontSize="15" fontWeight="800" fill="#0077C8">Angell<tspan fontSize="10.5" fontWeight="700" fill="#64748B" dx="3">Technology</tspan></text>
       </svg>
     ),
   },

@@ -104,6 +104,11 @@ export default async function ProductPage({
             {product.brand && product.brand !== "—" ? (
               <p className="mt-1 text-xl font-semibold text-ink">
                 {product.brand}
+                {product.model ? <span className="ml-2.5 font-normal text-steel">· {product.model}</span> : null}
+              </p>
+            ) : product.model ? (
+              <p className="mt-1 text-xl font-semibold text-ink">
+                {product.model}
               </p>
             ) : null}
 
@@ -123,6 +128,7 @@ export default async function ProductPage({
               {(
                 [
                   ["Brand", product.brand],
+                  ["Model", product.model || ""],
                   ["Origin", product.origin],
                   ["Availability", product.availability],
                   ["Lead time", product.leadTime],

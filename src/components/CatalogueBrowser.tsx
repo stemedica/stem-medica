@@ -35,7 +35,7 @@ export function CatalogueBrowser({ products, categories, initialQuery, initialCa
   const first = useRef(true);
 
   const haystacks = useMemo(
-    () => products.map((product) => `${product.name} ${product.brand} ${product.origin} ${product.summary}`.toLowerCase()),
+    () => products.map((product) => `${product.name} ${product.brand} ${product.model || ""} ${product.origin} ${product.summary}`.toLowerCase()),
     [products],
   );
 

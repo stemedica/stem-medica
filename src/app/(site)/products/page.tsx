@@ -22,7 +22,7 @@ export default async function ProductsPage({ searchParams }: {
 
   // Specs and services are the bulk of a product and no card reads them.
   const listing: CatalogueItem[] = products.map((product) => ({
-    slug: product.slug, name: product.name, brand: product.brand, origin: product.origin,
+    slug: product.slug, name: product.name, brand: product.brand, model: product.model || "", origin: product.origin,
     category: product.category, image: product.image, summary: product.summary,
     availability: product.availability, leadTime: product.leadTime,
     featured: product.featured, published: product.published,

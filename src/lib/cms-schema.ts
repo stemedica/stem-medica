@@ -6,7 +6,7 @@ const image = z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/);
 export const categorySchema = z.object({ slug, name: short, short: z.string().trim().max(200).default(""), blurb: z.string().max(800).default(""), image: image.default("") })
   .transform((category) => ({ ...category, short: category.short || category.name }));
 export const productSchema = z.object({
-  slug, name: short, brand: short, origin: z.string().trim().max(200).default(""), category: z.union([slug, z.literal("")]).default(""), image: image.default(""),
+  slug, name: short, brand: z.string().trim().max(200).default(""), model: z.string().trim().max(200).default(""), origin: z.string().trim().max(200).default(""), category: z.union([slug, z.literal("")]).default(""), image: image.default(""),
   summary: z.string().trim().max(1500).default(""),
   availability: z.enum(["In stock, Addis Ababa", "Indent order", "On request"]),
   leadTime: z.string().trim().max(200).default(""), featured: z.boolean(), published: z.boolean(),

@@ -46,7 +46,7 @@ export function buildScalePreview(catalogue: Catalogue, posts: CmsPost[], today:
       const context = contexts[variant];
       next.products.push({
         slug: productSlug, name: `${equipment} · ${context} — test`, brand: "Preview equipment (test)",
-        category: slug, image, origin: "", published: true, featured: false,
+        model: "", category: slug, image, origin: "", published: true, featured: false,
         summary: `Labelled test equipment for ${context.toLowerCase()}. This ${equipment.toLowerCase()} entry exercises catalogue search, category browsing and manual quotation requests. The image is a generic illustration, not a manufacturer's model photograph. No stock or performance claim is made.`,
         availability: "On request", leadTime: "Test content — confirm delivery separately", services: [],
         specs: [{ label: "Equipment family", value: equipment }, { label: "Preview scenario", value: context }, { label: "Record status", value: "Test entry; not an approved procurement specification" }],

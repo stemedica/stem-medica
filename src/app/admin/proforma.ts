@@ -54,7 +54,7 @@ export function totals(p: Proforma) {
 
 export function addCatalogueProduct(
   p: Proforma,
-  product: { slug: string; name: string; brand: string; origin?: string },
+  product: { slug: string; name: string; brand: string; origin?: string; model?: string },
 ): Proforma {
   const generatedDescription = `${product.name} — ${product.brand}`;
   const existing = p.items.findIndex((item) => item.catalogueSlug === product.slug
@@ -73,6 +73,7 @@ export function addCatalogueProduct(
     catalogueSlug: product.slug,
     description: product.name,
     brand: product.brand,
+    model: product.model || "",
     manufacturer: product.origin || "",
   };
   const empty = p.items.findIndex((entry) => !entry.description.trim() && entry.price === 0 && entry.qty === 1 && entry.unit === "pcs");
