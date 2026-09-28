@@ -25,17 +25,24 @@ const DARK: Record<Availability, { dot: string }> = {
   "On request": { dot: "bg-white/70" },
 };
 
+const LABEL: Record<Availability, string> = {
+  "In stock, Addis Ababa": "In stock",
+  "Indent order": "Indent order",
+  "On request": "On request",
+};
+
 export function AvailabilityTag({ availability, tone = "light", className = "" }: {
   availability: Availability;
   tone?: "light" | "dark";
   className?: string;
 }) {
+  const label = LABEL[availability] ?? availability;
   if (tone === "dark") {
     const dark = DARK[availability] ?? DARK["On request"];
     return (
       <span className={`inline-flex items-center gap-2 ${className}`}>
         <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${dark.dot}`} />
-        {availability}
+        {label}
       </span>
     );
   }
@@ -43,7 +50,7 @@ export function AvailabilityTag({ availability, tone = "light", className = "" }
   return (
     <span className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold ${light.surface} ${light.text} ${className}`}>
       <span aria-hidden="true" className={`size-1.5 shrink-0 rounded-full ${light.dot}`} />
-      {availability}
+      {label}
     </span>
   );
 }
