@@ -33,7 +33,7 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
 
         <div className="space-y-5 text-base sm:text-lg leading-relaxed text-ink-soft">
           <p>
-            STEM MEDICA is an Ethiopian registered company engaged in the distribution of medical supplies, devices, and equipment across Ethiopia, providing high-quality and affordable healthcare solutions. Established in 2023 G.C., the company operates nationwide to promote technology transfer.
+            STEM MEDICA (Stemedica) is an Ethiopian registered leader in medical sales, supplies, and hospital equipment distribution across Ethiopia, providing high-quality and affordable healthcare technology solutions. Established in 2023 G.C., the company operates nationwide from Addis Ababa to advance clinical care.
           </p>
           <p>
             Founded by biomedical engineer and healthcare entrepreneur Mr. Geremew Zewdie, the organization pairs technical engineering rigor with modern equipment distribution — working closely with public and private hospitals, specialized clinics, and educational institutions.

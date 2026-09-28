@@ -18,6 +18,13 @@ export function OrganizationSchema() {
     "@id": `${site.url}/#organization`,
     name: site.name,
     legalName: site.legalName,
+    alternateName: [
+      "Stemedica",
+      "Stemedica ET",
+      "STEM MEDICA Ethiopia",
+      "Stemedica Ethiopia",
+      "Stem Medica Import & Distribution",
+    ],
     slogan: site.tagline,
     url: site.url,
     logo: `${site.url}/logo.png`,
@@ -82,6 +89,7 @@ export function WebSiteSchema() {
         "@id": `${site.url}/#website`,
         url: site.url,
         name: site.name,
+        alternateName: ["Stemedica", "Stemedica ET", "STEM MEDICA Ethiopia"],
         publisher: { "@id": `${site.url}/#organization` },
         potentialAction: {
           "@type": "SearchAction",
