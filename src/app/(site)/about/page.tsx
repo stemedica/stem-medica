@@ -133,7 +133,7 @@ export default function AboutPage() {
                 className="reveal flex flex-col justify-between rounded-xl border border-hair bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-navy/40 hover:shadow-md"
               >
                 <div>
-                  <span className="flex size-11 items-center justify-center rounded-lg bg-scarlet/10 text-scarlet">
+                  <span className="flex size-11 items-center justify-center rounded-lg bg-navy/5 text-navy">
                     <Icon size={20} aria-hidden="true" />
                   </span>
                   <h3 className="font-display mt-5 text-lg font-bold text-navy">{title}</h3>

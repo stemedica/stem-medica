@@ -69,7 +69,7 @@ export function HomeServices() {
                   <span className="text-xl font-bold tabular-nums text-white/30 transition-colors duration-300 group-hover:text-scarlet">
                     {n}
                   </span>
-                  <div className="flex size-11 items-center justify-center rounded-xl border border-scarlet/25 bg-scarlet/15 text-scarlet transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
+                  <div className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet group-hover:text-white">
                     <Icon size={19} strokeWidth={1.8} aria-hidden="true" />
                   </div>
                 </div>

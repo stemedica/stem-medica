@@ -31,7 +31,7 @@ export default function ServicePage() {
             <li key={n} className="grid gap-4 border-b border-hair py-6 sm:grid-cols-[64px_minmax(180px,.7fr)_1fr] sm:items-start sm:gap-6 sm:py-7">
               <div className="flex items-center gap-3 text-navy sm:flex-col sm:items-start sm:gap-2">
                 <span className="stamp text-2xl tabular-nums">{n}</span>
-                <Icon size={20} strokeWidth={1.7} aria-hidden="true" className="text-scarlet" />
+                <Icon size={20} strokeWidth={1.7} aria-hidden="true" />
               </div>
               <h2 className="font-display wdth-n text-xl font-semibold leading-snug text-navy">{title}</h2>
               <p className="max-w-[62ch] text-base leading-relaxed text-ink-soft">{body}</p>
