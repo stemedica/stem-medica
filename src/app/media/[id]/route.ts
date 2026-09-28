@@ -13,5 +13,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     const object = await readObject(`media/${id}`);
     if (!object) return new Response(null, { status: 404 });
     return new Response(new Uint8Array(object.bytes), { headers: { "Content-Type": id.endsWith("jpg") ? "image/jpeg" : `image/${id.split(".").pop()}`, "Cache-Control": "public, max-age=31536000, immutable", "X-Content-Type-Options": "nosniff" } });
-  } catch { return new Response(null, { status: 503 }); }
+  } catch (error) {
+    console.error("Media route error for", id, error);
+    return new Response(null, { status: 503 });
+  }
 }
