@@ -3,7 +3,7 @@ export const site = {
   legalName: "Stem Medica Import & Distribution",
   tagline: "Putting quality in the front line",
   description:
-    "STEM MEDICA (Stemedica) is Ethiopia's trusted leader in medical sales, supplies, and hospital equipment distribution, offering installation, warranty, spare parts, and certified biomedical support nationwide.",
+    "Quality medical supplies, devices and equipment for health facilities across Ethiopia, with installation, training, spare parts and technical support.",
   city: "Addis Ababa, Ethiopia",
   phone: "+251 921 136 180",
   phoneIntl: "+251921136180",
