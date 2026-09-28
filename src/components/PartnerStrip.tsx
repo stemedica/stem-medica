@@ -302,7 +302,7 @@ export function PartnerStrip() {
                 onClick={handleLinkClick}
                 draggable={false}
                 aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
-                className="group/card relative flex min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
+                className="group/card relative flex overflow-hidden min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
               >
                 {/* Header row: Inset white logo plate & link indicator */}
                 <div className="flex items-center justify-between gap-2 sm:gap-3 pointer-events-none">
@@ -345,7 +345,7 @@ export function PartnerStrip() {
                   <span className="truncate rounded-md border border-white/10 bg-white/10 px-2 py-0.5 font-medium text-slate-200 max-w-[105px] sm:max-w-none text-[9.5px] sm:text-[11px]">
                     {partner.category}
                   </span>
-                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-white opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
                     Visit website
                     <ArrowUpRight size={12} className="transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" />
                   </span>
@@ -371,7 +371,7 @@ export function PartnerStrip() {
                 aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
                 aria-hidden="true"
                 tabIndex={-1}
-                className="group/card relative flex min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
+                className="group/card relative flex overflow-hidden min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
               >
                 {/* Header row: Inset white logo plate & link indicator */}
                 <div className="flex items-center justify-between gap-2 sm:gap-3 pointer-events-none">
@@ -412,7 +412,7 @@ export function PartnerStrip() {
                   <span className="truncate rounded-md border border-white/10 bg-white/10 px-2 py-0.5 font-medium text-slate-200 max-w-[105px] sm:max-w-none text-[9.5px] sm:text-[11px]">
                     {partner.category}
                   </span>
-                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-white opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
                     Visit website
                     <ArrowUpRight size={12} className="transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" />
                   </span>
