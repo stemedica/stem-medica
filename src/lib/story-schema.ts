@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const image = z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/);
+const image = z.string().regex(/^$|^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/);
 
 /**
  * An achievement: work STEM MEDICA has carried out for a facility.

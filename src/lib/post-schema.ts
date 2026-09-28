@@ -6,9 +6,9 @@ export const postSchema = z.object({
   excerpt: z.string().trim().max(500).default(""), author: z.string().trim().max(100).default("STEM MEDICA").transform((author) => author || "STEM MEDICA"),
   arrivalNoticeUntil: z.union([z.literal(""), z.iso.date()]).optional(),
   arrivalNoticeEnabled: z.boolean().optional(),
-  body: z.string().trim().max(8000), image: z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/), published: z.boolean(),
+  body: z.string().trim().max(8000), image: z.string().regex(/^$|^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/), published: z.boolean(),
   gallery: z.array(z.object({
-    src: z.string().regex(/^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/),
+    src: z.string().regex(/^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/),
     alt: z.string().trim().max(200).default(""),
     caption: z.string().trim().max(300).default(""),
   })).max(8).optional(),

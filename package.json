@@ -20,6 +20,7 @@
     "env:prod": "vercel env pull --environment=production .env.production.local"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
     "@vercel/blob": "^2.8.0",
     "@vercel/functions": "^3.9.8",
     "drizzle-orm": "^0.45.2",
@@ -50,5 +51,5 @@
       "esbuild": "^0.25.0"
     }
   },
-  "description": "STEM MEDICA \u2014 medical equipment distribution, Ethiopia. MVP demo."
+  "description": "STEM MEDICA — medical equipment distribution, Ethiopia. MVP demo."
 }

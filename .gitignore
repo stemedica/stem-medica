@@ -46,3 +46,4 @@ yarn-error.log*
 next-env.d.ts
 .neon
 public/logo-original.png
+/public/media/

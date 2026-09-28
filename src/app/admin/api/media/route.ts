@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   const denied = await adminGuard(request); if (denied) return denied;
   try {
     const id = new URL(request.url).searchParams.get("id") ?? "";
-    if (!/^[a-f0-9-]+\.(jpg|png|webp)$/.test(id)) return json({ error: "Invalid image" }, 400);
+    if (!/^[a-z0-9-]+\.(jpg|png|webp)$/.test(id)) return json({ error: "Invalid image" }, 400);
     const object = await readObject(`media/${id}`);
     if (!object) return json({ error: "Not found" }, 404);
     return new Response(new Uint8Array(object.bytes), { headers: { "Content-Type": id.endsWith("jpg") ? "image/jpeg" : `image/${id.split(".").pop()}`, "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });

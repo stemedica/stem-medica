@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const short = z.string().trim().min(1).max(200);
 const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100);
-const image = z.string().regex(/^$|^\/media\/[a-f0-9-]+\.(?:jpg|png|webp)$/);
+const image = z.string().regex(/^$|^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/);
 export const categorySchema = z.object({ slug, name: short, short: z.string().trim().max(200).default(""), blurb: z.string().max(800).default(""), image: image.default("") })
   .transform((category) => ({ ...category, short: category.short || category.name }));
 export const productSchema = z.object({

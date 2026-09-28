@@ -5,7 +5,7 @@ import { readObject } from "@/lib/storage";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!/^[a-f0-9-]+\.(jpg|png|webp)$/.test(id)) return new Response(null, { status: 404 });
+  if (!/^[a-z0-9-]+\.(jpg|png|webp)$/.test(id)) return new Response(null, { status: 404 });
   try {
     const [catalogue, posts, stories] = await Promise.all([getCatalogue(), getAllPosts(), getStories()]);
     const url = `/media/${id}`;
