@@ -1,5 +1,7 @@
-import type { ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+"use client";
+
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Partner {
   slug: string;
@@ -148,6 +150,116 @@ const PARTNERS: Partner[] = [
 ];
 
 export function PartnerStrip() {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
+  const hasDragged = useRef(false);
+  const isInteracting = useRef(false);
+  const resumeTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const scheduleResume = useCallback(() => {
+    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
+    resumeTimeout.current = setTimeout(() => {
+      isInteracting.current = false;
+    }, 1800);
+  }, []);
+
+  const pauseAutoScroll = useCallback(() => {
+    if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
+    isInteracting.current = true;
+  }, []);
+
+  // Continuous auto-scrolling
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let animId: number;
+    let lastTime = performance.now();
+
+    const step = (time: number) => {
+      const delta = Math.min(32, time - lastTime);
+      lastTime = time;
+
+      if (!isInteracting.current && !isDragging.current && el) {
+        el.scrollLeft += 0.045 * delta;
+        const half = el.scrollWidth / 2;
+        if (half > 0 && el.scrollLeft >= half) {
+          el.scrollLeft -= half;
+        }
+      }
+      animId = requestAnimationFrame(step);
+    };
+
+    animId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animId);
+      if (resumeTimeout.current) clearTimeout(resumeTimeout.current);
+    };
+  }, []);
+
+  // Seamless infinite loop when scrolling in either direction
+  const handleScroll = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    const half = el.scrollWidth / 2;
+    if (half <= 0) return;
+
+    if (el.scrollLeft >= half) {
+      el.scrollLeft -= half;
+    } else if (el.scrollLeft <= 0) {
+      el.scrollLeft += half;
+    }
+  }, []);
+
+  // Manual navigation buttons
+  const slide = useCallback((direction: "prev" | "next") => {
+    pauseAutoScroll();
+    const el = trackRef.current;
+    if (!el) return;
+    const amount = el.clientWidth ? Math.min(el.clientWidth * 0.8, 360) : 320;
+    el.scrollBy({
+      left: direction === "next" ? amount : -amount,
+      behavior: "smooth",
+    });
+    scheduleResume();
+  }, [pauseAutoScroll, scheduleResume]);
+
+  // Pointer / Mouse drag handlers
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0) return;
+    isDragging.current = true;
+    hasDragged.current = false;
+    startX.current = e.clientX;
+    scrollLeftStart.current = trackRef.current?.scrollLeft || 0;
+    pauseAutoScroll();
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current || !trackRef.current) return;
+    const dist = e.clientX - startX.current;
+    if (Math.abs(dist) > 5) {
+      hasDragged.current = true;
+    }
+    trackRef.current.scrollLeft = scrollLeftStart.current - dist;
+  };
+
+  const onPointerUp = () => {
+    if (!isDragging.current) return;
+    isDragging.current = false;
+    scheduleResume();
+  };
+
+  const handleLinkClick = (e: React.MouseEvent) => {
+    if (hasDragged.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   return (
     <section
       id="partners"
@@ -169,143 +281,189 @@ export function PartnerStrip() {
               Our International Partners<span className="text-scarlet">.</span>
             </h2>
           </div>
-          <p className="max-w-[50ch] text-base leading-relaxed text-ink-soft">
-            Direct collaboration with premier global medical manufacturers — guaranteeing genuine equipment, factory warranties, and certified biomedical technical support across Ethiopia.
-          </p>
+          <div className="flex flex-col sm:items-end gap-3">
+            <p className="max-w-[50ch] text-base leading-relaxed text-ink-soft">
+              Direct collaboration with premier global medical manufacturers — guaranteeing genuine equipment, factory warranties, and certified biomedical technical support across Ethiopia.
+            </p>
+            {/* Manual navigation controls */}
+            <div className="mt-1 flex items-center gap-2.5">
+              <span className="text-xs text-steel">Swipe or drag to explore</span>
+              <div className="flex gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => slide("prev")}
+                  aria-label="Previous partners"
+                  className="flex size-9 items-center justify-center rounded-full border border-hair bg-white text-navy shadow-2xs transition-all hover:border-scarlet hover:text-scarlet active:scale-95"
+                >
+                  <ChevronLeft size={16} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => slide("next")}
+                  aria-label="Next partners"
+                  className="flex size-9 items-center justify-center rounded-full border border-hair bg-white text-navy shadow-2xs transition-all hover:border-scarlet hover:text-scarlet active:scale-95"
+                >
+                  <ChevronRight size={16} aria-hidden="true" />
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Marquee Carousel Track */}
-      <div className="marquee-mask relative mt-8 overflow-hidden py-3 sm:mt-12 lg:mt-16">
-        <div className="animate-partner-marquee flex shrink-0 items-center gap-3 sm:gap-6 lg:gap-8">
-          {/* First loop */}
-          {PARTNERS.map((partner) => (
-            <a
-              key={`p1-${partner.name}`}
-              href={partner.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
-              className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
-            >
-              {/* Header row: Favicon badge, Logo & Click indicator */}
-              <div className="flex items-center justify-between gap-2 sm:gap-4">
-                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                  <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`/partners/${partner.slug}.png`}
-                      alt=""
-                      aria-hidden="true"
-                      width={24}
-                      height={24}
-                      className="size-full object-contain"
-                    />
+      {/* Interactive Marquee Carousel Track */}
+      <div
+        className="relative mt-8 py-3 sm:mt-12 lg:mt-16"
+        onMouseEnter={pauseAutoScroll}
+        onMouseLeave={scheduleResume}
+      >
+        <div
+          ref={trackRef}
+          onScroll={handleScroll}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onTouchStart={pauseAutoScroll}
+          onTouchEnd={scheduleResume}
+          className="marquee-mask flex cursor-grab active:cursor-grabbing overflow-x-auto select-none py-3 scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden overscroll-x-contain touch-pan-x"
+        >
+          <div className="flex shrink-0 items-center gap-3 sm:gap-6 lg:gap-8 pr-3 sm:pr-6 lg:pr-8">
+            {/* First loop */}
+            {PARTNERS.map((partner) => (
+              <a
+                key={`p1-${partner.name}`}
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleLinkClick}
+                draggable={false}
+                aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
+                className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
+              >
+                {/* Header row: Favicon badge, Logo & Click indicator */}
+                <div className="flex items-center justify-between gap-2 sm:gap-4 pointer-events-none">
+                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                    <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/partners/${partner.slug}.png`}
+                        alt=""
+                        aria-hidden="true"
+                        width={24}
+                        height={24}
+                        draggable={false}
+                        className="size-full object-contain pointer-events-none"
+                      />
+                    </div>
+                    <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
+                      {partner.logo}
+                    </div>
                   </div>
-                  <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
-                    {partner.logo}
-                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
+                  >
+                    <ArrowUpRight size={13} className="sm:hidden" />
+                    <ArrowUpRight size={16} className="hidden sm:block" />
+                  </span>
                 </div>
+
+                {/* Body: Full name and Specialty */}
+                <div className="mt-2.5 sm:mt-5 pointer-events-none">
+                  <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
+                    {partner.name}
+                  </h3>
+                  <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
+                    {partner.specialty}
+                  </p>
+                </div>
+
+                {/* Footer row: Category tag & link indicator */}
+                <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel pointer-events-none">
+                  <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
+                    {partner.category}
+                  </span>
+                  <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                    Visit website →
+                  </span>
+                </div>
+
+                {/* Bottom active hover accent bar */}
                 <span
                   aria-hidden="true"
-                  className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
-                >
-                  <ArrowUpRight size={13} className="sm:hidden" />
-                  <ArrowUpRight size={16} className="hidden sm:block" />
-                </span>
-              </div>
+                  className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
+                />
+              </a>
+            ))}
 
-              {/* Body: Full name and Specialty */}
-              <div className="mt-2.5 sm:mt-5">
-                <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
-                  {partner.name}
-                </h3>
-                <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
-                  {partner.specialty}
-                </p>
-              </div>
-
-              {/* Footer row: Category tag & link indicator */}
-              <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel">
-                <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
-                  {partner.category}
-                </span>
-                <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
-                  Visit website →
-                </span>
-              </div>
-
-              {/* Bottom active hover accent bar */}
-              <span
+            {/* Seamless duplicate loop for infinite flow */}
+            {PARTNERS.map((partner) => (
+              <a
+                key={`p2-${partner.name}`}
+                href={partner.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleLinkClick}
+                draggable={false}
+                aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
                 aria-hidden="true"
-                className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
-              />
-            </a>
-          ))}
-
-          {/* Seamless duplicate loop for infinite flow */}
-          {PARTNERS.map((partner) => (
-            <a
-              key={`p2-${partner.name}`}
-              href={partner.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
-              aria-hidden="true"
-              tabIndex={-1}
-              className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
-            >
-              {/* Header row: Favicon badge, Logo & Click indicator */}
-              <div className="flex items-center justify-between gap-2 sm:gap-4">
-                <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                  <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`/partners/${partner.slug}.png`}
-                      alt=""
-                      aria-hidden="true"
-                      width={24}
-                      height={24}
-                      className="size-full object-contain"
-                    />
+                tabIndex={-1}
+                className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
+              >
+                {/* Header row: Favicon badge, Logo & Click indicator */}
+                <div className="flex items-center justify-between gap-2 sm:gap-4 pointer-events-none">
+                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                    <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={`/partners/${partner.slug}.png`}
+                        alt=""
+                        aria-hidden="true"
+                        width={24}
+                        height={24}
+                        draggable={false}
+                        className="size-full object-contain pointer-events-none"
+                      />
+                    </div>
+                    <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
+                      {partner.logo}
+                    </div>
                   </div>
-                  <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
-                    {partner.logo}
-                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
+                  >
+                    <ArrowUpRight size={13} className="sm:hidden" />
+                    <ArrowUpRight size={16} className="hidden sm:block" />
+                  </span>
                 </div>
+
+                <div className="mt-2.5 sm:mt-5 pointer-events-none">
+                  <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
+                    {partner.name}
+                  </h3>
+                  <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
+                    {partner.specialty}
+                  </p>
+                </div>
+
+                <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel pointer-events-none">
+                  <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
+                    {partner.category}
+                  </span>
+                  <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                    Visit website →
+                  </span>
+                </div>
+
                 <span
                   aria-hidden="true"
-                  className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
-                >
-                  <ArrowUpRight size={13} className="sm:hidden" />
-                  <ArrowUpRight size={16} className="hidden sm:block" />
-                </span>
-              </div>
-
-              <div className="mt-2.5 sm:mt-5">
-                <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
-                  {partner.name}
-                </h3>
-                <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
-                  {partner.specialty}
-                </p>
-              </div>
-
-              <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel">
-                <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
-                  {partner.category}
-                </span>
-                <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
-                  Visit website →
-                </span>
-              </div>
-
-              <span
-                aria-hidden="true"
-                className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
-              />
-            </a>
-          ))}
+                  className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
+                />
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </section>
