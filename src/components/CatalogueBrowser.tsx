@@ -132,31 +132,43 @@ export function CatalogueBrowser({ products, categories, initialQuery, initialCa
             </div>
           ) : null}
         </>
-      ) : (
-        <div className="mt-5 rounded-2xl border border-hair bg-white p-6 sm:p-8">
-          <h2 className="font-display text-xl font-semibold text-navy">Nothing matches that</h2>
-          <p className="mt-3 max-w-[62ch] text-base leading-relaxed text-ink-soft">
-            Try fewer words, or clear the filters to see everything. If we do not list it, we can still source it — send us the details.
-          </p>
-          <div className="action-stack mt-5">
-            <Link href={query.trim() ? `/quote?equipment=${encodeURIComponent(query.trim())}` : "/quote"} className="btn-primary min-h-11">Ask us to source it</Link>
-            <button type="button" onClick={() => { setQuery(""); setCategory(""); }} className="btn-outline min-h-11">Clear filters</button>
-          </div>
-        </div>
-      )}
+      ) : null}
 
-      {/* The catalogue had no way to send an enquiry from it: a buyer with a
-          list of eight items could only go product by product. */}
       <aside className="mt-14 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-hair bg-paper p-6 sm:p-8">
         <div>
-          <h2 className="font-display text-xl font-semibold text-navy">Can’t find it, or need several items?</h2>
-          <p className="mt-2 max-w-[56ch] text-base leading-relaxed text-ink-soft">
-            Send your equipment list with quantities and we will come back with pricing and delivery time.
-          </p>
+          {matches.length ? (
+            <>
+              <h2 className="font-display text-xl font-semibold text-navy">Need several items?</h2>
+              <p className="mt-2 max-w-[56ch] text-base leading-relaxed text-ink-soft">
+                Send your equipment list with quantities and we will come back with pricing and delivery time.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="font-display text-xl font-semibold text-navy">Nothing matches that</h2>
+              <p className="mt-2 max-w-[56ch] text-base leading-relaxed text-ink-soft">
+                Try fewer words or clear the filters. If we do not list it, we can still source it.
+              </p>
+            </>
+          )}
         </div>
-        <Link href="/quote" className="inline-flex min-h-12 shrink-0 items-center gap-3 rounded-full bg-scarlet px-6 text-sm font-semibold text-white transition-colors hover:bg-vital">
-          Request a quote <ArrowRight size={17} aria-hidden="true" />
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link
+            href={query.trim() ? `/quote?equipment=${encodeURIComponent(query.trim())}` : "/quote"}
+            className="inline-flex min-h-12 shrink-0 items-center gap-3 rounded-full bg-scarlet px-6 text-sm font-semibold text-white transition-colors hover:bg-vital"
+          >
+            Request a quote <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+          {!matches.length && (query.trim() || category) ? (
+            <button
+              type="button"
+              onClick={() => { setQuery(""); setCategory(""); }}
+              className="btn-outline min-h-12"
+            >
+              Clear filters
+            </button>
+          ) : null}
+        </div>
       </aside>
     </>
   );
