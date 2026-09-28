@@ -2,8 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, Phone } from "lucide-react";
-import { EcgRule, SectionHead } from "@/components/Section";
-import { WaveField } from "@/components/WaveField";
+import { SectionHead } from "@/components/Section";
 import { Button } from "@/components/Button";
 import { ProductCard } from "@/components/ProductCard";
 import { AvailabilityTag } from "@/components/AvailabilityTag";
@@ -44,7 +43,10 @@ export default async function ProductPage({
   if (!product) notFound();
   const category = categories.find((item) => item.slug === product.category);
 
-  const related = products.filter((p) => p.slug !== product.slug).sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category)).slice(0, 3);
+  const related = products
+    .filter((p) => p.slug !== product.slug)
+    .sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category))
+    .slice(0, 3);
   const hasDetails = product.specs.length > 0 || product.services.length > 0;
 
   return (
@@ -64,128 +66,206 @@ export default async function ProductPage({
           { name: product.name, path: `/products/${product.slug}` },
         ]}
       />
-    <>
-      <div className="relative overflow-hidden bg-navy-deep text-on-navy">
-        <WaveField />
-        <div className={`relative mx-auto grid max-w-6xl items-center gap-6 px-5 py-8 lg:gap-12 lg:py-16 ${product.image ? "lg:grid-cols-[1.05fr_.95fr]" : ""}`}>
+
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:py-14">
+        {/* Breadcrumb */}
+        <nav aria-label="Breadcrumb" className="mb-8 flex flex-wrap items-center gap-2 text-sm text-steel">
+          <Link
+            href="/products"
+            className="inline-flex min-h-11 items-center gap-1.5 text-navy underline underline-offset-4"
+          >
+            <ArrowLeft size={14} aria-hidden="true" />
+            All equipment
+          </Link>
+          {category ? (
+            <>
+              <span aria-hidden="true">/</span>
+              <Link
+                href={`/products?cat=${category.slug}`}
+                className="inline-flex min-h-11 items-center text-navy underline underline-offset-4"
+              >
+                {category.name}
+              </Link>
+            </>
+          ) : null}
+        </nav>
+
+        {/* Hero grid: text left, image right */}
+        <div className="grid gap-10 lg:grid-cols-[1fr_420px] lg:gap-16">
+
+          {/* ── Left: identity ── */}
           <div>
-            <Link
-              href={category ? `/products?cat=${category.slug}` : "/products"}
-              className="inline-flex min-h-11 items-center gap-2 text-sm text-white underline underline-offset-4"
-            >
-              <ArrowLeft size={16} className="shrink-0" aria-hidden="true" /> {category?.name ?? "All equipment"}
-            </Link>
+            {/* Category label + brand */}
+            {category ? (
+              <p className="label text-sm font-semibold uppercase tracking-widest text-scarlet">
+                {category.name}
+              </p>
+            ) : null}
+            {product.brand && product.brand !== "—" ? (
+              <p className="mt-1 text-xl font-semibold text-ink">
+                {product.brand}
+              </p>
+            ) : null}
 
-            <h1 className="font-display mt-5 max-w-[24ch] break-words text-3xl font-semibold leading-tight tracking-tight sm:text-5xl">
-              {product.name}
+            {/* Title */}
+            <h1 className="font-display wdth-w mt-4 max-w-[22ch] text-[clamp(2rem,4.2vw,3.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-navy text-balance">
+              {product.name}<span className="text-scarlet">.</span>
             </h1>
-            {product.image ? <div className="mt-6 overflow-hidden rounded-2xl bg-white p-3 lg:hidden"><ImagePlaceholder src={product.image} label={`${product.name}: product photo`} ratio="4/3" className="max-h-72 border-0" /></div> : null}
-            {product.summary ? <p className="mt-6 max-w-[54ch] text-[17px] leading-relaxed text-on-navy/70">
-              {product.summary}
-            </p> : null}
 
-            {/* Nameplate data row: brand, origin, availability, lead time. */}
-            <dl className="mt-7 grid grid-cols-2 border border-white/20 font-mono text-xs">
-              {[
-                ["Brand", product.brand],
-                ["Origin", product.origin],
-                ["Availability", product.availability],
-                ["Lead time", product.leadTime],
-              ].filter(([, value]) => value.trim()).map(([k, v], i) => (
-                <div
-                  key={k}
-                  className={`min-w-0 px-3.5 py-3 ${i % 2 === 1 ? "border-l border-white/20" : ""} ${i > 1 ? "border-t border-white/20" : ""}`}
-                >
-                  <dt className="uppercase tracking-[.1em] text-on-navy/70">{k}</dt>
-                  <dd className="mt-1.5 text-on-navy/90">
-                    {k === "Availability"
-                      ? <AvailabilityTag availability={product.availability} tone="dark" />
-                      : v}
-                  </dd>
-                </div>
-              ))}
+            {product.summary ? (
+              <p className="mt-5 max-w-[58ch] text-[17px] leading-relaxed text-ink-soft">
+                {product.summary}
+              </p>
+            ) : null}
+
+            {/* Nameplate data row */}
+            <dl className="mt-8 grid grid-cols-2 overflow-hidden rounded-xl border border-hair font-mono text-xs">
+              {(
+                [
+                  ["Brand", product.brand],
+                  ["Origin", product.origin],
+                  ["Availability", product.availability],
+                  ["Lead time", product.leadTime],
+                ] as [string, string][]
+              )
+                .filter(([, value]) => value && value.trim() && value !== "—")
+                .map(([k, v], i) => (
+                  <div
+                    key={k}
+                    className={[
+                      "min-w-0 bg-white px-4 py-3.5",
+                      i % 2 === 1 ? "border-l border-hair" : "",
+                      i >= 2 ? "border-t border-hair" : "",
+                    ].join(" ")}
+                  >
+                    <dt className="uppercase tracking-[.08em] text-steel">{k}</dt>
+                    <dd className="mt-1.5 font-medium text-ink">
+                      {k === "Availability" ? (
+                        <AvailabilityTag availability={product.availability} />
+                      ) : (
+                        v
+                      )}
+                    </dd>
+                  </div>
+                ))}
             </dl>
-            <div className="mt-6"><Button href={`/quote?item=${encodeURIComponent(product.name)}`} variant="onDark">Request a quote</Button></div>
+
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Button href={`/quote?item=${encodeURIComponent(product.name)}`}>
+                Request a quote
+              </Button>
+              <Button href={`tel:${site.phoneIntl}`} variant="outline">
+                <Phone size={14} aria-hidden="true" /> Call {site.phone}
+              </Button>
+            </div>
           </div>
 
-          {product.image ? <div className="relative hidden overflow-hidden rounded-2xl border border-white/20 bg-white p-3 lg:block">
-            <ImagePlaceholder
-              src={product.image}
-              label={`${product.name}: product photo`}
-              ratio="4/3"
-              tone="dark"
-              className="border-0"
-            />
-          </div> : null}
-        </div>
-      </div>
-
-      <EcgRule />
-
-      <div className="mx-auto max-w-6xl px-5 py-14 sm:py-20">
-        <div className={`grid gap-12 ${hasDetails ? "lg:grid-cols-[1fr_340px]" : "max-w-2xl"}`}>
-          {hasDetails ? <div>
-            {product.specs.length ? <><SectionHead title="Specifications" />
-            <div className="mt-6 overflow-x-auto">
-              <table className="w-full table-fixed border-collapse text-left">
-                <caption className="sr-only">{product.name} specifications</caption>
-                <tbody>
-                  {product.specs.map((s) => (
-                    <tr key={s.label} className="border-b border-hair">
-                      <th scope="row" className="label w-[42%] py-3.5 pr-4 align-top font-medium text-steel">
-                        {s.label}
-                      </th>
-                      <td className="py-3.5 font-mono text-sm text-ink">{s.value}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div></> : null}
-
-            {product.services.length ? <div className="mt-14">
-              <SectionHead title="What’s included" />
-              <ul className="mt-6 grid gap-px border border-hair bg-hair sm:grid-cols-2">
-                {product.services.map((s) => (
-                  <li key={s} className="bg-white px-4 py-4 text-sm font-medium">{s}</li>
-                ))}
-              </ul>
-            </div> : null}
-          </div> : null}
-
-          <aside className="lg:sticky lg:top-6 lg:self-start">
-            <div className="plate ticks p-6">
-              <h2 className="font-display wdth-n text-xl font-semibold">
-                Ask about this equipment
-              </h2>
-              <p className="mt-2 text-base leading-relaxed text-ink-soft">
-                We’ll confirm the model, price, delivery time and any support you need.
-              </p>
-              <div className="mt-6 flex flex-col gap-2.5">
-                <Button href={`/quote?item=${encodeURIComponent(product.name)}`} className="w-full">
-                  Request a quote
-                </Button>
-                <Button href={`tel:${site.phoneIntl}`} variant="outline" className="w-full">
-                  <Phone size={14} aria-hidden="true" /> Call {site.phone}
-                </Button>
+          {/* ── Right: image — always shown, placeholder when empty ── */}
+          <div className="order-first lg:order-last">
+            {product.image ? (
+              <div className="overflow-hidden rounded-2xl border border-hair bg-white p-3">
+                <ImagePlaceholder
+                  src={product.image}
+                  label={`${product.name}: product photo`}
+                  ratio="4/3"
+                  className="border-0"
+                />
               </div>
-            </div>
-          </aside>
+            ) : (
+              <div className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-dashed border-hair bg-paper">
+                <p className="text-sm text-steel">Image coming soon</p>
+              </div>
+            )}
+          </div>
         </div>
 
+        {/* ── Specs & aside ── */}
+        {hasDetails ? (
+          <div className="mt-16 grid gap-12 border-t border-hair pt-14 lg:grid-cols-[1fr_300px]">
+            <div>
+              {product.specs.length ? (
+                <>
+                  <SectionHead title="Specifications" />
+                  <div className="mt-6 overflow-x-auto">
+                    <table className="w-full table-fixed border-collapse text-left">
+                      <caption className="sr-only">{product.name} specifications</caption>
+                      <tbody>
+                        {product.specs.map((s) => (
+                          <tr key={s.label} className="border-b border-hair">
+                            <th
+                              scope="row"
+                              className="label w-[42%] py-3.5 pr-4 align-top font-medium text-steel"
+                            >
+                              {s.label}
+                            </th>
+                            <td className="py-3.5 font-mono text-sm text-ink">{s.value}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              ) : null}
+
+              {product.services.length ? (
+                <div className="mt-14">
+                  <SectionHead title="What's included" />
+                  <ul className="mt-6 grid gap-px border border-hair bg-hair sm:grid-cols-2">
+                    {product.services.map((s) => (
+                      <li key={s} className="bg-white px-4 py-4 text-sm font-medium">
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </div>
+
+            <aside className="lg:sticky lg:top-6 lg:self-start">
+              <div className="plate ticks p-6">
+                <h2 className="font-display wdth-n text-xl font-semibold">
+                  Ask about this equipment
+                </h2>
+                <p className="mt-2 text-base leading-relaxed text-ink-soft">
+                  We'll confirm the model, price, delivery time and any support you need.
+                </p>
+                <div className="mt-6 flex flex-col gap-2.5">
+                  <Button
+                    href={`/quote?item=${encodeURIComponent(product.name)}`}
+                    className="w-full"
+                  >
+                    Request a quote
+                  </Button>
+                  <Button href={`tel:${site.phoneIntl}`} variant="outline" className="w-full">
+                    <Phone size={14} aria-hidden="true" /> Call {site.phone}
+                  </Button>
+                </div>
+              </div>
+            </aside>
+          </div>
+        ) : null}
+
+        {/* ── Related equipment ── */}
         {related.length > 0 ? (
-          <div className="mt-20">
-            <SectionHead
-              title="Other equipment"
-            />
-            <div className="mt-8"><MobileCardRail label="Related equipment">
-              {related.map((p, i) => (
-                <ProductCard key={p.slug} product={p} index={i} categoryName={categories.find((c) => c.slug === p.category)?.name ?? ""} />
-              ))}
-            </MobileCardRail></div>
+          <div className="mt-20 border-t border-hair pt-14">
+            <SectionHead title="Other equipment" />
+            <div className="mt-8">
+              <MobileCardRail label="Related equipment">
+                {related.map((p, i) => (
+                  <ProductCard
+                    key={p.slug}
+                    product={p}
+                    index={i}
+                    categoryName={
+                      categories.find((c) => c.slug === p.category)?.name ?? ""
+                    }
+                  />
+                ))}
+              </MobileCardRail>
+            </div>
           </div>
         ) : null}
       </div>
-    </>
     </>
   );
 }

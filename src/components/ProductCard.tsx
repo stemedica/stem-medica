@@ -18,12 +18,14 @@ export function ProductCard({ product, index, categoryName = "" }: {
 
   const body = (
     <>
-      {product.image ? <div className="relative border-b border-hair">
-        <ImagePlaceholder src={product.image} label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
+      <div className="relative border-b border-hair">
+        {product.image
+          ? <ImagePlaceholder src={product.image} label={`${product.name}: product photo`} ratio="16/10" className="border-0" />
+          : <div className="aspect-[16/10] bg-paper" />}
         <span className="stamp absolute bottom-2 right-3 text-3xl text-navy/10">
           {String(index + 1).padStart(2, "0")}
         </span>
-      </div> : null}
+      </div>
 
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-display wdth-n text-[17px] font-semibold leading-snug text-balance transition-colors group-hover:text-navy">

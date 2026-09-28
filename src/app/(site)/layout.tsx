@@ -6,12 +6,8 @@ import { getCatalogue } from "@/lib/catalogue";
 
 /** Public site chrome. The admin route sits outside this group and gets none of it. */
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
-  // Only categories that actually hold something: a menu entry leading to an
-  // empty results page is worse than one fewer entry.
-  const { categories, products } = await getCatalogue();
-  const menu = categories
-    .filter((category) => products.some((product) => product.category === category.slug))
-    .map((category) => ({ slug: category.slug, name: category.name }));
+  const { categories } = await getCatalogue();
+  const menu = categories.map((category) => ({ slug: category.slug, name: category.name }));
 
   return (
     <div className="public-site">
