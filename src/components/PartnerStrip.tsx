@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
+import { ArrowUpRight } from "lucide-react";
 
 interface Partner {
   slug: string;
@@ -215,19 +215,6 @@ export function PartnerStrip() {
     }
   }, []);
 
-  // Manual navigation buttons
-  const slide = useCallback((direction: "prev" | "next") => {
-    pauseAutoScroll();
-    const el = trackRef.current;
-    if (!el) return;
-    const amount = el.clientWidth ? Math.min(el.clientWidth * 0.8, 360) : 320;
-    el.scrollBy({
-      left: direction === "next" ? amount : -amount,
-      behavior: "smooth",
-    });
-    scheduleResume();
-  }, [pauseAutoScroll, scheduleResume]);
-
   // Pointer / Mouse drag handlers
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0) return;
@@ -281,33 +268,9 @@ export function PartnerStrip() {
               Our International Partners<span className="text-scarlet">.</span>
             </h2>
           </div>
-          <div className="flex flex-col sm:items-end gap-3">
-            <p className="max-w-[50ch] text-base leading-relaxed text-ink-soft">
-              Direct collaboration with premier global medical manufacturers — guaranteeing genuine equipment, factory warranties, and certified biomedical technical support across Ethiopia.
-            </p>
-            {/* Manual navigation controls */}
-            <div className="mt-1 flex items-center gap-2.5">
-              <span className="text-xs text-steel">Swipe or drag to explore</span>
-              <div className="flex gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => slide("prev")}
-                  aria-label="Previous partners"
-                  className="flex size-9 items-center justify-center rounded-full border border-hair bg-white text-navy shadow-2xs transition-all hover:border-scarlet hover:text-scarlet active:scale-95"
-                >
-                  <ChevronLeft size={16} aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => slide("next")}
-                  aria-label="Next partners"
-                  className="flex size-9 items-center justify-center rounded-full border border-hair bg-white text-navy shadow-2xs transition-all hover:border-scarlet hover:text-scarlet active:scale-95"
-                >
-                  <ChevronRight size={16} aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-          </div>
+          <p className="max-w-[50ch] text-base leading-relaxed text-ink-soft">
+            Direct collaboration with premier global medical manufacturers — guaranteeing genuine equipment, factory warranties, and certified biomedical technical support across Ethiopia.
+          </p>
         </div>
       </div>
 
