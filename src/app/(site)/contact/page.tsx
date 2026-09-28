@@ -49,18 +49,27 @@ export default function ContactPage() {
         ))}
       </div>
 
-      <aside className="plate ticks mt-10 p-6">
-        <h2 className="font-display wdth-n text-xl font-semibold">Need a proforma invoice?</h2>
-        <p className="mt-2 max-w-[62ch] text-base leading-relaxed text-ink-soft">
-          Send your organization name, equipment list, quantities and delivery location. We’ll confirm the details before preparing the document.
-        </p>
-        <Link
-          href="/quote"
-          className="group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-scarlet px-7 py-3 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_8px_20px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98] mt-5"
+      <aside className="group relative mt-10 overflow-hidden rounded-2xl border border-white/10 bg-navy p-6 sm:p-8 text-white shadow-lg">
+        <div
+          className="pointer-events-none absolute -bottom-6 -right-6 text-white/[0.04] transition-all duration-300 group-hover:scale-105 group-hover:text-white/[0.07]"
+          aria-hidden="true"
         >
-          Request a quotation
-          <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
-        </Link>
+          <ClipboardList size={150} strokeWidth={1.2} />
+        </div>
+
+        <div className="relative z-10">
+          <h2 className="font-display wdth-n text-xl font-bold text-white">Need a proforma invoice?</h2>
+          <p className="mt-2 max-w-[62ch] text-base leading-relaxed text-slate-200">
+            Send your organization name, equipment list, quantities and delivery location. We’ll confirm the details before preparing the document.
+          </p>
+          <Link
+            href="/quote"
+            className="group/btn mt-5 inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-scarlet px-7 py-3 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_8px_20px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98]"
+          >
+            Request a quotation
+            <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover/btn:translate-x-1" />
+          </Link>
+        </div>
       </aside>
     </Section>
   );
