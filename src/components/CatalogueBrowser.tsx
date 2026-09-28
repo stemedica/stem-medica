@@ -155,9 +155,9 @@ export function CatalogueBrowser({ products, categories, initialQuery, initialCa
         <div className="flex flex-wrap gap-3">
           <Link
             href={query.trim() ? `/quote?equipment=${encodeURIComponent(query.trim())}` : "/quote"}
-            className="inline-flex min-h-12 shrink-0 items-center gap-3 rounded-full bg-scarlet px-6 text-sm font-semibold text-white transition-colors hover:bg-vital"
+            className="group inline-flex min-h-12 shrink-0 items-center gap-2.5 rounded-full bg-scarlet px-6 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_8px_20px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98]"
           >
-            Request a quote <ArrowRight size={17} aria-hidden="true" />
+            Request a quote <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
           {!matches.length && (query.trim() || category) ? (
             <button

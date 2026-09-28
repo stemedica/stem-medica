@@ -92,21 +92,21 @@ export function HomeServices() {
           ))}
         </div>
 
-        <div className="reveal mt-10 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-white/12 bg-white/[0.05] p-6 sm:p-7">
+        <div className="reveal mt-10 flex flex-wrap items-center justify-between gap-5 rounded-2xl border border-white/20 bg-white p-6 sm:p-7 shadow-xl text-navy">
           <div>
-            <h3 className="font-display text-base font-bold text-white sm:text-lg">
+            <h3 className="font-display text-base font-bold text-navy sm:text-lg">
               Need assistance with your facility&apos;s equipment?
             </h3>
-            <p className="mt-1 text-xs text-slate-300 sm:text-sm">
+            <p className="mt-1 text-xs text-ink-soft sm:text-sm">
               Tell us what technology you need, or request a consultation for your hospital or clinic.
             </p>
           </div>
           <Link
             href="/quote"
-            className="group inline-flex min-h-11 items-center gap-2.5 rounded-full bg-scarlet px-6 py-2.5 text-sm font-bold text-white shadow-xs transition-all duration-300 hover:bg-scarlet-deep hover:shadow-md"
+            className="group inline-flex min-h-11 items-center gap-2.5 rounded-full bg-scarlet px-6 py-2.5 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_8px_20px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98]"
           >
             Request consultation or quote
-            <ArrowRight size={15} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight size={15} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
         </div>
       </div>

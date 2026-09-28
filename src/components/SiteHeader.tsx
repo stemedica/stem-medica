@@ -154,7 +154,7 @@ export function SiteHeader({ logo, categories = [] }: { logo: React.ReactNode; c
           <Link
             href="/quote"
             prefetch={false}
-            className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full bg-navy px-5 py-2 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:bg-scarlet hover:shadow-sm"
+            className="inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-full bg-scarlet px-5 py-2 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_6px_18px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98]"
           >
             Request a quote
           </Link>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClipboardList, Mail, Handshake } from "lucide-react";
+import { ClipboardList, Mail, Handshake, ArrowRight } from "lucide-react";
 import { Section } from "@/components/Section";
 import { site } from "@/lib/site";
 import Link from "next/link";
@@ -54,7 +54,13 @@ export default function ContactPage() {
         <p className="mt-2 max-w-[62ch] text-base leading-relaxed text-ink-soft">
           Send your organization name, equipment list, quantities and delivery location. We’ll confirm the details before preparing the document.
         </p>
-        <Link href="/quote" className="btn-primary mt-5 min-h-11">Request a quotation</Link>
+        <Link
+          href="/quote"
+          className="group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-scarlet px-7 py-3 text-sm font-bold text-white shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:bg-scarlet-deep hover:shadow-[0_8px_20px_rgba(217,56,41,0.32)] active:translate-y-0 active:scale-[0.98] mt-5"
+        >
+          Request a quotation
+          <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
+        </Link>
       </aside>
     </Section>
   );

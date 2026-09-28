@@ -263,7 +263,7 @@ export function PartnerStrip() {
             </div>
             <h2
               id="partners-heading"
-              className="font-display wdth-w mt-3 max-w-[20ch] text-[clamp(2.2rem,4.4vw,3.6rem)] font-semibold leading-[1.04] tracking-[-.035em] text-navy text-balance"
+              className="font-display wdth-w mt-3 max-w-[20ch] text-[clamp(2.2rem,4.4vw,3.6rem)] font-bold leading-[1.04] tracking-[-.035em] text-navy text-balance"
             >
               Our International Partners<span className="text-scarlet">.</span>
             </h2>
@@ -302,60 +302,59 @@ export function PartnerStrip() {
                 onClick={handleLinkClick}
                 draggable={false}
                 aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
-                className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
+                className="group/card relative flex min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
               >
-                {/* Header row: Favicon badge, Logo & Click indicator */}
-                <div className="flex items-center justify-between gap-2 sm:gap-4 pointer-events-none">
-                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                    <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`/partners/${partner.slug}.png`}
-                        alt=""
-                        aria-hidden="true"
-                        width={24}
-                        height={24}
-                        draggable={false}
-                        className="size-full object-contain pointer-events-none"
-                      />
-                    </div>
-                    <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
+                {/* Header row: Inset white logo plate & link indicator */}
+                <div className="flex items-center justify-between gap-2 sm:gap-3 pointer-events-none">
+                  <div className="flex items-center gap-2 sm:gap-2.5 rounded-xl bg-white px-2.5 py-1.5 shadow-sm transition-transform duration-300 group-hover/card:scale-105">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/partners/${partner.slug}.png`}
+                      alt=""
+                      aria-hidden="true"
+                      width={22}
+                      height={22}
+                      draggable={false}
+                      className="size-5 sm:size-5.5 object-contain pointer-events-none shrink-0"
+                    />
+                    <div className="shrink-0 [&>svg]:h-[18px] sm:[&>svg]:h-5 [&>svg]:w-auto max-w-[110px] xs:max-w-[125px] sm:max-w-none">
                       {partner.logo}
                     </div>
                   </div>
                   <span
                     aria-hidden="true"
-                    className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
+                    className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:scale-105"
                   >
                     <ArrowUpRight size={13} className="sm:hidden" />
-                    <ArrowUpRight size={16} className="hidden sm:block" />
+                    <ArrowUpRight size={15} className="hidden sm:block" />
                   </span>
                 </div>
 
                 {/* Body: Full name and Specialty */}
-                <div className="mt-2.5 sm:mt-5 pointer-events-none">
-                  <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
+                <div className="mt-3.5 sm:mt-5 pointer-events-none">
+                  <h3 className="font-display text-[13.5px] sm:text-base lg:text-[17px] font-bold tracking-tight text-white transition-colors duration-300 truncate sm:whitespace-normal">
                     {partner.name}
                   </h3>
-                  <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
+                  <p className="mt-1 line-clamp-1 sm:line-clamp-2 text-[10.5px] leading-relaxed sm:text-xs lg:text-[13px] text-slate-300">
                     {partner.specialty}
                   </p>
                 </div>
 
                 {/* Footer row: Category tag & link indicator */}
-                <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel pointer-events-none">
-                  <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
+                <div className="mt-3.5 sm:mt-5 flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3 text-[10px] sm:text-[11px] font-semibold pointer-events-none">
+                  <span className="truncate rounded-md border border-white/10 bg-white/10 px-2 py-0.5 font-medium text-slate-200 max-w-[105px] sm:max-w-none text-[9.5px] sm:text-[11px]">
                     {partner.category}
                   </span>
-                  <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
-                    Visit website →
+                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                    Visit website
+                    <ArrowUpRight size={12} className="transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" />
                   </span>
                 </div>
 
                 {/* Bottom active hover accent bar */}
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
+                  className="absolute bottom-0 left-0 h-[2.5px] w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
                 />
               </a>
             ))}
@@ -372,57 +371,56 @@ export function PartnerStrip() {
                 aria-label={`Visit official website of ${partner.name} (${partner.specialty}) - opens in a new tab`}
                 aria-hidden="true"
                 tabIndex={-1}
-                className="group/card relative flex min-w-[145px] xs:min-w-[160px] flex-col justify-between rounded-xl sm:rounded-2xl border border-hair bg-white p-3.5 sm:p-5 lg:p-6 shadow-[0_4px_16px_rgba(15,37,85,0.04)] transition-all duration-300 hover:-translate-y-1 sm:hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_16px_36px_rgba(196,55,46,0.12)] sm:min-w-[280px] lg:min-w-[330px]"
+                className="group/card relative flex min-w-[155px] xs:min-w-[170px] flex-col justify-between rounded-2xl border border-white/10 bg-navy p-4 sm:p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(15,37,85,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:border-scarlet/40 hover:shadow-[0_18px_36px_rgba(15,37,85,0.18)] sm:min-w-[290px] lg:min-w-[340px]"
               >
-                {/* Header row: Favicon badge, Logo & Click indicator */}
-                <div className="flex items-center justify-between gap-2 sm:gap-4 pointer-events-none">
-                  <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
-                    <div className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-lg border border-hair/70 bg-paper/60 p-1 shadow-2xs transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-navy/30 group-hover/card:bg-white">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`/partners/${partner.slug}.png`}
-                        alt=""
-                        aria-hidden="true"
-                        width={24}
-                        height={24}
-                        draggable={false}
-                        className="size-full object-contain pointer-events-none"
-                      />
-                    </div>
-                    <div className="shrink-0 transition-transform duration-300 group-hover/card:scale-105 [&>svg]:h-[19px] sm:[&>svg]:h-6 [&>svg]:w-auto max-w-[115px] xs:max-w-[130px] sm:max-w-none">
+                {/* Header row: Inset white logo plate & link indicator */}
+                <div className="flex items-center justify-between gap-2 sm:gap-3 pointer-events-none">
+                  <div className="flex items-center gap-2 sm:gap-2.5 rounded-xl bg-white px-2.5 py-1.5 shadow-sm transition-transform duration-300 group-hover/card:scale-105">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/partners/${partner.slug}.png`}
+                      alt=""
+                      aria-hidden="true"
+                      width={22}
+                      height={22}
+                      draggable={false}
+                      className="size-5 sm:size-5.5 object-contain pointer-events-none shrink-0"
+                    />
+                    <div className="shrink-0 [&>svg]:h-[18px] sm:[&>svg]:h-5 [&>svg]:w-auto max-w-[110px] xs:max-w-[125px] sm:max-w-none">
                       {partner.logo}
                     </div>
                   </div>
                   <span
                     aria-hidden="true"
-                    className="flex size-6 sm:size-8 shrink-0 items-center justify-center rounded-full bg-navy/5 text-navy transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:text-white"
+                    className="flex size-7 sm:size-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover/card:bg-scarlet group-hover/card:scale-105"
                   >
                     <ArrowUpRight size={13} className="sm:hidden" />
-                    <ArrowUpRight size={16} className="hidden sm:block" />
+                    <ArrowUpRight size={15} className="hidden sm:block" />
                   </span>
                 </div>
 
-                <div className="mt-2.5 sm:mt-5 pointer-events-none">
-                  <h3 className="font-display text-[13px] sm:text-base lg:text-lg font-bold tracking-tight text-navy transition-colors duration-300 group-hover/card:text-scarlet truncate sm:whitespace-normal">
+                <div className="mt-3.5 sm:mt-5 pointer-events-none">
+                  <h3 className="font-display text-[13.5px] sm:text-base lg:text-[17px] font-bold tracking-tight text-white transition-colors duration-300 truncate sm:whitespace-normal">
                     {partner.name}
                   </h3>
-                  <p className="mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-2 text-[10px] leading-snug sm:text-xs lg:text-[13px] text-ink-soft">
+                  <p className="mt-1 line-clamp-1 sm:line-clamp-2 text-[10.5px] leading-relaxed sm:text-xs lg:text-[13px] text-slate-300">
                     {partner.specialty}
                   </p>
                 </div>
 
-                <div className="mt-2.5 sm:mt-5 flex items-center justify-between border-t border-hair pt-2 sm:pt-3 text-[10px] sm:text-[11px] font-semibold text-steel pointer-events-none">
-                  <span className="truncate rounded bg-paper px-1.5 py-0.5 text-navy max-w-[95px] sm:max-w-none text-[9px] sm:text-[11px]">
+                <div className="mt-3.5 sm:mt-5 flex items-center justify-between border-t border-white/10 pt-2.5 sm:pt-3 text-[10px] sm:text-[11px] font-semibold pointer-events-none">
+                  <span className="truncate rounded-md border border-white/10 bg-white/10 px-2 py-0.5 font-medium text-slate-200 max-w-[105px] sm:max-w-none text-[9.5px] sm:text-[11px]">
                     {partner.category}
                   </span>
-                  <span className="hidden sm:inline text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
-                    Visit website →
+                  <span className="hidden sm:inline-flex items-center gap-1 font-bold text-scarlet opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                    Visit website
+                    <ArrowUpRight size={12} className="transition-transform group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5" />
                   </span>
                 </div>
 
                 <span
                   aria-hidden="true"
-                  className="absolute bottom-0 left-0 h-0.5 w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
+                  className="absolute bottom-0 left-0 h-[2.5px] w-0 bg-scarlet transition-all duration-500 ease-[cubic-bezier(.22,.61,.36,1)] group-hover/card:w-full"
                 />
               </a>
             ))}
