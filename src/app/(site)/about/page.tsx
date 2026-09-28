@@ -130,14 +130,14 @@ export default function AboutPage() {
             {PILLARS.map(({ icon: Icon, title, description }) => (
               <div
                 key={title}
-                className="reveal flex flex-col justify-between rounded-xl border border-hair bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-navy/40 hover:shadow-md"
+                className="reveal group flex flex-col justify-between rounded-2xl border border-white/10 bg-navy p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-white/25 hover:shadow-xl"
               >
                 <div>
-                  <span className="flex size-11 items-center justify-center rounded-lg bg-navy/5 text-navy">
+                  <span className="flex size-11 items-center justify-center rounded-xl bg-white/10 text-white shadow-2xs transition-all duration-300 group-hover:scale-105 group-hover:bg-scarlet">
                     <Icon size={20} aria-hidden="true" />
                   </span>
-                  <h3 className="font-display mt-5 text-lg font-bold text-navy">{title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{description}</p>
+                  <h3 className="font-display mt-5 text-lg font-bold text-white">{title}</h3>
+                  <p className="mt-2.5 text-sm leading-relaxed text-slate-200">{description}</p>
                 </div>
               </div>
             ))}
