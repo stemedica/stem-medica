@@ -1,8 +1,9 @@
 import { z } from "zod";
-export const postKinds = ["Blog", "Upcoming arrival", "New arrival"] as const;
+export const postKinds = ["Blog", "Upcoming arrival", "New arrival", "Achievement"] as const;
 export const postSchema = z.object({
   id: z.uuid(), slug: z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/).max(100),
   title: z.string().trim().min(1).max(200), date: z.iso.date(), kind: z.preprocess((kind) => kind === "Order update" ? "Blog" : kind, z.enum(postKinds)),
+  place: z.string().trim().max(120).default("").optional(),
   excerpt: z.string().trim().max(500).default(""), author: z.string().trim().max(100).default("STEM MEDICA").transform((author) => author || "STEM MEDICA"),
   arrivalNoticeUntil: z.union([z.literal(""), z.iso.date()]).optional(),
   arrivalNoticeEnabled: z.boolean().optional(),
@@ -13,7 +14,7 @@ export const postSchema = z.object({
     caption: z.string().trim().max(300).default(""),
   })).max(8).optional(),
 }).superRefine((post, ctx) => {
-  if (post.kind !== "Blog" && post.arrivalNoticeEnabled !== false && post.arrivalNoticeUntil && post.arrivalNoticeUntil < post.date) {
+  if (post.kind !== "Blog" && post.kind !== "Achievement" && post.arrivalNoticeEnabled !== false && post.arrivalNoticeUntil && post.arrivalNoticeUntil < post.date) {
     ctx.addIssue({ code: "custom", path: ["arrivalNoticeUntil"], message: "Choose an expiry on or after the display date." });
   }
   if (post.published && !post.body) ctx.addIssue({ code: "custom", path: ["body"], message: "Published posts need article text" });

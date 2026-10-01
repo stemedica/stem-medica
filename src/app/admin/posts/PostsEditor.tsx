@@ -85,7 +85,7 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
     resetFields(); setAttempted(false); setPublishTarget(null); setStatus("all");
     const id = crypto.randomUUID();
     newPosts.current.add(id);
-    setPosts((items) => [...items, { id, slug: postSlug("New post", items.map((item) => item.slug)), title: "New post", date: new Date().toISOString().slice(0, 10), kind: "Blog", excerpt: "", author: "STEM MEDICA", body: "", image: "", published: false }]);
+    setPosts((items) => [...items, { id, slug: postSlug("New post", items.map((item) => item.slug)), title: "New post", date: new Date().toISOString().slice(0, 10), kind: "Blog", place: "", excerpt: "", author: "STEM MEDICA", body: "", image: "", published: false }]);
     setSelected(id); setPreview(false);
   }
   async function save(published?: boolean) {
@@ -208,7 +208,7 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
             </div>
           </Panel>
 
-          {current.kind !== "Blog" ? (
+          {current.kind === "Upcoming arrival" || current.kind === "New arrival" ? (
             <Panel tone="accent" title="Arrival notice"
               description={<>Use “New arrival” only once equipment has landed; “Upcoming arrival” means it is still expected. After expiry the post stays published as an “Arrival update” without the highlight.</>}>
               <div className="space-y-4">
@@ -229,6 +229,15 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
             </Panel>
           ) : null}
 
+          {current.kind === "Achievement" ? (
+            <Panel tone="accent" title="Facility & location"
+              description="The hospital, clinic or centre where this work took place. Appears on the homepage achievement card.">
+              <TextField label="Facility / Location" maxLength={120} path={fieldPath("place")} problems={problems}
+                value={current.place ?? ""} onChange={(place) => patch({ place })}
+                placeholder="e.g. St. Paul’s Hospital Millennium Medical College, Addis Ababa" />
+            </Panel>
+          ) : null}
+
           <Panel title="Summary" description="Shown on cards and in search results. Leave blank to use the opening of the article.">
             <TextareaField label="Custom summary" path={fieldPath("excerpt")} problems={problems} rows={3} maxLength={500}
               value={current.excerpt} onChange={(excerpt) => patch({ excerpt })} />
@@ -236,7 +245,8 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
 
           <Panel title="Cover image" description="Appears on the homepage and blog cards. A post without one simply shows no image.">
             <FileField label="Upload a cover" accept="image/jpeg,image/png,image/webp" inputKey={current.id}
-              onFiles={(files) => { void upload(files[0]); }} />
+              disabled={busy}
+              onFiles={(files) => upload(files[0])} />
             {current.image ? <div className="mt-4">
               <ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} className="max-h-64" />
               <button type="button" className="btn-ghost mt-3 min-h-11" onClick={() => patch({ image: "" })}>Remove cover</button>
@@ -247,8 +257,8 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
             description="Extra pictures shown inside the article. Up to 8."
             actions={<span className="text-xs text-steel">{current.gallery?.length ?? 0} of 8</span>}>
             <FileField label="Add gallery images" accept="image/jpeg,image/png,image/webp" multiple
-              disabled={(current.gallery?.length ?? 0) >= 8}
-              onFiles={(files) => { void uploadGallery(files); }} />
+              disabled={(current.gallery?.length ?? 0) >= 8 || busy}
+              onFiles={(files) => uploadGallery(files)} />
             {(current.gallery ?? []).length ? <ul className="mt-4 space-y-3">
               {(current.gallery ?? []).map((image, index) => (
                 <li key={image.src} className="rounded-xl border border-hair p-4">

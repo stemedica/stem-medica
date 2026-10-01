@@ -1,4 +1,7 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode } from "react";
+import { Loader2 } from "lucide-react";
 import { fieldProblemProps, FieldProblem } from "@/components/FormProblems";
 import type { FormProblem } from "@/lib/form-errors";
 
@@ -132,25 +135,57 @@ export function CheckboxField({
 
 /** Native file inputs look different in every browser; this wraps one in a button. */
 export function FileField({
-  label, hint, accept, multiple, disabled, onFiles, inputKey,
+  label, hint, accept, multiple, disabled, loading, loadingMessage, onFiles, inputKey,
 }: {
   label: string; hint?: string; accept: string; multiple?: boolean; disabled?: boolean;
-  onFiles: (files: File[]) => void; inputKey?: string;
+  loading?: boolean; loadingMessage?: string;
+  onFiles: (files: File[]) => void | Promise<void>; inputKey?: string;
 }) {
+  const [internalLoading, setInternalLoading] = useState(false);
+  const isBusy = Boolean(loading || internalLoading);
+  const isDisabled = Boolean(disabled || isBusy);
+
   return (
     <div>
       <Label label={label} hint={hint} />
-      <label className={`flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-hair bg-paper px-4 py-3 text-sm font-medium text-navy transition-colors hover:border-navy hover:bg-navy-tint/40 has-[:focus-visible]:border-navy has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-navy/15 ${disabled ? "pointer-events-none opacity-50" : ""}`}>
+      <label
+        aria-busy={isBusy}
+        className={`relative flex min-h-11 cursor-pointer items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed px-4 py-3 text-sm font-medium text-navy transition-colors has-[:focus-visible]:border-navy has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-navy/15 ${
+          isBusy
+            ? "border-navy/50 bg-navy-tint/50 pending-strip pointer-events-none cursor-wait"
+            : isDisabled
+            ? "border-hair bg-paper pointer-events-none opacity-50"
+            : "border-hair bg-paper hover:border-navy hover:bg-navy-tint/40"
+        }`}
+      >
         <input
           key={inputKey}
+          aria-label={label}
           type="file"
           accept={accept}
           multiple={multiple}
-          disabled={disabled}
+          disabled={isDisabled}
           className="sr-only"
-          onChange={(event) => { onFiles(Array.from(event.target.files ?? [])); event.target.value = ""; }}
+          onChange={async (event) => {
+            const files = Array.from(event.target.files ?? []);
+            event.target.value = "";
+            if (!files.length) return;
+            try {
+              setInternalLoading(true);
+              await onFiles(files);
+            } finally {
+              setInternalLoading(false);
+            }
+          }}
         />
-        Choose {multiple ? "images" : "an image"}
+        {isBusy ? (
+          <span className="flex items-center gap-2 text-navy" role="status" aria-live="polite">
+            <Loader2 className="size-4 animate-spin text-navy" aria-hidden="true" />
+            <span>{loadingMessage || (multiple ? "Uploading images…" : "Uploading image…")}</span>
+          </span>
+        ) : (
+          `Choose ${multiple ? "images" : "an image"}`
+        )}
       </label>
     </div>
   );

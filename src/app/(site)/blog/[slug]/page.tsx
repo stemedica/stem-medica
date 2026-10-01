@@ -54,7 +54,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div className="flex flex-wrap items-center gap-3 text-sm text-steel"><Link href={`/blog?kind=${encodeURIComponent(post.kind)}`} className="inline-flex min-h-11 items-center rounded-full"><PostKindBadge post={post} /></Link><span>{readingMinutes(post.body)} min read</span></div>
         <h1 className="font-display mt-5 break-words text-3xl font-semibold leading-[1.15] tracking-tight text-navy sm:text-5xl lg:text-6xl">{post.title}</h1>
         <p className="mt-4 break-words text-base leading-relaxed text-ink-soft sm:text-xl">{post.excerpt}</p>
-        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm"><span className="font-medium text-navy">{post.author}</span><time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time></div>
+        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm"><span className="font-medium text-navy">{post.author}</span>{post.place ? <span className="font-medium text-steel">· {post.place}</span> : null}<time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time></div>
       </header>
       {post.image ? <figure className="mb-12 overflow-hidden rounded-2xl bg-navy-tint">
         {/* eslint-disable-next-line @next/next/no-img-element */}

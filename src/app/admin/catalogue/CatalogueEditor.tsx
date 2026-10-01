@@ -321,8 +321,8 @@ export function CatalogueEditor() {
           </> : null}
 
           <Panel title="Photo" description="JPEG, PNG or WebP, up to 10 MB. Resized in your browser before upload.">
-            <FileField label="Upload a photo" accept="image/jpeg,image/png,image/webp" disabled={!configured}
-              onFiles={(files) => { void upload(files[0]); }} />
+            <FileField label="Upload a photo" accept="image/jpeg,image/png,image/webp" disabled={!configured || busy}
+              onFiles={(files) => upload(files[0])} />
             {current.image ? <div className="mt-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img alt={current.name} src={`/admin/api/media?id=${encodeURIComponent(current.image.split("/").pop()!)}`} className="aspect-video w-full rounded-lg border border-hair bg-paper object-contain" />

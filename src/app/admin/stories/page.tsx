@@ -1,7 +1,7 @@
-import { StoriesEditor } from "./StoriesEditor";
+import { redirect } from "next/navigation";
 import { requireAdminPage } from "@/lib/auth/guard";
 
 export default async function StoriesPage() {
   await requireAdminPage();
-  return <StoriesEditor />;
+  redirect("/admin/posts");
 }

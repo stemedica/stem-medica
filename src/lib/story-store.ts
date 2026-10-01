@@ -14,7 +14,29 @@ export const getStoriesDocument = unstable_cache(async () => {
   return stories;
 }, ["stories-document", contentStorageIdentity(), process.env.LOCAL_STORAGE_DIR ?? ".local-storage", process.env.BLOB_STORE_ID ?? "default"], { tags: ["stories"], revalidate: 300 });
 
-/** Published entries only, in the order the admin arranged them. */
-export async function getStories() {
-  return (await getStoriesDocument()).filter((story) => story.published);
+import { getAllPosts } from "./post-store";
+
+export type FacilityStory = {
+  title: string;
+  place: string;
+  summary: string;
+  image?: string;
+  postSlug?: string;
+};
+
+/** Published achievements from unified posts, falling back to legacy stories if present. */
+export async function getStories(): Promise<FacilityStory[]> {
+  const posts = await getAllPosts();
+  const achievements = posts.filter((p) => p.published && p.kind === "Achievement");
+  if (achievements.length) {
+    return achievements.map((p) => ({
+      title: p.title,
+      place: p.place || "Addis Ababa & Regional Facilities",
+      summary: p.excerpt || p.body.slice(0, 300),
+      image: p.image || undefined,
+      postSlug: p.slug,
+    }));
+  }
+  const { stories } = await readStories();
+  return stories.filter((story) => story.published);
 }
