@@ -477,8 +477,8 @@ body {
   }
 }
 @keyframes media-drift {
-  from { transform: scale(1.12) translateY(-2.5%); }
-  to { transform: scale(1.12) translateY(2.5%); }
+  from { transform: scale(1.02) translateY(-1.5%); }
+  to { transform: scale(1.02) translateY(1.5%); }
 }
 
 /* Feedback motion.

@@ -12,8 +12,8 @@
  */
 import { UserFacingError } from "./form-errors";
 
-export const CLIENT_MAX_EDGE = 1600;
-export const CLIENT_QUALITY = 0.82;
+export const CLIENT_MAX_EDGE = 2048;
+export const CLIENT_QUALITY = 0.92;
 /** Comfortably under Vercel's ~4.5 MB body limit, leaving room for overhead. */
 export const UPLOAD_BODY_LIMIT = 4_000_000;
 
@@ -27,28 +27,19 @@ export class ImageTooLargeToSend extends UserFacingError {}
 type Source = { draw: CanvasImageSource; width: number; height: number; release: () => void };
 
 /**
- * Three decode paths, tried in order, because each fails differently.
- *
- * 1. createImageBitmap, capped during decode. `resizeWidth` lets the decoder
- *    downscale as it reads, so a 48 MP photo never materialises at full size.
- *    That is what makes this survive a cheap Android phone, where decoding the
- *    full bitmap is the step that actually runs out of memory.
- * 2. createImageBitmap with no options, for engines that reject the resize
- *    options rather than ignoring them.
- * 3. An <img> element via an object URL. A different decoder inside the browser
- *    and the only path on engines without createImageBitmap at all.
+ * Decode paths tried in order:
+ * 1. createImageBitmap with imageOrientation "from-image" to respect EXIF rotation on mobile shots.
+ * 2. createImageBitmap with no options, for older engines.
+ * 3. HTMLImageElement via object URL fallback.
  */
 async function decode(file: File): Promise<Source | null> {
   if (typeof createImageBitmap === "function") {
-    for (const options of [{ resizeWidth: CLIENT_MAX_EDGE, resizeQuality: "high" as const }, undefined]) {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+      return { draw: bitmap, width: bitmap.width, height: bitmap.height, release: () => bitmap.close() };
+    } catch {
       try {
-        // Only cap during decode when it can shrink: constraining the width of a
-        // very tall, narrow image would enlarge it instead.
-        const bitmap = await createImageBitmap(file, options);
-        if (options && bitmap.width > bitmap.height * 4) {
-          bitmap.close();
-          continue;
-        }
+        const bitmap = await createImageBitmap(file);
         return { draw: bitmap, width: bitmap.width, height: bitmap.height, release: () => bitmap.close() };
       } catch {
         /* try the next path */
@@ -77,12 +68,15 @@ async function decode(file: File): Promise<Source | null> {
 }
 
 function render(source: Source, edge: number, quality: number) {
-  const scale = Math.min(1, edge / Math.max(source.width, source.height));
+  const maxEdge = Math.max(source.width, source.height);
+  const scale = Math.min(1, edge / maxEdge);
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(source.width * scale));
   canvas.height = Math.max(1, Math.round(source.height * scale));
   const context = canvas.getContext("2d");
   if (!context) return Promise.resolve(null);
+  context.imageSmoothingEnabled = true;
+  context.imageSmoothingQuality = "high";
   context.drawImage(source.draw, 0, 0, canvas.width, canvas.height);
   return new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", quality));
 }
@@ -108,9 +102,9 @@ export async function downscaleForUpload(file: File): Promise<Blob> {
     // continues for the rare image that stays stubbornly large.
     for (const [edge, quality] of [
       [CLIENT_MAX_EDGE, CLIENT_QUALITY],
-      [1280, 0.75],
-      [1024, 0.7],
-      [800, 0.65],
+      [1920, 0.90],
+      [1600, 0.88],
+      [1280, 0.82],
     ] as const) {
       const blob = await render(source, edge, quality);
       if (blob && blob.size <= UPLOAD_BODY_LIMIT) {

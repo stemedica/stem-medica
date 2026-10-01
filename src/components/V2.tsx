@@ -92,7 +92,7 @@ export function V2Photo({
   if (src) {
     // Images are uploaded through the CMS and served by the published-media route.
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={publicMediaUrl(src)} alt={label} loading="lazy" className={`${fill ? "absolute inset-0 h-full w-full" : "block"} object-cover ${rounded ? "rounded-[36px]" : ""} ${className}`} />;
+    return <img src={publicMediaUrl(src)} alt={label} loading="lazy" className={`${fill ? "absolute inset-0 h-full w-full" : "block"} object-cover object-center ${rounded ? "rounded-[36px]" : ""} ${className}`} />;
   }
   return (
     <div

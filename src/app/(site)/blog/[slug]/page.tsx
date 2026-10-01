@@ -56,9 +56,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <p className="mt-4 break-words text-base leading-relaxed text-ink-soft sm:text-xl">{post.excerpt}</p>
         <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm"><span className="font-medium text-navy">{post.author}</span>{post.place ? <span className="font-medium text-steel">· {post.place}</span> : null}<time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time></div>
       </header>
-      {post.image ? <figure className="mb-12 overflow-hidden rounded-2xl bg-navy-tint">
+      {post.image ? <figure className="mb-12 overflow-hidden rounded-2xl border border-hair bg-navy-tint/40 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={publicMediaUrl(post.image)} alt={post.title} className="aspect-[16/9] max-h-[600px] w-full object-cover" />
+        <img src={publicMediaUrl(post.image)} alt={post.title} className="mx-auto max-h-[680px] w-auto max-w-full rounded-2xl object-contain" />
       </figure> : null}
       <div className="mx-auto max-w-3xl">
         {sections.length >= 3 ? <details className="mb-8 rounded-xl border border-hair bg-white p-4 sm:p-5"><summary className="min-h-11 cursor-pointer py-2 font-medium text-navy">In this article</summary><nav aria-label="In this article" className="mt-2"><ol className="space-y-1">{sections.map((section) => <li key={section.id}><a href={`#${section.id}`} className="inline-flex min-h-11 items-center text-sm text-navy underline underline-offset-4">{section.title}</a></li>)}</ol></nav></details> : null}
