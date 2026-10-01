@@ -15,6 +15,7 @@ import { postKinds, postsSchema, type CmsPost } from "@/lib/post-schema";
 import { PostGallery } from "@/components/PostGallery";
 import { arrivalNoticeEnd, hasArrivalNotice } from "@/lib/arrival-notice";
 import { LinkedInSharePanel } from "@/components/LinkedInSharePanel";
+import { LinkedInIcon } from "@/components/LinkedInIcon";
 import { ImagePlaceholder } from "@/components/ImagePlaceholder";
 import { useConfirmation, useUnsavedChanges } from "@/components/ConfirmationModal";
 
@@ -85,7 +86,7 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
     resetFields(); setAttempted(false); setPublishTarget(null); setStatus("all");
     const id = crypto.randomUUID();
     newPosts.current.add(id);
-    setPosts((items) => [...items, { id, slug: postSlug("New post", items.map((item) => item.slug)), title: "New post", date: new Date().toISOString().slice(0, 10), kind: "Blog", place: "", excerpt: "", author: "STEM MEDICA", body: "", image: "", published: false }]);
+    setPosts((items) => [...items, { id, slug: postSlug("New post", items.map((item) => item.slug)), title: "New post", date: new Date().toISOString().slice(0, 10), kind: "Blog", place: "", excerpt: "", author: "STEM MEDICA", body: "", image: "", published: false, linkedinUrl: "" }]);
     setSelected(id); setPreview(false);
   }
   async function save(published?: boolean) {
@@ -182,7 +183,7 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
         <p className="text-sm font-medium">{current.published ? "Published · visible on the website" : "Draft · only visible to admins"}</p>
         <LinkedInSharePanel key={`${current.id}-${dirty}-${current.published}`} post={current} dirty={dirty} previewMode={previewMode} />
         <div className="flex flex-wrap gap-3"><button type="button" className="btn-outline" onClick={() => setPreview(!preview)}>{preview ? "Edit post" : "Preview post"}</button><button type="button" className="btn-ghost" onClick={async () => { if (await confirm({ title: "Remove this post?", message: `Remove “${current.title}”? Save posts to apply the deletion.`, action: "Remove post" })) { resetFields(); setAttempted(false); setPosts((items) => items.filter((post) => post.id !== selected)); setSelected(""); } }}>Remove post</button></div>
-        {preview ? <article className="space-y-5 break-words"><p className="text-sm text-steel">Preview · {current.kind} · {current.date}</p><h2 className="font-display text-3xl">{current.title}</h2>{current.image ? <ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} /> : null}<p className="text-lg">{postSummary(current)}</p><PostBody body={current.body} /><PostGallery images={current.gallery} title={current.title} preview /></article> : <>
+        {preview ? <article className="space-y-5 break-words"><p className="text-sm text-steel">Preview · {current.kind} · {current.date}</p><h2 className="font-display text-3xl">{current.title}</h2>{current.image ? <ImagePlaceholder src={`/admin/api/media?id=${current.image.split("/").pop()}`} label={current.title} /> : null}<p className="text-lg">{postSummary(current)}</p>{current.linkedinUrl ? <p><a href={current.linkedinUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-navy hover:underline"><LinkedInIcon size={16} /> View on LinkedIn</a></p> : null}<PostBody body={current.body} /><PostGallery images={current.gallery} title={current.title} preview /></article> : <>
           <Panel title="Article" description={<>Website address: <span className="break-all font-medium text-ink">/blog/{current.slug}</span>. Generated from the title; once saved it never changes, so shared links keep working.</>}>
             <div className="space-y-4">
               <TextField required label="Title" path={fieldPath("title")} problems={problems} maxLength={200}
@@ -205,6 +206,10 @@ export function PostsEditor({ previewMode = true }: { previewMode?: boolean }) {
                 hint="Not a schedule" />
               <TextField label="Author" path={fieldPath("author")} problems={problems} maxLength={100}
                 value={current.author} onChange={(author) => patch({ author })} className="sm:col-span-2" />
+              <TextField label="LinkedIn post link" type="url" path={fieldPath("linkedinUrl")} problems={problems} maxLength={500}
+                value={current.linkedinUrl ?? ""} onChange={(linkedinUrl) => patch({ linkedinUrl })}
+                placeholder="https://www.linkedin.com/posts/..."
+                hint="Optional — paste the link if already posted on LinkedIn" className="sm:col-span-2" />
             </div>
           </Panel>
 

@@ -13,6 +13,7 @@ import { V2Photo } from "@/components/V2";
 import { hasArrivalNotice } from "@/lib/arrival-notice";
 import { publicMediaUrl } from "@/lib/preview-paths";
 import { ArticleSchema, BreadcrumbSchema } from "@/components/StructuredData";
+import { LinkedInIcon } from "@/components/LinkedInIcon";
 
 export const revalidate = 300;
 
@@ -54,7 +55,22 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <div className="flex flex-wrap items-center gap-3 text-sm text-steel"><Link href={`/blog?kind=${encodeURIComponent(post.kind)}`} className="inline-flex min-h-11 items-center rounded-full"><PostKindBadge post={post} /></Link><span>{readingMinutes(post.body)} min read</span></div>
         <h1 className="font-display mt-5 break-words text-3xl font-semibold leading-[1.15] tracking-tight text-navy sm:text-5xl lg:text-6xl">{post.title}</h1>
         <p className="mt-4 break-words text-base leading-relaxed text-ink-soft sm:text-xl">{post.excerpt}</p>
-        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm"><span className="font-medium text-navy">{post.author}</span>{post.place ? <span className="font-medium text-steel">· {post.place}</span> : null}<time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time></div>
+        <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-hair pt-5 text-sm">
+          <span className="font-medium text-navy">{post.author}</span>
+          {post.place ? <span className="font-medium text-steel">· {post.place}</span> : null}
+          <time className="text-steel" dateTime={post.date}>{formatDate(post.date)}</time>
+          {post.linkedinUrl ? (
+            <a
+              href={post.linkedinUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-auto inline-flex min-h-11 items-center gap-1.5 font-medium text-navy hover:underline"
+            >
+              <LinkedInIcon size={16} />
+              <span>View on LinkedIn</span>
+            </a>
+          ) : null}
+        </div>
       </header>
       {post.image ? <figure className="mb-12 overflow-hidden rounded-2xl border border-hair bg-navy-tint/40 text-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -64,7 +80,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {sections.length >= 3 ? <details className="mb-8 rounded-xl border border-hair bg-white p-4 sm:p-5"><summary className="min-h-11 cursor-pointer py-2 font-medium text-navy">In this article</summary><nav aria-label="In this article" className="mt-2"><ol className="space-y-1">{sections.map((section) => <li key={section.id}><a href={`#${section.id}`} className="inline-flex min-h-11 items-center text-sm text-navy underline underline-offset-4">{section.title}</a></li>)}</ol></nav></details> : null}
         <PostBody body={post.body} />
         <PostGallery images={post.gallery} title={post.title} />
-        <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-y border-hair py-5 text-sm text-steel"><span>Published by {post.author}</span><Link className="inline-flex min-h-11 items-center gap-2 font-medium text-navy" href="/blog">All updates <ArrowRight size={16} aria-hidden="true" /></Link></footer>
+        <footer className="mt-12 flex flex-wrap items-center justify-between gap-4 border-y border-hair py-5 text-sm text-steel">
+          <span>Published by {post.author}</span>
+          <div className="flex flex-wrap items-center gap-4">
+            {post.linkedinUrl ? (
+              <a
+                href={post.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center gap-2 font-medium text-navy hover:underline"
+              >
+                <LinkedInIcon size={16} />
+                <span>View on LinkedIn</span>
+              </a>
+            ) : null}
+            <Link className="inline-flex min-h-11 items-center gap-2 font-medium text-navy" href="/blog">All updates <ArrowRight size={16} aria-hidden="true" /></Link>
+          </div>
+        </footer>
         <aside className="mt-10 rounded-2xl bg-navy-tint p-6 sm:p-8"><h2 className="font-display text-2xl font-semibold text-navy">Have a question about equipment?</h2><p className="mt-3 max-w-[58ch] text-base leading-relaxed text-ink-soft">Ask us about the model, price, delivery time or support.</p><Link href="/quote" className="btn-outline mt-6">Request a quote <ArrowRight size={16} aria-hidden="true" /></Link></aside>
       </div>
     </article>

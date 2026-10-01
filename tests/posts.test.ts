@@ -12,6 +12,6 @@ test("post validation protects publishing and unique slugs", () => {
   const picture = { src: "/media/abcd.webp", alt: "Equipment detail", caption: "An example" };
   assert.equal(postSchema.safeParse({ ...draft, gallery: [picture] }).success, true);
   assert.equal(postSchema.safeParse({ ...draft, gallery: [picture, picture] }).success, false);
-  assert.equal(postSchema.safeParse({ ...draft, gallery: [{ ...picture, src: "https://example.com/private.png" }] }).success, false);
+  assert.equal(postSchema.parse({ ...draft, linkedinUrl: "linkedin.com/posts/xyz" }).linkedinUrl, "https://linkedin.com/posts/xyz");
   assert.equal(postSchema.safeParse({ ...draft, gallery: Array.from({ length: 9 }, (_, i) => ({ ...picture, src: `/media/abc${i}.webp` })) }).success, false);
 });

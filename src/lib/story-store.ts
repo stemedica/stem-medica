@@ -22,6 +22,7 @@ export type FacilityStory = {
   summary: string;
   image?: string;
   postSlug?: string;
+  linkedinUrl?: string;
 };
 
 /** Published achievements from unified posts, falling back to legacy stories if present. */
@@ -35,6 +36,7 @@ export async function getStories(): Promise<FacilityStory[]> {
       summary: p.excerpt || p.body.slice(0, 300),
       image: p.image || undefined,
       postSlug: p.slug,
+      linkedinUrl: p.linkedinUrl || undefined,
     }));
   }
   const { stories } = await readStories();

@@ -16,11 +16,13 @@ test("post URLs normalize titles and resolve collisions", () => {
 });
 
 test("article text renders headings and lists without executing HTML", () => {
-  const html = renderToStaticMarkup(createElement(PostBody, { body: '## A section\n\nParagraph.\n\n- First\n- Second\n\n<script>alert(1)</script>' }));
+  const html = renderToStaticMarkup(createElement(PostBody, { body: '## A section\n\nParagraph with **bold text**.\n\n- **Rapid Results**: Direct measurement\n- Second\n\n<script>alert(1)</script>' }));
   assert.match(html, /<h2/);
-  assert.match(html, /<li>First<\/li>/);
+  assert.match(html, /<strong class="font-semibold text-navy">bold text<\/strong>/);
+  assert.match(html, /<li><strong class="font-semibold text-navy">Rapid Results<\/strong>: Direct measurement<\/li>/);
   assert.match(html, /&lt;script&gt;/);
   assert.ok(!html.includes("<script>"));
+  assert.ok(!html.includes("**"));
 });
 
 test("post covers are omitted entirely when a post has no image", () => {

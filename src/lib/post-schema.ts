@@ -8,6 +8,7 @@ export const postSchema = z.object({
   arrivalNoticeUntil: z.union([z.literal(""), z.iso.date()]).optional(),
   arrivalNoticeEnabled: z.boolean().optional(),
   body: z.string().trim().max(8000), image: z.string().regex(/^$|^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/), published: z.boolean(),
+  linkedinUrl: z.preprocess((val) => typeof val === "string" && /^linkedin\.com/i.test(val.trim()) ? `https://${val.trim()}` : val, z.string().trim().max(500).default("").optional()),
   gallery: z.array(z.object({
     src: z.string().regex(/^\/media\/[a-z0-9-]+\.(?:jpg|png|webp)$/),
     alt: z.string().trim().max(200).default(""),

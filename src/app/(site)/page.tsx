@@ -10,6 +10,7 @@ import { HomeServices } from "@/components/HomeServices";
 import { FollowUs } from "@/components/FollowUs";
 import { WaveField } from "@/components/WaveField";
 import { ScrollRail } from "@/components/ScrollRail";
+import { LinkedInIcon } from "@/components/LinkedInIcon";
 import { getStories } from "@/lib/story-store";
 export const revalidate = 300;
 
@@ -83,18 +84,31 @@ export default async function Home() {
                     <p className="mt-3.5 max-w-[62ch] text-base leading-relaxed text-white/85">{story.summary}</p>
                     {/* Only rendered when a post exists: a button that goes
                         nowhere is worse than none at all. */}
-                    {story.postSlug ? (
-                      <Link
-                        prefetch={false}
-                        href={`/blog/${story.postSlug}`}
-                        className="group/read mt-7 inline-flex min-h-12 w-fit items-center gap-3 rounded-full bg-scarlet py-2 pl-6 pr-2 text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:bg-vital hover:shadow-[0_10px_28px_rgba(196,55,46,.45)] active:translate-y-0"
-                      >
-                        Read the story
-                        <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-scarlet transition-transform duration-300 group-hover/read:translate-x-0.5">
-                          <ArrowRight size={17} aria-hidden="true" />
-                        </span>
-                      </Link>
-                    ) : null}
+                    <div className="mt-7 flex flex-wrap items-center gap-3">
+                      {story.postSlug ? (
+                        <Link
+                          prefetch={false}
+                          href={`/blog/${story.postSlug}`}
+                          className="group/read inline-flex min-h-12 w-fit items-center gap-3 rounded-full bg-scarlet py-2 pl-6 pr-2 text-sm font-semibold text-white transition-[background-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:bg-vital hover:shadow-[0_10px_28px_rgba(196,55,46,.45)] active:translate-y-0"
+                        >
+                          Read the story
+                          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-scarlet transition-transform duration-300 group-hover/read:translate-x-0.5">
+                            <ArrowRight size={17} aria-hidden="true" />
+                          </span>
+                        </Link>
+                      ) : null}
+                      {story.linkedinUrl ? (
+                        <a
+                          href={story.linkedinUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex min-h-12 items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-sm font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+                        >
+                          <LinkedInIcon size={16} />
+                          <span>View on LinkedIn</span>
+                        </a>
+                      ) : null}
+                    </div>
                   </div>
                 </article>
               ))}
