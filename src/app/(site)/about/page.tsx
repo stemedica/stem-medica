@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Award, Building2, ShieldCheck, Users } from "lucide-react";
-import { V2Photo } from "@/components/V2";
+import { AboutVisual } from "@/components/AboutVisual";
 import { LocationMap } from "@/components/LocationMap";
 import { site } from "@/lib/site";
 
@@ -72,12 +72,8 @@ export default function AboutPage() {
             Putting quality in the front line<span className="text-scarlet">.</span>
           </h1>
 
-          <div className="reveal mt-12 grid gap-10 lg:mt-16 lg:grid-cols-2 lg:items-start lg:gap-16">
-            <V2Photo
-              label="STEM MEDICA facility and medical equipment"
-              rounded={false}
-              className="aspect-[4/3] w-full rounded-2xl lg:aspect-[5/4]"
-            />
+          <div className="reveal mt-12 grid gap-10 lg:mt-16 lg:grid-cols-2 lg:items-center lg:gap-16">
+            <AboutVisual showPill={false} />
 
             <div className="space-y-5 text-base sm:text-lg leading-relaxed text-ink-soft">
               <p className="font-medium text-navy">

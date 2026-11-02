@@ -24,9 +24,10 @@ function connect() {
 export const contentDatabase = () => connection ??= connect();
 
 function transientReadFailure(error: unknown) {
-  const failure = error as { code?: string; message?: string; cause?: { code?: string } };
-  return [failure.code, failure.cause?.code].some((code) => ["ETIMEDOUT", "ECONNRESET", "EPIPE", "57P01", "57P02", "57P03"].includes(code || ""))
-    || /connection terminated|timeout|socket closed/i.test(failure.message || "");
+  if (!error) return false;
+  const failure = error as { code?: string; message?: string; cause?: any };
+  const errStr = `${failure.code || ""} ${failure.message || ""} ${failure.cause?.code || ""} ${failure.cause?.message || ""} ${String(failure.cause || "")}`;
+  return /ETIMEDOUT|ECONNRESET|EPIPE|57P01|57P02|57P03|connection terminated|timeout|socket closed/i.test(errStr);
 }
 
 /**
@@ -35,7 +36,7 @@ function transientReadFailure(error: unknown) {
  * quiet spell saw the page fail. The delays below span a cold start; healthy
  * requests never wait, because the first attempt succeeds.
  */
-const READ_RETRY_DELAYS = [150, 1_200, 3_000];
+const READ_RETRY_DELAYS = [250, 1_000, 2_500, 4_000];
 
 async function retryRead<T>(operation: () => Promise<T>) {
   let lastError: unknown;

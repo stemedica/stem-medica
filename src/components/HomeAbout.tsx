@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight, Award, Compass, Target } from "lucide-react";
-import { V2Photo } from "./V2";
+import { AboutVisual } from "./AboutVisual";
 import { QuietTrace } from "./QuietTrace";
 
 /**
@@ -24,11 +24,10 @@ export function HomeAbout({ categoryCount }: { categoryCount: number }) {
         Improving access to modern healthcare technology<span className="text-scarlet">.</span>
       </h2>
 
-      <div className="reveal mt-12 grid gap-10 lg:mt-16 lg:grid-cols-2 lg:items-start lg:gap-16">
-        <V2Photo
-          label="STEM MEDICA team and medical equipment"
-          rounded={false}
-          className="aspect-[4/3] w-full rounded-2xl lg:aspect-[5/4]"
+      <div className="reveal mt-12 grid gap-10 lg:mt-16 lg:grid-cols-2 lg:items-center lg:gap-16">
+        <AboutVisual
+          badgeText="Direct Factory Partnerships · Certified Support"
+          subText="Medical Sales & Equipment Across Ethiopia"
         />
 
         <div className="space-y-5 text-base sm:text-lg leading-relaxed text-ink-soft">

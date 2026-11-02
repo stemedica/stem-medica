@@ -30,7 +30,11 @@ function findLogo(): Found | null {
     if (!fs.existsSync(full)) continue;
 
     const vector = file.endsWith(".svg");
-    const size = file.endsWith(".png") ? pngSize(fs.readFileSync(full)) : null;
+    const size = file.endsWith(".png")
+      ? pngSize(fs.readFileSync(full))
+      : file.endsWith(".svg")
+        ? { w: 576, h: 366 }
+        : null;
 
     return {
       src: `/${file}`,

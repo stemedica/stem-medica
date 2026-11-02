@@ -26,7 +26,19 @@ function checkKey(key: string) {
 const etagFor = (data: Buffer) => createHash("sha256").update(data).digest("hex");
 export async function readObject(key: string): Promise<{ bytes: Buffer; etag: string } | null> {
   checkKey(key);
-  if (postgres() && contentKey(key)) return (await import("./content-database")).readDocument(key);
+  if (postgres() && contentKey(key)) {
+    try {
+      return await (await import("./content-database")).readDocument(key);
+    } catch (error) {
+      if (!process.env.VERCEL) {
+        try {
+          const bytes = await readFile(/* turbopackIgnore: true */ path.join(/* turbopackIgnore: true */ root(), key));
+          return { bytes, etag: etagFor(bytes) };
+        } catch {}
+      }
+      throw error;
+    }
+  }
   if (local()) {
     try { const bytes = await readFile(/* turbopackIgnore: true */ path.join(/* turbopackIgnore: true */ root(), key)); return { bytes, etag: etagFor(bytes) }; }
     catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return null; throw error; }
